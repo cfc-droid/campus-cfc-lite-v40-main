@@ -1,53 +1,24 @@
-/* ==========================================================
-   ✅ CFC — AUTO-INJECTOR GLOBAL V2.4 (QA-SYNC 2025-11-01)
-   Función: Inserta progress_v2.js automáticamente
-   en todos los capítulos y exámenes que no lo tengan cargado.
-   ========================================================== */
+/* =========================================================
+✅ CFC_FUNC_5_1_AUTOLOAD_20251102 — Inyección global de theme.js
+Archivo: /frontend/js/auto_injector.js
+========================================================= */
 
-(function () {
-  const path = window.location.pathname;
+(function() {
+  const base = window.location.pathname.includes("/frontend/")
+    ? "/frontend/"
+    : window.location.pathname.startsWith("/modules/")
+      ? "../"
+      : "./";
 
-  // 👉 Solo actuar en capítulos o exámenes
-  if (!/\/modules\/\d+\/(cap\d+|exam)\.html$/i.test(path)) return;
-
-  // Evitar inyección duplicada
-  const scripts = Array.from(document.scripts).map(s => s.src);
-  if (scripts.some(src => src.includes("progress_v2.js"))) return;
-
-  // Crear script dinámico
-  const script = document.createElement("script");
-  script.defer = true;
-
-  /* =====================================================
-     🔍 Detección de profundidad dinámica (compatible Cloudflare)
-     - Si el path contiene /modules/x/, subir DOS niveles: ../../js/
-     - Si se ejecuta desde entorno raíz o staging: js/
-     ===================================================== */
-  const depth = (path.match(/\//g) || []).length;
-  script.src =
-    depth >= 4
-      ? "../../js/progress_v2.js?v=20251030"
-      : "js/progress_v2.js?v=20251030";
-
-  // Inyectar al final del body
-  document.addEventListener("DOMContentLoaded", () => {
-    document.body.appendChild(script);
-    console.log("✅ CFC_SYNC AutoInjector — progress_v2.js añadido dinámicamente");
-  });
-})();
-
-/* =============================================================
-   ✅ CFC_FUNC_5_1E_GLOBAL_20251101 — Inyección global botón tema
-   Inserta auto_theme_loader.js en todas las páginas del Campus
-   ============================================================= */
-
-(function injectThemeButton() {
-  const script = document.createElement("script");
-  script.src = "/frontend/js/auto_theme_loader.js?v=20251101";
-  script.defer = true;
-  document.head.appendChild(script);
-  console.log(
-    "🧩 CFC_SYNC checkpoint:",
-    "auto_injector.js → auto_theme_loader.js cargado"
-  );
+  const scriptId = "cfc-theme-autoload";
+  if (!document.getElementById(scriptId)) {
+    const s = document.createElement("script");
+    s.id = scriptId;
+    s.src = base + "js/theme.js?v=20251102";
+    s.defer = true;
+    document.head.appendChild(s);
+    console.log("🧩 CFC_SYNC:", "auto_injector.js → theme.js inyectado desde", base);
+  } else {
+    console.log("🧩 CFC_SYNC:", "theme.js ya presente, no se duplica.");
+  }
 })();
