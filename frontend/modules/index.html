@@ -6,9 +6,9 @@
   <title>Módulos del Campus CFC LITE</title>
 
   <!-- CSS principal -->
-  <link rel="stylesheet" href="../css/premium.css?v=20251030" />
-  <link rel="stylesheet" href="../css/extra-extra.css?v=20251030" />
-  <link rel="stylesheet" href="../css/variables.css?v=20251030" />
+  <link rel="stylesheet" href="../css/premium.css?v=20251101" />
+  <link rel="stylesheet" href="../css/extra-extra.css?v=20251101" />
+  <link rel="stylesheet" href="../css/variables.css?v=20251101" />
 
   <style>
     body {
@@ -186,6 +186,9 @@
   <main id="dashboard">
     <h1>📘 Módulos del Campus CFC Trading LITE</h1>
 
+    <!-- ✅ CFC_FUNC_4_7_20251101 — Logro visible -->
+    <div id="achievement" class="achievement-box">—</div>
+
     <div id="cfc-progress-container">
       <div id="cfc-progress-bar"></div>
       <span id="cfc-progress-text">0% completado</span>
@@ -215,52 +218,38 @@
     </ul>
 
     <div style="text-align:center;">
-      <button class="btn-volver" onclick="window.location.href='../loader.html?v=20251030'">⬅ Volver al inicio</button>
+      <button class="btn-volver" onclick="window.location.href='../loader.html?v=20251101'">⬅ Volver al inicio</button>
       <button id="continueBtn" class="continue-btn">▶ Continuar último módulo</button>
       <button id="resetProgressBtn" class="reset-btn">🔄 Reiniciar progreso</button>
 
       <script>
-        console.log("🧩 CFC_SYNC checkpoint:", "modules/index.html", "Punto 2.7 + 2.14 + 2.15.2 activos", new Date().toLocaleString());
-
-        // 🌟 Overlay Motivacional (visual + audio)
+        console.log("🧩 CFC_SYNC checkpoint:", "modules/index.html", "P2.7 + 2.14 + 2.15.2 + 4.7 activos", new Date().toLocaleString());
         function showMotivationalOverlay() {
           const overlay = document.createElement("div");
           overlay.id = "motivationalOverlay";
-          overlay.innerHTML = `
-            <p>✨ Volver a empezar también es progreso.<br>
-            Cada reinicio te acerca a la versión más consciente de vos mismo.</p>
-          `;
+          overlay.innerHTML = `<p>✨ Volver a empezar también es progreso.<br>Cada reinicio te acerca a la versión más consciente de vos mismo.</p>`;
           document.body.appendChild(overlay);
-
-          // 🔊 ✅ CFC_FUNC_2_15_2_QASYNC_V8.8_AUDIO_MOTIVACIONAL — Campana dorada
           const bell = new Audio("../audio/bell-gold.wav");
           bell.volume = 0.6;
           setTimeout(() => bell.play().catch(err => console.warn("Audio playback blocked:", err)), 300);
-
           setTimeout(() => overlay.classList.add("visible"), 100);
           setTimeout(() => overlay.classList.remove("visible"), 3200);
           setTimeout(() => overlay.remove(), 4000);
         }
-
         document.addEventListener("DOMContentLoaded", () => {
           const resetBtn = document.getElementById("resetProgressBtn");
-          if (resetBtn) {
-            resetBtn.addEventListener("click", showMotivationalOverlay);
-          }
+          if (resetBtn) resetBtn.addEventListener("click", showMotivationalOverlay);
         });
       </script>
     </div>
   </main>
 
-  <footer>
-    © 2025 Campus CFC Trading — Versión V37 FINAL
-  </footer>
+  <footer>© 2025 Campus CFC Trading — Versión V41 REAL</footer>
 
   <!-- Scripts principales -->
-  <script src="../js/progress_v2.js?v=20251030" defer></script>
-  <script src="../js/exam-logic_v2.js?v=20251030" defer></script>
-
-  <!-- ✅ CFC_SYNC V10.0 — AutoInjector global (QA-SYNC 2025-11-01) -->
-  <script src="../js/auto_injector.js?v=20251030" defer></script>
+  <script src="../js/progress_v2.js?v=20251101" defer></script>
+  <script src="../js/exam-logic_v2.js?v=20251101" defer></script>
+  <script src="../js/motivation_v2.js?v=20251101" defer></script>
+  <script src="../js/auto_injector.js?v=20251101" defer></script>
 </body>
 </html>
