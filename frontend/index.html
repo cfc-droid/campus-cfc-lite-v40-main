@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Campus CFC LITE — Inicio</title>
 
-  <!-- Script base dinámico para rutas locales o Cloudflare -->
   <script>
     (function() {
       const isCloudflare = window.location.hostname.includes("pages.dev");
@@ -14,12 +13,10 @@
     })();
   </script>
 
-  <!-- CSS principal -->
   <link rel="stylesheet" href="css/variables.css?v=20251030" />
   <link rel="stylesheet" href="css/premium.min.css?v=20251030" />
   <link rel="stylesheet" href="css/exam-extra.css?v=20251030" />
 
-  <!-- ✅ CFC_FUNC_15_SUBPASO_1.3 — Preload de imágenes críticas -->
   <script src="js/preload.js?v=20251030" defer></script>
 
   <style>
@@ -32,7 +29,6 @@
       text-align: center;
       min-height: 100vh;
     }
-
     .card {
       background: linear-gradient(180deg, #111, #0b0b0b);
       border: 1px solid #222;
@@ -42,85 +38,26 @@
       width: 90%;
       max-width: 600px;
     }
-
-    h1 {
-      font-size: 2rem;
-      color: gold;
-      margin-bottom: 8px;
-    }
-
-    .lead {
-      opacity: 0.8;
-      font-size: 1rem;
-      margin: 12px 0 24px;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      padding: 12px 20px;
-      border: none;
-      font-weight: 600;
-      text-decoration: none;
-      transition: transform 0.25s, box-shadow 0.25s;
-    }
-
-    .btn-primary {
-      background: linear-gradient(90deg, gold, orange);
-      color: #111;
-      box-shadow: 0 0 8px rgba(255,215,0,0.4);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 12px rgba(255,215,0,0.6);
-    }
-
-    .btn-ghost {
-      background: #111;
-      color: #fff;
-      border: 1px solid #555;
-    }
-
-    .btn-ghost:hover {
-      color: gold;
-      border-color: gold;
-    }
-
-    .hint {
-      opacity: 0.7;
-      font-size: 0.85rem;
-      margin-top: 14px;
-    }
-
-    .btn-switch-demo {
-      background: linear-gradient(90deg, gold, orange);
-      color: #111;
-      font-weight: 700;
-      padding: 12px 24px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s ease-in-out;
-    }
-
-    .btn-switch-demo:hover {
-      transform: scale(1.05);
-    }
+    h1 { font-size: 2rem; color: gold; margin-bottom: 8px; }
+    .lead { opacity: 0.8; font-size: 1rem; margin: 12px 0 24px; }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 8px;
+           padding: 12px 20px; border: none; font-weight: 600; text-decoration: none;
+           transition: transform 0.25s, box-shadow 0.25s; }
+    .btn-primary { background: linear-gradient(90deg, gold, orange); color: #111;
+                   box-shadow: 0 0 8px rgba(255,215,0,0.4); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 12px rgba(255,215,0,0.6); }
+    .btn-ghost { background: #111; color: #fff; border: 1px solid #555; }
+    .btn-ghost:hover { color: gold; border-color: gold; }
+    .hint { opacity: 0.7; font-size: 0.85rem; margin-top: 14px; }
+    .btn-switch-demo { background: linear-gradient(90deg, gold, orange); color: #111; font-weight: 700;
+                       padding: 12px 24px; border-radius: 10px; border: none; cursor: pointer;
+                       transition: transform 0.2s ease-in-out; }
+    .btn-switch-demo:hover { transform: scale(1.05); }
   </style>
 </head>
 
 <body>
-  <!-- ✅ BITÁCORA CFC — Loader Premium Animado -->
   <div id="loader">
     <img src="img/logo.png" alt="Campus CFC Logo">
     <p id="quote"></p>
@@ -149,10 +86,8 @@
     </p>
   </main>
 
-  <!-- 🔒 CFC-SYNC — Footer placeholder -->
   <div id="footer-placeholder"></div>
 
-  <!-- Scripts globales premium -->
   <script src="js/loader.js?v=20251030" defer></script>
   <script src="js/header.js?v=20251030" defer></script>
   <script src="js/footer.js?v=20251030" defer></script>
@@ -161,7 +96,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       const entrarBtn = document.querySelector("#enterModules");
       if (entrarBtn) {
-        entrarBtn.addEventListener("click", (e) => {
+        entrarBtn.addEventListener("click", e => {
           e.preventDefault();
           window.location.href = entrarBtn.getAttribute("href");
         });
@@ -169,15 +104,15 @@
     });
   </script>
 
-  <!-- ✅ CFC_SYNC V10.0 — Registro automático del Service Worker + AutoInjector -->
   <script>
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/frontend/sw.js")
+    navigator.serviceWorker.register("/frontend/sw.js")
       .then(() => console.log("✅ CFC_SYNC V10.0 — Service Worker activo"))
-      .catch(err => console.error("⚠️ Error al registrar SW:", err));
+      .catch(err => console.error("⚠️ Error SW:", err));
   }
   </script>
-  <script src="js/auto_injector.js?v=20251030" defer></script>
+
+  <!-- ✅ QA-SYNC V41.3 -->
+  <script src="js/auto_injector.js?v=20251102" defer></script>
 </body>
 </html>
