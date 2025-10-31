@@ -1,21 +1,12 @@
 /* =========================================================
    ✅ CFC_FUNC_5_1C_V41_REAL_20251102 — Modo claro/oscuro para capítulos
    📄 Archivo: /frontend/js/theme_chapter.js
-   🔒 CFC-SYNC V7.8 | QA-SYNC V41.4
+   🔒 CFC-SYNC V8.2 | QA-SYNC V41.5 (Observer + Retry)
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Evitar duplicados
-  if (document.getElementById("theme-toggle")) return;
-
-  // Crear el botón
-  const toggle = document.createElement("button");
-  toggle.id = "theme-toggle";
-  toggle.title = "Cambiar tema claro / oscuro";
-  document.body.appendChild(toggle);
-
-  // Estilo base
-  Object.assign(toggle.style, {
+(function () {
+  const CFC_ID = "theme-toggle";
+  const CFC_STYLE = {
     position: "fixed",
     top: "18px",
     right: "18px",
@@ -28,11 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
     zIndex: "9999",
     transition: "all 0.3s ease",
     border: "2px solid var(--color-accent, #ffd700)",
-    boxShadow: "0 0 10px rgba(255,215,0,0.4)"
-  });
+    boxShadow: "0 0 10px rgba(255,215,0,0.4)",
+  };
 
-  // Aplicar tema guardado
-  const applyTheme = (theme) => {
+  function applyTheme(theme, toggle) {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
 
@@ -45,17 +35,45 @@ document.addEventListener("DOMContentLoaded", () => {
       toggle.style.background = "#111";
       toggle.style.color = "var(--color-accent, #ffd700)";
     }
-  };
+  }
 
-  let currentTheme = localStorage.getItem("theme") || "dark";
-  applyTheme(currentTheme);
+  function injectButton() {
+    if (document.getElementById(CFC_ID)) return;
 
-  // Al hacer clic, alternar
-  toggle.addEventListener("click", () => {
-    currentTheme = currentTheme === "dark" ? "light" : "dark";
-    applyTheme(currentTheme);
+    const toggle = document.createElement("button");
+    toggle.id = CFC_ID;
+    toggle.title = "Cambiar tema claro / oscuro";
+    Object.assign(toggle.style, CFC_STYLE);
+    document.body.appendChild(toggle);
+
+    let currentTheme = localStorage.getItem("theme") || "dark";
+    applyTheme(currentTheme, toggle);
+
+    toggle.addEventListener("click", () => {
+      currentTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(currentTheme, toggle);
+    });
+
+    // 🔍 Verificación visual rápida
+    toggle.style.outline = "3px solid lime";
+    setTimeout(() => (toggle.style.outline = ""), 800);
+
+    console.log("✅ CFC_THEME_ACTIVE — botón insertado y tema actual:", currentTheme);
+  }
+
+  // 🔁 Intentar varias veces hasta que body exista
+  function ensureBodyLoaded() {
+    if (document.body) injectButton();
+    else setTimeout(ensureBodyLoaded, 150);
+  }
+
+  // 🧩 Reintento + observador de mutaciones (seguridad doble)
+  ensureBodyLoaded();
+
+  const observer = new MutationObserver(() => {
+    if (!document.getElementById(CFC_ID) && document.body) injectButton();
   });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
 
   console.log("🧩 CFC_SYNC checkpoint:", "theme_chapter.js activo en", window.location.pathname);
-});
-console.log("✅ CFC_FORCE_DEPLOY — Archivo publicado correctamente");
+})();
