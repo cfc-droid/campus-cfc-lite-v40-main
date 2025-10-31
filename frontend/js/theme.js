@@ -1,11 +1,11 @@
 /* =========================================================
-✅ CFC_FUNC_5_1_20251102 — Modo claro/oscuro persistente (QA-SYNC V41-REAL)
+✅ CFC_FUNC_5_1_20251102B — Compatibilidad global modo claro/oscuro
 Archivo: /frontend/js/theme.js
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("🧩 CFC_SYNC checkpoint:", "theme.js", "Cargando modo claro/oscuro...", new Date().toLocaleString());
+  console.log("🧩 CFC_SYNC checkpoint:", "theme.js", "Iniciando verificación...");
 
-  // 1️⃣ Obtener o crear el botón
+  // Crear o reutilizar el botón
   let toggle = document.getElementById("theme-toggle");
   if (!toggle) {
     toggle = document.createElement("button");
@@ -15,22 +15,38 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(toggle);
   }
 
-  // 2️⃣ Aplicar tema guardado o por defecto
+  // Aplicar tema guardado o por defecto
   const applyTheme = (theme) => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
     toggle.textContent = theme === "dark" ? "☀️" : "🌙";
   };
 
-  let current = localStorage.getItem("theme") || "dark";
-  applyTheme(current);
+  let theme = localStorage.getItem("theme") || "dark";
+  applyTheme(theme);
 
-  // 3️⃣ Alternar al hacer clic
-  toggle.addEventListener("click", () => {
-    current = current === "light" ? "dark" : "light";
-    applyTheme(current);
-    console.log("🎨 CFC_THEME:", `Tema cambiado a ${current}`);
+  toggle.onclick = () => {
+    theme = theme === "light" ? "dark" : "light";
+    applyTheme(theme);
+    console.log("🎨 Tema cambiado a:", theme);
+  };
+
+  // Asegurar estilos inline mínimos (por si no cargó CSS)
+  Object.assign(toggle.style, {
+    position: "fixed",
+    top: "16px",
+    right: "16px",
+    zIndex: "99999",
+    borderRadius: "50%",
+    width: "44px",
+    height: "44px",
+    fontSize: "1.2rem",
+    cursor: "pointer",
+    background: "#111",
+    color: "#ffd700",
+    border: "2px solid #ffd700",
+    boxShadow: "0 0 10px rgba(255,215,0,0.3)",
   });
 
-  console.log("✅ CFC_SYNC checkpoint:", "theme.js", `Modo ${current} activo`, new Date().toLocaleString());
+  console.log("✅ CFC_SYNC:", `theme.js activo en ${window.location.pathname}`);
 });
