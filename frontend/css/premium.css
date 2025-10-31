@@ -278,3 +278,23 @@ h1, h2, h3 {
   color: #ff4444;
   text-shadow: 0 0 4px rgba(0,0,0,0.6);
 }
+
+/* =====================================================
+   ✅ CFC_FUNC_4_1_VISUAL_20251031 — Estilo motivador diario
+   ===================================================== */
+.motivation-text {
+  text-align: center;
+  margin: 15px auto 0 auto;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+  animation: fadeIn 1.5s ease;
+  max-width: 800px;
+  line-height: 1.4;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
