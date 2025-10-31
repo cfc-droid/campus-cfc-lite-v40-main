@@ -298,3 +298,13 @@ h1, h2, h3 {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ✅ CFC_FUNC_4_1C_20251101 — Estilo visual motivador diario */
+.motivacion-diaria {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #ffd700;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
