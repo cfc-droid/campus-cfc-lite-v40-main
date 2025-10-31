@@ -58,3 +58,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("🧩 CFC_SYNC checkpoint:", "theme_chapter.js activo en", window.location.pathname);
 });
+console.log("✅ CFC_FORCE_DEPLOY — Archivo publicado correctamente");
