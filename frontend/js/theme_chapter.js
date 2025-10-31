@@ -1,7 +1,7 @@
 /* =========================================================
    ✅ CFC_FUNC_5_1C_V41_REAL_20251102 — Modo claro/oscuro para capítulos
    📄 Archivo: /frontend/js/theme_chapter.js
-   🔒 CFC-SYNC V8.2 | QA-SYNC V41.5 (Observer + Retry)
+   🔒 CFC-SYNC V8.3 | QA-SYNC V41.6 (Observer + Retry + Sync localStorage)
    ========================================================= */
 
 (function () {
@@ -22,9 +22,12 @@
     boxShadow: "0 0 10px rgba(255,215,0,0.4)",
   };
 
+  // 🧩 Aplicar tema
   function applyTheme(theme, toggle) {
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    localStorage.setItem("CFC_THEME_STATE", theme);
+
+    if (!toggle) return; // seguridad si aún no existe el botón
 
     if (theme === "dark") {
       toggle.textContent = "☀️";
@@ -37,6 +40,7 @@
     }
   }
 
+  // 🪶 Crear botón si no existe
   function injectButton() {
     if (document.getElementById(CFC_ID)) return;
 
@@ -46,34 +50,40 @@
     Object.assign(toggle.style, CFC_STYLE);
     document.body.appendChild(toggle);
 
-    let currentTheme = localStorage.getItem("theme") || "dark";
+    // Leer tema actual
+    let currentTheme = localStorage.getItem("CFC_THEME_STATE") || "dark";
     applyTheme(currentTheme, toggle);
 
+    // Evento de clic
     toggle.addEventListener("click", () => {
       currentTheme = currentTheme === "dark" ? "light" : "dark";
       applyTheme(currentTheme, toggle);
+      console.log("🎨 CFC_THEME_SWITCH — nuevo tema:", currentTheme);
     });
 
-    // 🔍 Verificación visual rápida
+    // Indicador visual rápido
     toggle.style.outline = "3px solid lime";
     setTimeout(() => (toggle.style.outline = ""), 800);
 
     console.log("✅ CFC_THEME_ACTIVE — botón insertado y tema actual:", currentTheme);
   }
 
-  // 🔁 Intentar varias veces hasta que body exista
+  // 🕐 Reintento hasta que body exista
   function ensureBodyLoaded() {
     if (document.body) injectButton();
     else setTimeout(ensureBodyLoaded, 150);
   }
 
-  // 🧩 Reintento + observador de mutaciones (seguridad doble)
+  // 🧩 Doble seguridad (reintento + observador)
   ensureBodyLoaded();
-
   const observer = new MutationObserver(() => {
     if (!document.getElementById(CFC_ID) && document.body) injectButton();
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  // Aplicar el tema antes del render
+  const preTheme = localStorage.getItem("CFC_THEME_STATE") || "dark";
+  document.documentElement.setAttribute("data-theme", preTheme);
 
   console.log("🧩 CFC_SYNC checkpoint:", "theme_chapter.js activo en", window.location.pathname);
 })();
