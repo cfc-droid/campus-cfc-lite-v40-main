@@ -1,18 +1,18 @@
 /* =========================================================
-   ✅ VARIABLES GLOBALES CAMPUS CFC TRADING — V41.7 REAL
-   🌙/☀️ Soporte total para modo claro/oscuro
-   🔒 CFC-SYNC V8.4 | QA-SYNC V41.7
+   ✅ VARIABLES GLOBALES CAMPUS CFC TRADING — V41.9 FINAL
+   🌙/☀️ Soporte total modo claro/oscuro
+   🔒 CFC-SYNC V8.6 | QA-SYNC V41.9
    ========================================================= */
 
 /* 🎨 Valores base (modo claro por defecto) */
 :root {
-  --color-bg: #ffffff;        /* Fondo claro */
-  --color-text: #111111;      /* Texto oscuro */
-  --color-accent: #ffd700;    /* Dorado premium */
-  --gold: #d4af37;            /* Dorado base */
-  --dark: #0a0a0a;            /* Fondo oscuro elegante */
-  --accent: #1e90ff;          /* Azul de realce */
-  --text-light: #f2f2f2;      /* Texto sobre fondo oscuro */
+  --color-bg: #ffffff;
+  --color-text: #111111;
+  --color-accent: #ffd700;
+  --gold: #d4af37;
+  --dark: #0a0a0a;
+  --accent: #1e90ff;
+  --text-light: #f2f2f2;
   --glass-bg: rgba(255, 255, 255, 0.08);
   --radius: 16px;
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
@@ -21,7 +21,7 @@
 /* =========================================================
    ☀️ Tema claro — activo cuando <html data-theme="light">
    ========================================================= */
-[data-theme="light"] {
+html[data-theme="light"] {
   --color-bg: #f9f9f9;
   --color-text: #111;
   --color-accent: #c59d00;
@@ -31,9 +31,9 @@
 /* =========================================================
    🌙 Tema oscuro — activo cuando <html data-theme="dark">
    ========================================================= */
-[data-theme="dark"] {
+html[data-theme="dark"] {
   --color-bg: #0b0b0b;
-  --color-text: #eee;
+  --color-text: #eeeeee;
   --color-accent: #ffd700;
   --glass-bg: rgba(255, 255, 255, 0.08);
 }
@@ -57,7 +57,7 @@ a:hover {
 }
 
 /* =========================================================
-   🧩 Extras globales (para glassmorphism y sombras)
+   🧩 Extras globales (glassmorphism y sombras)
    ========================================================= */
 .glass {
   background: var(--glass-bg);
