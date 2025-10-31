@@ -20,6 +20,7 @@
       padding: 24px;
       color: #fff;
       box-shadow: 0 0 18px rgba(255,215,0,0.1);
+      text-align: center;
     }
     textarea {
       width: 100%;
@@ -60,6 +61,25 @@
       padding: 10px;
       margin-bottom: 8px;
       border-radius: 6px;
+      text-align: left;
+    }
+    .btn-return {
+      margin-top: 25px;
+      background: linear-gradient(90deg,#0b0b0b,#1a1a1a);
+      color: #ffd700;
+      border: 2px solid #ffd700;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      cursor: pointer;
+      transition: all .3s ease-in-out;
+    }
+    .btn-return:hover {
+      background: linear-gradient(90deg,#ffd700,#ffec8b);
+      color: #111;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255,215,0,0.6);
     }
   </style>
 </head>
@@ -70,10 +90,15 @@
     <textarea id="thoughts" placeholder="Escribí aquí..."></textarea>
     <button onclick="saveThought()">Guardar</button>
     <ul id="list"></ul>
+
+    <!-- ✅ CFC_FUNC_4_5_20251101_NAVBACK — Retorno al Perfil -->
+    <button class="btn-return" onclick="window.location.href='./pages/profile.html'">
+      ⬅ Volver al Perfil
+    </button>
   </div>
 
   <script>
-    console.log("🧩 CFC_SYNC checkpoint:", "bitacora.html", "Punto 4.3 actualizado", new Date().toLocaleString());
+    console.log("🧩 CFC_SYNC checkpoint:", "bitacora.html", "Punto 4.5 NAVBACK actualizado", new Date().toLocaleString());
   </script>
 </body>
 </html>
