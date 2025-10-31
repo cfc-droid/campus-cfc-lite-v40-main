@@ -1,24 +1,24 @@
 /* =========================================================
-✅ CFC_FUNC_5_1_AUTOLOAD_20251102 — Inyección global de theme.js
-Archivo: /frontend/js/auto_injector.js
-========================================================= */
+   ✅ CFC_FUNC_5_1_AUTOLOAD_V20251102 — Inyección global de theme.js y theme_chapter.js
+   📄 Archivo: /frontend/js/auto_injector.js
+   🔒 CFC-SYNC V7.9D | QA-SYNC V41.5
+   ========================================================= */
 
-(function() {
-  const base = window.location.pathname.includes("/frontend/")
-    ? "/frontend/"
-    : window.location.pathname.startsWith("/modules/")
-      ? "../"
-      : "./";
+(function () {
+  const base = window.location.hostname.includes("pages.dev")
+    ? "/js/"
+    : "../js/";
 
-  const scriptId = "cfc-theme-autoload";
-  if (!document.getElementById(scriptId)) {
+  const injectScript = (file) => {
     const s = document.createElement("script");
-    s.id = scriptId;
-    s.src = base + "js/theme.js?v=20251102";
+    s.src = base + file;
     s.defer = true;
     document.head.appendChild(s);
-    console.log("🧩 CFC_SYNC:", "auto_injector.js → theme.js inyectado desde", base);
-  } else {
-    console.log("🧩 CFC_SYNC:", "theme.js ya presente, no se duplica.");
-  }
+  };
+
+  // Inyectar archivos reales (según build Cloudflare)
+  injectScript("theme.js?v=20251102");
+  injectScript("theme_chapter.js?v=20251102");
+
+  console.log("🧩 CFC_SYNC checkpoint:", "auto_injector.js activo desde", base);
 })();
