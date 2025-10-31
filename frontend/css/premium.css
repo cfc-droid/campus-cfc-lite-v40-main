@@ -328,7 +328,7 @@ h1, h2, h3 {
 }
 
 /* =========================================================
-   ✅ CFC_FUNC_5_1_VISUAL_20251101 — Estilos modo claro / oscuro
+   ✅ CFC_FUNC_5_1_VISUAL_FINAL_20251101 — Estilos modo claro/oscuro dinámico
    ========================================================= */
 
 :root {
@@ -345,14 +345,19 @@ h1, h2, h3 {
   --color-panel: #fff;
 }
 
+/* Transición suave global */
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
   transition: background-color 0.6s ease, color 0.6s ease;
 }
 
-/* Transición suave de elementos principales */
 main, section, footer, header {
   background-color: var(--color-panel);
   transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+/* Efecto sutil al presionar el botón de tema */
+#theme-toggle:active {
+  transform: scale(0.92);
 }
