@@ -1,13 +1,18 @@
-# Redirigir solo rutas de módulos
-/modules/*      /index.html   200
+# =====================================================
+# ✅ CFC-SYNC V7.9 — Redirecciones corregidas (sin loop)
+# 📄 Archivo: /frontend/_redirects
+# =====================================================
 
-# Mantener acceso normal a los assets JS, CSS, etc.
-# (usa coincidencia exacta de carpeta con el comodín correcto)
-#/frontend/*     /frontend/:splat   200
-/frontend/*      /frontend/:splat   200
-/js/*            /js/:splat         200
-/css/*           /css/:splat        200
-/img/*           /img/:splat        200
+# Redirigir módulos a su propia carpeta (evita loop con index)
+#/modules/*      /modules/:splat   200
+/modules/*      /modules/:splat   200
 
-# Redirección general para SPA
-/*               /index.html   200
+# Mantener acceso normal a los assets y JS internos
+/js/*           /js/:splat        200
+/css/*          /css/:splat       200
+/img/*          /img/:splat       200
+/frontend/*     /frontend/:splat  200
+
+# Redirección general SPA (sólo si nada anterior coincide)
+# ⚠️ Esta va SIEMPRE al final
+/*              /index.html       200
