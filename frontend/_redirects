@@ -1,18 +1,17 @@
 # =====================================================
-# ✅ CFC-SYNC V7.9 — Redirecciones corregidas (sin loop)
+# ✅ CFC-SYNC V8.0 — Redirecciones limpias y reales
 # 📄 Archivo: /frontend/_redirects
 # =====================================================
 
-# Redirigir módulos a su propia carpeta (evita loop con index)
-#/modules/*      /modules/:splat   200
-/modules/*      /modules/:splat   200
+# Acceso directo a módulos
+/modules/*       /modules/:splat     200
 
-# Mantener acceso normal a los assets y JS internos
-/js/*           /js/:splat        200
-/css/*          /css/:splat       200
-/img/*          /img/:splat       200
-/frontend/*     /frontend/:splat  200
+# Acceso a los JS, CSS e imágenes
+/js/*            /js/:splat          200
+/css/*           /css/:splat         200
+/img/*           /img/:splat         200
+/frontend/*      /frontend/:splat    200
 
-# Redirección general SPA (sólo si nada anterior coincide)
-# ⚠️ Esta va SIEMPRE al final
-/*              /index.html       200
+# SPA principal (solo si no coincide nada anterior)
+# ⚠️ Esta regla debe ir al FINAL
+/*               /index.html         200
