@@ -35,3 +35,19 @@
     console.log("✅ CFC_SYNC AutoInjector — progress_v2.js añadido dinámicamente");
   });
 })();
+
+/* =============================================================
+   ✅ CFC_FUNC_5_1E_GLOBAL_20251101 — Inyección global botón tema
+   Inserta auto_theme_loader.js en todas las páginas del Campus
+   ============================================================= */
+
+(function injectThemeButton() {
+  const script = document.createElement("script");
+  script.src = "/frontend/js/auto_theme_loader.js?v=20251101";
+  script.defer = true;
+  document.head.appendChild(script);
+  console.log(
+    "🧩 CFC_SYNC checkpoint:",
+    "auto_injector.js → auto_theme_loader.js cargado"
+  );
+})();
