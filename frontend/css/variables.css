@@ -1,13 +1,45 @@
-/* ===========================
-   VARIABLES GLOBALES CAMPUS CFC TRADING
-   =========================== */
+/* =========================================================
+   VARIABLES GLOBALES CAMPUS CFC TRADING — V41 REAL
+   Soporte total para modo claro/oscuro
+   ========================================================= */
 
 :root {
-  --gold: #d4af37;          /* dorado premium */
-  --dark: #0a0a0a;          /* fondo oscuro elegante */
-  --accent: #1e90ff;        /* azul de realce */
-  --text-light: #f2f2f2;    /* texto sobre fondo oscuro */
-  --glass-bg: rgba(255, 255, 255, 0.08); /* fondo translúcido */
+  --color-bg: #ffffff;        /* Fondo claro por defecto */
+  --color-text: #111111;      /* Texto oscuro */
+  --color-accent: #ffd700;    /* Dorado premium */
+  --gold: #d4af37;            /* dorado premium base */
+  --dark: #0a0a0a;            /* fondo oscuro elegante */
+  --accent: #1e90ff;          /* azul de realce */
+  --text-light: #f2f2f2;      /* texto sobre fondo oscuro */
+  --glass-bg: rgba(255, 255, 255, 0.08);
   --radius: 16px;
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================================
+   Tema oscuro — se activa con: <html data-theme="dark">
+   ========================================================= */
+[data-theme="dark"] {
+  --color-bg: #0b0b0b;
+  --color-text: #f2f2f2;
+  --color-accent: #ffd700;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* =========================================================
+   Aplicación global de variables
+   ========================================================= */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+a {
+  color: var(--color-accent);
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--gold);
 }
