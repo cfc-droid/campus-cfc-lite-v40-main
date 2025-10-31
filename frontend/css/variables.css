@@ -43,3 +43,32 @@ a {
 a:hover {
   color: var(--gold);
 }
+
+/* =========================================================
+   ✅ CFC_THEME_VARS_V8.3 — Variables dinámicas claro / oscuro
+   ========================================================= */
+
+:root {
+  --color-bg: #0b0b0b;
+  --color-text: #eee;
+  --color-accent: #ffd700;
+}
+
+[data-theme="light"] {
+  --color-bg: #f9f9f9;
+  --color-text: #111;
+  --color-accent: #c59d00;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0b0b0b;
+  --color-text: #eee;
+  --color-accent: #ffd700;
+}
+
+/* Aplicar automáticamente las variables */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
