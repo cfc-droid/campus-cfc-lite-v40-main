@@ -413,3 +413,40 @@ main, section, footer, header {
   background-color: var(--color-panel);
   transition: background-color .5s ease, color .5s ease;
 }
+
+/* =========================================================
+   ✅ CFC_FUNC_5BIS_2_20251102 — Estilos principales main.css migrados a premium.css
+   ========================================================= */
+.main-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 40px;
+  margin-bottom: 24px;
+}
+
+.btn-main {
+  background: #ffd700;
+  color: #000;
+  padding: 12px 28px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+  box-shadow: 0 0 8px rgba(255,215,0,0.3);
+}
+
+.btn-main:hover {
+  background: #000;
+  color: #ffd700;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255,215,0,0.6);
+}
+
+.btn-main:active {
+  transform: scale(0.96);
+}
