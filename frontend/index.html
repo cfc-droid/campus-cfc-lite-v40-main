@@ -16,18 +16,78 @@
   <!-- Estilos -->
   <link rel="stylesheet" href="css/variables.css?v=20251102" />
   <link rel="stylesheet" href="css/premium.min.css?v=20251104" />
+
+  <style>
+    /* ============================================================
+       ✅ CFC_FUNC_1_1_6_V41.6 — Intro Splash Integrado + Fade 5s
+       ============================================================ */
+    #intro-splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle, #000 0%, #0a0a0a 100%);
+      z-index: 9999;
+      transition: opacity 1s ease-in-out;
+    }
+    #intro-splash.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #intro-splash img {
+      width: 220px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,215,0,0.4);
+      animation: zoomIn 1.4s ease-in-out;
+    }
+    #splash-phrase {
+      color: #ffd700;
+      margin: 16px 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px rgba(255,215,0,0.3);
+      animation: fadeInUp 1.8s ease-in-out;
+    }
+    #enterSplash {
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(90deg,#ffd700,#f0c03d);
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(255,215,0,0.5);
+      transition: all 0.3s ease;
+      animation: fadeInUp 2.2s ease-in-out;
+    }
+    #enterSplash:hover {
+      background: #000;
+      color: #ffd700;
+      transform: scale(1.05);
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 
 <body>
+  <!-- ✨ Intro Premium Splash -->
+  <div id="intro-splash">
+    <img id="logoCFC" src="img/logo.png" alt="Logo CFC" />
+    <p id="splash-phrase">El control es la verdadera libertad 🧠</p>
+    <button id="enterSplash">Entrar al Campus</button>
+  </div>
+
   <!-- ✨ Fondo de partículas -->
   <div id="particles-bg"></div>
-
-  <!-- 🔰 Loader -->
-  <div id="loader">
-    <img id="logoCFC" src="img/logo.png" alt="Campus CFC Logo" />
-    <p id="quote"></p>
-    <button id="enterBtn">Entrar al Campus</button>
-  </div>
 
   <!-- 🧩 Navbar -->
   <nav class="navbar">
@@ -45,7 +105,6 @@
     <span class="pill">Versión LITE con progreso, exámenes y sonidos 🎧</span>
     <h1>Campus CFC LITE</h1>
 
-    <!-- 🌟 Motivador rotativo -->
     <p id="motivation-rotator">El control es la verdadera libertad 🧠</p>
 
     <p class="lead">
@@ -69,12 +128,12 @@
   <div id="footer-placeholder"></div>
 
   <!-- Scripts -->
-  <script src="js/loader.js?v=20251103" defer></script>
+  <script src="js/loader.js?v=20251105" defer></script>
   <script src="js/footer.js?v=20251103" defer></script>
   <script src="js/theme.js?v=20251103" defer></script>
 
   <script>
-    /* Partículas doradas */
+    /* ✨ Partículas doradas + motivador */
     document.addEventListener("DOMContentLoaded", () => {
       const container = document.getElementById("particles-bg");
       for (let i = 0; i < 20; i++) {
@@ -86,7 +145,6 @@
         container.appendChild(p);
       }
 
-      /* Motivador rotativo */
       const frases = [
         "El control es la verdadera libertad 🧠",
         "El mercado premia la paciencia 🕰️",
