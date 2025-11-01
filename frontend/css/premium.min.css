@@ -1,5 +1,5 @@
 /* ========================================== */
-/* premium.min.css — versión optimizada v1.6 FINAL */
+/* premium.min.css — versión optimizada v1.7 */
 /* ========================================== */
 
 body {
@@ -16,10 +16,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 40px;
+  gap: 36px;
   padding: 1rem 2rem;
   background: #111;
   border-bottom: 1px solid #222;
+  max-width: 95%;
+  margin: 0 auto;
 }
 
 .logo {
@@ -31,6 +33,8 @@ body {
 .navbar .menu {
   display: flex;
   gap: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .navbar a {
@@ -45,7 +49,7 @@ body {
   color: gold;
 }
 
-/* ☀️ Modo claro: letras negras */
+/* ☀️ Modo claro */
 [data-theme="light"] .navbar {
   background: #f8f8f8;
   border-bottom: 1px solid #ddd;
@@ -58,23 +62,6 @@ body {
 }
 [data-theme="light"] .logo {
   color: #000;
-}
-
-/* 🎛️ Hero / Main */
-.hero, main.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 2rem;
-  min-height: 80vh;
-  animation: fadeInUp 0.8s ease-in-out;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* 🧠 Botones */
@@ -101,7 +88,7 @@ body {
 #theme-toggle {
   position: fixed;
   top: 16px;
-  right: 16px;
+  right: 64px; /* antes 16px */
   z-index: 9999;
   border-radius: 50%;
   width: 44px;
