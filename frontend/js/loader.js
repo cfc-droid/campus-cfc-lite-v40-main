@@ -1,5 +1,5 @@
 /* ============================================================
-   ✅ CFC_FUNC_1_1_5_V41.5 — Intro Splash Integrado + Fade
+   ✅ CFC_FUNC_1_1_6_V41.6 — Intro Splash Integrado + Fade 5s
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   const frases = [
@@ -18,14 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const cerrarSplash = () => {
     if (!splash) return;
     splash.classList.add("fade-out");
-    setTimeout(() => splash.remove(), 1000);
+    setTimeout(() => splash.remove(), 1000); // Fade-out 1s
   };
 
-  // Redirección automática (4 s)
-  setTimeout(cerrarSplash, 4000);
+  // 🔹 Redirección visual automática (4s visibles + 1s fade)
+  setTimeout(cerrarSplash, 5000);
 
-  // Botón manual
+  // 🔹 Opción manual
   if (btn) btn.addEventListener("click", cerrarSplash);
 
-  console.log("🧩 CFC_SYNC:", "Intro Splash activo | Auto-fade 4 s", new Date().toLocaleString());
+  console.log("🧩 CFC_SYNC checkpoint:", "Intro Splash activo | Fade 5s", new Date().toLocaleString());
 });
