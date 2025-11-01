@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -51,12 +52,12 @@
 
   <!-- ✅ CFC_FUNC_10_2_20251101 — Script de visualización emocional -->
   <script>
-    const score = localStorage.getItem('emotionScore');
+    const scoreRaw = localStorage.getItem('emotionScore');
     const box = document.getElementById('emotionScore');
     const msg = document.getElementById('emotionMessage');
 
-    if (score) {
-      const val = parseInt(score);
+    if (scoreRaw && !isNaN(parseInt(scoreRaw))) {
+      const val = parseInt(scoreRaw, 10);
       let emoji = "🙂", mensaje = "Buen enfoque mental.";
       if (val <= 3) { emoji = "😔"; mensaje = "Momento de reconectar con tu calma."; }
       else if (val <= 6) { emoji = "😐"; mensaje = "Estás estable, pero podés mejorar tu enfoque."; }
@@ -69,9 +70,11 @@
     } else {
       box.textContent = "⚠️ Aún no registraste tu emoción de hoy.";
       msg.textContent = "Registrá tu autoevaluación al cargar el Campus.";
+      console.warn("⚠️ No se encontró valor emocional válido en localStorage.");
     }
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.10-profile_emotion-20251101-0338 -->
+  <!-- 🔒 CFC_LOCK: V41.10-profile_emotion-20251101-0352 -->
 </body>
 </html>
+```
