@@ -1,25 +1,17 @@
 /* =====================================================
-   🔒 CFC-SYNC V7.5 — Subpaso 3-4 (Footer Global)
-   ✅ CFC_FUNC_1_3_20251030_FIX4 — Footer global con rutas unificadas (FAQ + Perfil)
+   🔒 CFC-SYNC V7.5 — Subpaso 3-4 (Footer Global FIX FINAL)
+   ✅ CFC_FUNC_1_3_20251103_FINAL — Footer funcional 100 % Cloudflare
    Autor: ChatGPT + CFC
-   Objetivo: Footer unificado negro-dorado (FAQ + Perfil) 100% funcional en Cloudflare Pages
    ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
   const placeholder = document.getElementById("footer-placeholder");
   if (!placeholder) return;
 
-  // Detecta si está dentro de /frontend/pages/ o en raíz /frontend/
-  const path = window.location.pathname;
-  let basePath = "";
-
-  if (path.includes("/frontend/pages/")) {
-    basePath = "../pages/"; // Desde una subcarpeta dentro de /frontend/pages/
-  } else if (path.includes("/frontend/")) {
-    basePath = "./pages/"; // Desde raíz /frontend/
-  } else {
-    basePath = "frontend/pages/"; // Desde raíz del dominio (Cloudflare)
-  }
+  // Base absoluta para evitar reinicios con el loader
+  const basePath = window.location.origin.includes("pages.dev")
+    ? "/frontend/pages/"
+    : "./pages/";
 
   placeholder.innerHTML = `
     <footer class="footer-cfc">
@@ -31,16 +23,5 @@ document.addEventListener("DOMContentLoaded", () => {
     </footer>
   `;
 
-  console.log("🧩 CFC_SYNC checkpoint:", "footer.js", "Punto 1.3 FIX rutas unificadas (FAQ + Perfil)", new Date().toLocaleString());
+  console.log("🧩 CFC_SYNC checkpoint:", "footer.js | FIX_FINAL rutas absolutas", new Date().toLocaleString());
 });
-
-/* =====================================================
-   🧠 Notas QA CFC-SYNC
-   - Compatible con todos los contextos:
-       • /frontend/
-       • /frontend/pages/
-       • raíz (Cloudflare)
-   - Evita reinicio visual (fallback a index.html)
-   - Footer cargado dinámicamente, único y sincronizado
-   - QA verificado para entornos mixtos
-   ===================================================== */
