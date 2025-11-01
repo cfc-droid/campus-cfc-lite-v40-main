@@ -1,8 +1,7 @@
 /* ============================================================
-   CFC_FUNC_1_1_1_20251029 — Loader motivacional inicial (ajuste real)
+   ✅ CFC_FUNC_1_1_2_20251101 — Loader optimizado (compatible con intro)
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
-
   // Frases motivacionales rotativas
   const frases = [
     "El control es la verdadera libertad 🧠",
@@ -12,10 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   const quote = document.getElementById("quote");
-  const random = frases[Math.floor(Math.random() * frases.length)];
-  if (quote) quote.textContent = random;
+  if (quote) quote.textContent = frases[Math.floor(Math.random() * frases.length)];
 
-  // 🔹 Ajuste dinámico de logo (reducción visual segura)
+  // 🔹 Ajuste de logo
   const logo = document.getElementById("logoCFC");
   if (logo) {
     logo.style.width = "25%";
@@ -23,27 +21,23 @@ document.addEventListener("DOMContentLoaded", () => {
     logo.style.height = "auto";
   }
 
-  // 🔹 Mostrar loader 3s y desvanecer
+  // 🔹 Animación de salida
   const loader = document.getElementById("loader");
   if (loader) {
     setTimeout(() => {
       loader.classList.add("fade-out");
-      setTimeout(() => {
-        loader.style.display = "none";
-      }, 1000);
+      setTimeout(() => loader.style.display = "none", 800);
     }, 3000);
   }
 
-  // 🔹 Botón manual “Entrar al Campus”
+  // 🔹 Botón manual
   const btn = document.getElementById("enterBtn");
   if (btn) {
     btn.addEventListener("click", () => {
       loader.classList.add("fade-out");
-      setTimeout(() => {
-        loader.style.display = "none";
-      }, 800);
+      setTimeout(() => loader.style.display = "none", 800);
     });
   }
 
-  console.log("🧩 CFC_SYNC checkpoint:", "loader.js", "Punto 1.1 actualizado", new Date().toLocaleString());
+  console.log("🧩 CFC_SYNC checkpoint:", "loader.js | Compatible con intro.html", new Date().toLocaleString());
 });
