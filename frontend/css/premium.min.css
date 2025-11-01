@@ -1,5 +1,5 @@
 /* ========================================== */
-/* premium.min.css — versión optimizada v1.5  */
+/* premium.min.css — versión optimizada v1.6 FINAL */
 /* ========================================== */
 
 body {
@@ -11,10 +11,12 @@ body {
   overflow-x: hidden;
 }
 
+/* 🔰 NAVBAR */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 40px;
   padding: 1rem 2rem;
   background: #111;
   border-bottom: 1px solid #222;
@@ -26,131 +28,106 @@ body {
   font-size: 1.2rem;
 }
 
-.navbar ul {
+.navbar .menu {
   display: flex;
-  gap: 1rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  gap: 1.2rem;
 }
 
 .navbar a {
   color: #fff;
   text-decoration: none;
-  font-size: .95rem;
-  transition: .3s;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .navbar a:hover {
   color: gold;
 }
 
-.hero {
+/* ☀️ Modo claro: letras negras */
+[data-theme="light"] .navbar {
+  background: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+}
+[data-theme="light"] .navbar a {
+  color: #000;
+}
+[data-theme="light"] .navbar a:hover {
+  color: #c9a634;
+}
+[data-theme="light"] .logo {
+  color: #000;
+}
+
+/* 🎛️ Hero / Main */
+.hero, main.card {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh;
   text-align: center;
   padding: 2rem;
+  min-height: 80vh;
+  animation: fadeInUp 0.8s ease-in-out;
 }
 
-.hero h1 {
-  font-size: 2rem;
-  margin-bottom: .5rem;
-  color: gold;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.hero p {
-  font-size: 1rem;
-  max-width: 600px;
-  margin: auto;
-  color: #ccc;
-}
-
-.btn-principal,
-.btn-secundario {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: .7rem 1.5rem;
+/* 🧠 Botones */
+.btn-main {
+  background: linear-gradient(90deg, #ffd700, #f0c03d);
+  color: #000;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: 12px 28px;
   font-weight: 600;
+  margin: 8px 0;
   cursor: pointer;
-  text-decoration: none;
+  transition: 0.25s ease;
+  box-shadow: 0 0 10px rgba(255,215,0,0.3);
+}
+.btn-main:hover {
+  background: #000;
+  color: #ffd700;
+  transform: scale(1.05);
+  box-shadow: 0 0 14px rgba(255,215,0,0.6);
 }
 
-.btn-principal {
-  background: gold;
+/* 🌗 Botón modo claro/oscuro */
+#theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: #111;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 10px rgba(255,215,0,0.3);
+}
+#theme-toggle:hover {
+  background: #ffd700;
   color: #000;
 }
 
-.btn-secundario {
-  background: transparent;
-  color: #fff;
-  border: 1px solid #fff;
+/* ✨ Bloque motivacional rotativo */
+#motivation-rotator {
+  font-size: 1.1rem;
+  color: #ffd700;
+  font-weight: 600;
+  margin-top: 14px;
+  text-shadow: 0 0 8px rgba(255,215,0,0.4);
+  animation: fadeIn 1s ease-in-out;
 }
-
-.btn-principal:hover {
-  opacity: .9;
-}
-
-.modules {
-  padding: 2rem;
-  text-align: center;
-}
-
-.grid-modulos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.modulo {
-  background: #111;
-  border: 1px solid #222;
-  padding: 1rem;
-  border-radius: 10px;
-  color: #ccc;
-  transition: .3s;
-}
-
-.modulo:hover {
-  border-color: gold;
-  color: #fff;
-}
-
-.footer {
-  text-align: center;
-  padding: 1rem;
-  background: #111;
-  color: #777;
-  font-size: .9rem;
-  border-top: 1px solid #222;
-}
-
-/* ============================= */
-/* BANNER DE BIENVENIDA DINÁMICO */
-/* ============================= */
-#banner-saludo {
-  text-align: center;
-  font-size: 1.2rem;
-  color: gold;
-  margin: 1rem 0;
-  opacity: 0;
-  animation: fadeIn 1s ease-in forwards;
-}
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-/* ============================= */
-/* RESPONSIVE */
-/* ============================= */
-@media (max-width:768px) {
-  .hero h1 { font-size: 1.6rem; }
-  .navbar ul { flex-direction: column; align-items: center; }
 }
