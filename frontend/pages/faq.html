@@ -4,17 +4,92 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAQ — Campus CFC LITE</title>
-  <link rel="stylesheet" href="../css/premium.css" />
+  <link rel="stylesheet" href="../css/premium.css?v=20251101" />
+  <style>
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      color: #ddd;
+      background: rgba(20,20,20,0.9);
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(255,215,0,0.2);
+    }
+    .faq-item {
+      background: rgba(255,215,0,0.05);
+      border: 1px solid rgba(255,215,0,0.2);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      transition: 0.3s;
+    }
+    .faq-item h3 {
+      margin: 0;
+      cursor: pointer;
+      color: #FFD700;
+      font-size: 1.1rem;
+    }
+    .faq-answer {
+      display: none;
+      margin-top: 8px;
+      color: #ccc;
+      font-size: 0.95rem;
+    }
+    .faq-answer.visible {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <header>
+  <header style="text-align:center;margin-top:20px;">
     <h2>❓ Preguntas Frecuentes (FAQ)</h2>
   </header>
+
   <main>
-    <p>Esta es la página de FAQ de prueba.</p>
+    <p style="text-align:center;">Elegí una pregunta para ver su respuesta 👇</p>
+
+    <!-- ✅ CFC_FUNC_6_1_20251029 — FAQ base creada -->
+    <div class="faq-item">
+      <h3>¿Cómo guardo mi progreso?</h3>
+      <p class="faq-answer">Automáticamente se guarda en tu navegador local (LocalStorage), sin necesidad de iniciar sesión.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>¿Puedo perder mis datos?</h3>
+      <p class="faq-answer">Solo si borrás la caché o los datos del navegador. Recomendamos usar siempre el mismo dispositivo.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>¿Qué diferencia hay entre LITE y PREMIUM?</h3>
+      <p class="faq-answer">La versión PREMIUM incluye sincronización en la nube, nuevos módulos, seguimiento emocional y más herramientas CFC.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>¿Dónde puedo ver mi rendimiento?</h3>
+      <p class="faq-answer">Desde tu Perfil → sección “Estado Emocional Diario” y el Historial de Exámenes.</p>
+    </div>
+
+    <div style="text-align:center;margin-top:25px;">
+      <button class="btn-return" onclick="window.location.href='../modules/index.html'">
+        ⬅ Volver al Campus
+      </button>
+    </div>
   </main>
 
   <div id="footer-placeholder"></div>
   <script src="../js/footer.js" defer></script>
+  <script src="../js/faqBot.js" defer></script>
+
+  <!-- 🔒 CFC-SYNC -->
+  <!-- ✅ CFC_FUNC_6_1_20251029 — FAQ base creada -->
+  <!-- ✅ CFC_FUNC_6_2_20251029 — FAQ interactivo funcional -->
+  <script>
+    console.log("🧩 CFC_SYNC checkpoint:", "faq.html", "Punto 6.1 actualizado", new Date().toLocaleString());
+  </script>
 </body>
 </html>
