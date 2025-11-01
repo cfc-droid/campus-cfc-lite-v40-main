@@ -13,103 +13,72 @@
     })();
   </script>
 
-  <link rel="stylesheet" href="css/variables.css?v=20251030" />
-  <link rel="stylesheet" href="css/premium.min.css?v=20251030" />
-  <link rel="stylesheet" href="css/exam-extra.css?v=20251030" />
+  <!-- Estilos principales -->
+  <link rel="stylesheet" href="css/variables.css?v=20251102" />
+  <link rel="stylesheet" href="css/premium.min.css?v=20251102" />
+  <link rel="stylesheet" href="css/premium.css?v=20251102" />
 
-  <script src="js/preload.js?v=20251030" defer></script>
-
-  <style>
-    body {
-      background: #0b0b0b;
-      color: #eee;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Poppins, sans-serif;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      min-height: 100vh;
-    }
-    .card {
-      background: linear-gradient(180deg, #111, #0b0b0b);
-      border: 1px solid #222;
-      border-radius: 10px;
-      padding: 40px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      width: 90%;
-      max-width: 600px;
-    }
-    h1 { font-size: 2rem; color: gold; margin-bottom: 8px; }
-    .lead { opacity: 0.8; font-size: 1rem; margin: 12px 0 24px; }
-    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 8px;
-           padding: 12px 20px; border: none; font-weight: 600; text-decoration: none;
-           transition: transform 0.25s, box-shadow 0.25s; }
-    .btn-primary { background: linear-gradient(90deg, gold, orange); color: #111;
-                   box-shadow: 0 0 8px rgba(255,215,0,0.4); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 12px rgba(255,215,0,0.6); }
-    .btn-ghost { background: #111; color: #fff; border: 1px solid #555; }
-    .btn-ghost:hover { color: gold; border-color: gold; }
-    .hint { opacity: 0.7; font-size: 0.85rem; margin-top: 14px; }
-    .btn-switch-demo { background: linear-gradient(90deg, gold, orange); color: #111; font-weight: 700;
-                       padding: 12px 24px; border-radius: 10px; border: none; cursor: pointer;
-                       transition: transform 0.2s ease-in-out; }
-    .btn-switch-demo:hover { transform: scale(1.05); }
-  </style>
+  <script src="js/preload.js?v=20251102" defer></script>
 </head>
 
 <body>
+  <!-- =========================================================
+       🔰 LOADER MOTIVACIONAL (loader.js)
+       ========================================================= -->
   <div id="loader">
-    <img src="img/logo.png" alt="Campus CFC Logo">
+    <img id="logoCFC" src="img/logo.png" alt="Campus CFC Logo" />
     <p id="quote"></p>
     <button id="enterBtn">Entrar al Campus</button>
   </div>
 
+  <!-- =========================================================
+       🧩 PANTALLA PRINCIPAL — OPTIMIZACIÓN VISUAL (P7 / Subpaso 1-2)
+       ========================================================= -->
   <main class="card">
     <span class="pill">Versión LITE con progreso, exámenes y sonidos 🎧</span>
     <h1>Campus CFC LITE</h1>
-    <p class="lead">20 módulos (4 capítulos + examen por módulo), progreso, historial y refuerzos motivacionales.</p>
+    <p class="lead">
+      20 módulos (4 capítulos + examen por módulo), progreso, historial y refuerzos motivacionales.
+    </p>
 
-    <div class="actions">
-      <a class="btn btn-primary" href="modules/index.html?v=20251030" id="enterModules">Entrar a los módulos</a>
-      <a class="btn btn-ghost" href="pages/admin.html?v=20251030">🧠 Mi historial de exámenes</a>
-      <a class="btn btn-ghost" href="pages/repo.html?v=20251030">📁 Repositorio</a>
+    <!-- [INICIO BLOQUE CFC NUEVO] -->
+    <div class="main-buttons">
+      <button class="btn-main" onclick="location.href='modules/index.html'">🎓 Entrar al Campus</button>
+      <button class="btn-main" onclick="location.href='pages/admin.html'">📈 Mi historial de exámenes</button>
+      <button class="btn-main" onclick="location.href='pages/faq.html'">❓ FAQ</button>
+      <button class="btn-main" onclick="location.href='pages/profile.html'">👤 Perfil</button>
+      <button class="btn-main" onclick="toggleTheme()">🌗 Cambiar fondo</button>
     </div>
+    <!-- [FIN BLOQUE CFC NUEVO] -->
 
-    <div style="margin-top: 24px;">
-      <button class="btn-switch-demo" onclick="alert('Modo PREMIUM disponible en Campus V2.0')">
-        Cambiar modo DEMO / PREMIUM
-      </button>
-    </div>
-
-    <p class="hint">💡 Sugerencia: guardá este enlace directo a los módulos:<br>
+    <p class="hint">
+      💡 Sugerencia: guardá este enlace directo a los módulos: <br />
       <code>modules/index.html</code>
     </p>
   </main>
 
   <div id="footer-placeholder"></div>
 
-  <script src="js/loader.js?v=20251030" defer></script>
-  <script src="js/header.js?v=20251030" defer></script>
-  <script src="js/footer.js?v=20251030" defer></script>
+  <!-- =========================================================
+       SCRIPTS FUNCIONALES
+       ========================================================= -->
+  <script src="js/loader.js?v=20251102" defer></script>
+  <script src="js/header.js?v=20251102" defer></script>
+  <script src="js/footer.js?v=20251102" defer></script>
+  <script src="js/theme.js?v=20251102" defer></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const entrarBtn = document.querySelector("#enterModules");
-      if (entrarBtn) {
-        entrarBtn.addEventListener("click", e => {
-          e.preventDefault();
-          window.location.href = entrarBtn.getAttribute("href");
-        });
-      }
+      console.log("🧩 CFC_SYNC checkpoint: index.html | Optimización visual 5BIS_1", new Date().toLocaleString());
     });
   </script>
 
   <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/frontend/sw.js")
-      .then(() => console.log("✅ CFC_SYNC V10.0 — Service Worker activo"))
-      .catch(err => console.error("⚠️ Error SW:", err));
-  }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/frontend/sw.js")
+        .then(() => console.log("✅ CFC_SYNC V10.0 — Service Worker activo"))
+        .catch(err => console.error("⚠️ Error SW:", err));
+    }
   </script>
 
   <!-- ✅ QA-SYNC V41.3 -->
