@@ -1,7 +1,7 @@
 /* ==========================================================
-   ✅ CFC — PROGRESS V2 (SYNC FIX V8.6 + LOCKED V9.4 + OVERLAY + CHAPTER TRANSITION V9.8C)
+   ✅ CFC — PROGRESS V2 (SYNC FIX V8.6 + LOCKED V9.4 + OVERLAY + PERSIST V10.1)
    ========================================================== */
-console.log("🧩 CFC_SYNC checkpoint: progress_v2.js — QA-SYNC V9.8C activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint: progress_v2.js — QA-SYNC V10.1 activo", new Date().toLocaleString());
 
 /* =====================================================
    BLOQUE B1 — Gestión persistente
@@ -49,7 +49,7 @@ function markModuleComplete(moduleNumber) {
 }
 
 /* =====================================================
-   BLOQUE B3 — Actualizar barra global
+   BLOQUE B3 — Actualizar barra global + sincronizar badge
    ===================================================== */
 function updateProgressDisplay() {
   const el = document.getElementById("cfc-progress-text");
@@ -57,8 +57,13 @@ function updateProgressDisplay() {
   const total = 20;
   const done = progressData.completed.length;
   const percent = Math.floor((done / total) * 100);
+
   if (el) el.textContent = `${percent}% completado`;
   if (bar) bar.style.width = `${percent}%`;
+
+  // 🔁 NUEVO: sincronizar con badge.js y cookie global
+  localStorage.setItem("progressPercent", percent);
+  document.cookie = `progressPercent=${percent}; path=/; max-age=31536000`;
 }
 
 /* =====================================================
@@ -228,12 +233,10 @@ function showUnlockOverlay(nextModule) {
       </button>`;
     document.body.appendChild(overlay);
 
-    // 🔊 Sonido dorado
     const bell = new Audio("../../audio/bell-gold.wav");
     bell.volume = 0.7;
     setTimeout(() => bell.play().catch(() => {}), 400);
 
-    // ✅ Click funcional: ir al módulo siguiente
     const btn = overlay.querySelector("#goToNextModuleBtn");
     if (btn) {
       btn.addEventListener("click", () => {
@@ -248,176 +251,3 @@ function showUnlockOverlay(nextModule) {
     console.error("⚠️ CFC_SYNC → Error overlay:", err);
   }
 }
-
-/* =====================================================
-   BLOQUE B9 — Navegación automática entre capítulos
-   ===================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-  const path = window.location.pathname;
-  const match = path.match(/\/modules\/(\d+)\/cap(\d+)\.html$/);
-  if (!match) return;
-
-  const capNum = parseInt(match[2]);
-  let nextPath, btnText;
-  if (capNum < 4) {
-    nextPath = `cap${capNum + 1}.html`;
-    btnText = `➡ Continuar al Capítulo ${capNum + 1}`;
-  } else {
-    nextPath = `exam.html`;
-    btnText = `🏁 Ir al Examen Final`;
-  }
-
-  const createButton = () => {
-    const footer = document.querySelector("footer");
-    const container = footer || document.body;
-    if (document.getElementById("autoContinueBtn")) return;
-
-    const btn = document.createElement("button");
-    btn.id = "autoContinueBtn";
-    btn.className = "continue-btn";
-    btn.textContent = btnText;
-    Object.assign(btn.style, {
-      marginTop: "40px",
-      background: "linear-gradient(90deg,#FFD700,#FFEC8B)",
-      color: "#000",
-      fontWeight: "700",
-      border: "none",
-      borderRadius: "10px",
-      padding: "12px 24px",
-      cursor: "pointer",
-      boxShadow: "0 0 12px rgba(255,215,0,0.45)",
-      transition: "transform 0.25s ease"
-    });
-    btn.onmouseenter = () => (btn.style.transform = "scale(1.06)");
-    btn.onmouseleave = () => (btn.style.transform = "scale(1)");
-
-    btn.addEventListener("click", () => {
-      console.log(`🟡 CFC_SYNC → Transición dorada desde capítulo ${capNum}`);
-      launchGoldenTransition(nextPath);
-    });
-
-    container.appendChild(btn);
-    console.log("✅ CFC_SYNC → Botón de continuación insertado — QA-SYNC V9.8C");
-  };
-
-  const observer = new MutationObserver(() => {
-    if (document.body && (document.querySelector("footer") || document.readyState === "complete")) {
-      createButton();
-      observer.disconnect();
-    }
-  });
-  observer.observe(document, { childList: true, subtree: true });
-  setTimeout(createButton, 1500);
-});
-
-/* =====================================================
-   FUNCIÓN — Transición dorada global
-   ===================================================== */
-function launchGoldenTransition(targetPath) {
-  const overlay = document.createElement("div");
-  overlay.style = `
-    position:fixed;inset:0;background:#000;
-    display:flex;align-items:center;justify-content:center;
-    z-index:99999;opacity:0;transition:opacity .5s ease-in-out;
-  `;
-  overlay.innerHTML = `
-    <div id="gold-flash" style="
-      width:0;height:0;border-radius:50%;
-      background:radial-gradient(circle,#FFD700 0%,#000 70%);
-      filter:blur(40px);transition:all .6s ease-out;"></div>
-    <div style="position:absolute;font-family:'Poppins',sans-serif;
-      color:#FFD700;font-size:1.8rem;font-weight:700;text-align:center;">
-      Cargando siguiente capítulo...
-    </div>`;
-  document.body.appendChild(overlay);
-
-  const flash = overlay.querySelector("#gold-flash");
-  setTimeout(() => {
-    overlay.style.opacity = 1;
-    flash.style.width = "300px";
-    flash.style.height = "300px";
-  }, 50);
-
-  const bell = new Audio("../../audio/bell-gold.wav");
-  bell.volume = 0.6;
-  setTimeout(() => bell.play().catch(() => {}), 200);
-
-    // 🔊 Audio adicional: transición entre capítulos
-  const transitionSound = new Audio("../../audio/transition.wav");
-  transitionSound.volume = 0.7;
-  setTimeout(() => transitionSound.play().catch(() => {}), 400); 
-   
-  setTimeout(() => {
-    overlay.style.transition = "opacity .6s ease-in-out";
-    overlay.style.opacity = 0;
-    setTimeout(() => (window.location.href = targetPath), 600);
-  }, 1000);
-}
-
-/* =====================================================
-   BLOQUE B10 — Botón dorado “Continuar al siguiente capítulo o examen” (FINAL FIX V9.8D)
-   ===================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-  let path = window.location.pathname;
-  // Compatibilidad Cloudflare: si no incluye .html, asumimos cap1.html
-  if (!path.endsWith(".html") && path.includes("/cap")) path += ".html";
-
-  const match = path.match(/\/modules\/(\d+)\/cap(\d+)\.html$/);
-  if (!match) return;
-
-  const modulo = parseInt(match[1]);
-  const capNum = parseInt(match[2]);
-
-  let nextPath, btnText;
-  if (capNum < 4) {
-    nextPath = `cap${capNum + 1}.html`;
-    btnText = `➡ Continuar al Capítulo ${capNum + 1}`;
-  } else {
-    nextPath = `exam.html`;
-    btnText = `🏁 Ir al Examen del Módulo ${modulo}`;
-  }
-
-  const insertButton = () => {
-    if (document.getElementById("nextChapterBtn")) return;
-
-    const footer = document.querySelector("footer");
-    const container = footer || document.body;
-
-    const btn = document.createElement("button");
-    btn.id = "nextChapterBtn";
-    btn.textContent = btnText;
-    Object.assign(btn.style, {
-      display: "block",
-      margin: "40px auto",
-      background: "linear-gradient(90deg,#FFD700,#FFEC8B)",
-      color: "#000",
-      fontWeight: "700",
-      border: "none",
-      borderRadius: "10px",
-      padding: "12px 26px",
-      cursor: "pointer",
-      boxShadow: "0 0 14px rgba(255,215,0,0.55)",
-      transition: "transform 0.25s ease",
-      fontSize: "1.1rem",
-    });
-    btn.onmouseenter = () => (btn.style.transform = "scale(1.06)");
-    btn.onmouseleave = () => (btn.style.transform = "scale(1)");
-
-    btn.addEventListener("click", () => {
-      console.log(`🟡 CFC_SYNC → Continuando al siguiente capítulo: ${nextPath}`);
-      launchGoldenTransition(nextPath);
-    });
-
-    container.appendChild(btn);
-    console.log(`✅ CFC_SYNC → Botón de continuación insertado correctamente (${btnText})`);
-  };
-
-  // 🔁 Espera hasta que el footer esté realmente renderizado
-  const waitForFooter = () => {
-    const footer = document.querySelector("footer");
-    if (footer) insertButton();
-    else setTimeout(waitForFooter, 400);
-  };
-
-  waitForFooter();
-});
