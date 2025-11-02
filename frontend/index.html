@@ -36,7 +36,6 @@
       opacity: 0;
       pointer-events: none;
     }
-    /* 🖼️ Logo más grande + halo dorado reforzado */
     #intro-splash img {
       width: 265px;
       border-radius: 14px;
@@ -80,6 +79,64 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ==========================================================
+       ✅ CFC_FUNC_7_2BIS_20251102 — Estilos guía visual interactiva
+       ========================================================== */
+    .guide-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .guide-box {
+      background: var(--color-panel, #111);
+      color: var(--color-text, #f5f5f5);
+      padding: 25px 35px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+      max-width: 450px;
+      text-align: center;
+      line-height: 1.5;
+      border: 2px solid #ffd700;
+      animation: pulseGlow 2.5s infinite alternate ease-in-out;
+    }
+    .guide-box h2 {
+      color: var(--color-accent, #ffd700);
+      margin-bottom: 15px;
+    }
+    .guide-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px;
+    }
+    .guide-box li {
+      margin: 8px 0;
+      font-weight: 500;
+    }
+    .btn-guide {
+      background: linear-gradient(90deg, #d4af37, #ffd700);
+      color: #000;
+      font-weight: 700;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .btn-guide:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulseGlow {
+      from { box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+      to { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+    }
   </style>
 </head>
 
@@ -117,6 +174,7 @@
     </p>
 
     <div class="main-buttons">
+      <button class="btn-main" onclick="showGuide()">🧭 Cómo usar el Campus</button>
       <button class="btn-main" onclick="location.href='modules/index.html'">🎓 Entrar al Campus</button>
       <button class="btn-main" onclick="location.href='./pages/resultados.html'">📈 Mi historial de exámenes</button>
       <button class="btn-main" onclick="location.href='pages/faq.html'">❓ FAQ</button>
@@ -136,6 +194,9 @@
   <script src="js/loader.js?v=20251105" defer></script>
   <script src="js/footer.js?v=20251103" defer></script>
   <script src="js/theme.js?v=20251103" defer></script>
+
+  <!-- ✅ Nueva mini guía visual -->
+  <script src="js/guide.js?v=20251102" defer></script>
 
   <script>
     /* ✨ Partículas doradas + motivador */
@@ -173,6 +234,11 @@
       try { toggleTheme(); }
       catch(e){ console.warn("toggleTheme no disponible:", e); }
     }
+  </script>
+
+  <!-- 🧩 QA-SYNC V43.3 — Mini Guía Visual confirmada -->
+  <script>
+    console.log("🧩 CFC_SYNC checkpoint:", "index.html — CFC_FUNC_7_2BIS_20251102 aplicado", new Date().toLocaleString());
   </script>
 </body>
 </html>
