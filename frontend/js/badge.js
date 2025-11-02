@@ -1,6 +1,5 @@
-// ✅ CFC_FUNC_8_9_20251102_REAL — Badge Motivacional sincronizado en tiempo real (LITE V41)
+// ✅ CFC_FUNC_8_10_20251102_PERSIST — Sincronización global de progreso (fix rutas relativas)
 function renderBadge() {
-  // Crear o recuperar el badge
   let badge = document.getElementById('cfcBadge');
   if (!badge) {
     badge = document.createElement('div');
@@ -31,24 +30,36 @@ function renderBadge() {
     document.body.appendChild(badge);
   }
 
-  // Leer progreso actual
   const updateProgress = () => {
-    const p = localStorage.getItem('progressPercent') || 0;
+    // Lee el progreso desde el localStorage o cookie espejo
+    let p = localStorage.getItem('progressPercent');
+    if (!p) {
+      const cookie = document.cookie.split('; ').find(r => r.startsWith('progressPercent='));
+      if (cookie) p = cookie.split('=')[1];
+    }
+    if (!p) p = 0;
     badge.textContent = p + '%';
   };
 
   updateProgress();
 
-  // 🔁 Observador para detectar cambios en localStorage (entre páginas)
+  // 🔁 Listener para cambios en localStorage
   window.addEventListener('storage', (e) => {
-    if (e.key === 'progressPercent') updateProgress();
+    if (e.key === 'progressPercent') {
+      document.cookie = `progressPercent=${e.newValue}; path=/; max-age=31536000`;
+      updateProgress();
+    }
   });
 
-  // 🔁 Refresco automático cada 2s (por seguridad)
-  setInterval(updateProgress, 2000);
+  // 🔁 Refresco cada 2s y respaldo en cookie
+  setInterval(() => {
+    const p = localStorage.getItem('progressPercent') || 0;
+    document.cookie = `progressPercent=${p}; path=/; max-age=31536000`;
+    updateProgress();
+  }, 2000);
 }
 
 window.addEventListener('load', renderBadge);
 
 // 🧩 Log CFC-SYNC
-console.log("🧩 CFC_SYNC checkpoint:", "badge.js | progreso sincronizado (P8.9)", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint:", "badge.js | persistencia global activa (P8.10)", new Date().toLocaleString());
