@@ -511,3 +511,31 @@ main, section, footer, header {
   margin-top: 12px;
   opacity: 0.9;
 }
+
+/* ============================================================
+✅ CFC_FIX_V42.7 — Contraste botones (modo oscuro/claro)
+============================================================ */
+
+/* 🌙 Modo oscuro: texto claro sobre fondo dorado */
+[data-theme="dark"] .btn-main {
+  background: linear-gradient(90deg, #ffcc00, #f8d548);
+  color: #000;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.6);
+  border: none;
+}
+[data-theme="dark"] .btn-main:hover {
+  background: #ffd700;
+  color: #111;
+  transform: scale(1.05);
+}
+
+/* ☀️ Modo claro: texto oscuro sobre fondo más suave */
+[data-theme="light"] .btn-main {
+  background: linear-gradient(90deg, #fff1a6, #ffe15a);
+  color: #111;
+  box-shadow: 0 0 8px rgba(200, 160, 0, 0.4);
+}
+[data-theme="light"] .btn-main:hover {
+  background: #000;
+  color: #ffd700;
+}
