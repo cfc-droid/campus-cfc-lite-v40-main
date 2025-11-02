@@ -525,7 +525,7 @@ main, section, footer, header {
 }
 [data-theme="dark"] .btn-main:hover {
   background: #ffd700;
-  color: #111;
+  color: #000;
   transform: scale(1.05);
 }
 
