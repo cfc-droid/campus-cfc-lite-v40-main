@@ -539,3 +539,10 @@ main, section, footer, header {
   background: #000;
   color: #ffd700;
 }
+
+/* ============================================================
+✅ CFC_FIX_V42.8 — Texto negro en botones (modo oscuro)
+============================================================ */
+[data-theme="dark"] .btn-main {
+  color: #000 !important;
+}
