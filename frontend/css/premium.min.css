@@ -281,3 +281,34 @@ body > *:first-child {
   margin-top: 0 !important;
   border-top: none !important;
 }
+
+/* =========================================================
+✅ CFC_FIX_V43.2_20251102 — Línea superior residual entre título y progreso
+========================================================= */
+
+/* Limpia pseudo-elementos o bordes superiores de encabezado o contenedor de módulos */
+.modules-header,
+.modules-page,
+.modules-container,
+.modules-header::before,
+.modules-header::after,
+.modules-page::before,
+.modules-page::after {
+  border: none !important;
+  border-top: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  content: none !important;
+}
+
+/* Elimina posibles artefactos de altura mínima o líneas decorativas */
+.modules-header {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+.modules-header h1,
+.modules-header h2 {
+  border-bottom: none !important;
+  margin-bottom: 8px !important;
+}
