@@ -57,8 +57,13 @@ function updateProgressDisplay() {
   const total = 20;
   const done = progressData.completed.length;
   const percent = Math.floor((done / total) * 100);
+
   if (el) el.textContent = `${percent}% completado`;
   if (bar) bar.style.width = `${percent}%`;
+
+  // 🔁 NUEVO — Sincronizar con localStorage y cookie global
+  localStorage.setItem("progressPercent", percent);
+  document.cookie = `progressPercent=${percent}; path=/; max-age=31536000`;
 }
 
 /* =====================================================
