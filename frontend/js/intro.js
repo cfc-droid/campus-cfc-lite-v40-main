@@ -1,5 +1,5 @@
 /* =========================================================
-   ✅ CFC_FUNC_7_3D_V43_REDIRECT_FIX — Overlay + Flash + Redirección
+   ✅ CFC_FUNC_7_3E_V43_PREMIUM_REDIRECT — Overlay + Flash + Loader dorado
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("videoOverlay");
@@ -30,22 +30,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const goldSound = new Audio("../audio/bell-gold.wav");
   goldSound.volume = 0.7;
 
-  // 🎬 Cerrar con efecto + redirección
+  // 🎬 Cerrar con efecto + loader + redirección
   closeBtn.addEventListener("click", () => {
     flash.classList.add("active");
     goldSound.play().catch(() => console.warn("🔇 Audio bloqueado por política del navegador."));
+    closeBtn.disabled = true;
+    closeBtn.innerHTML = "Ingresando... ⚡";
+
+    // 🟡 Mostrar pantalla de transición dorada
+    const loader = document.createElement("div");
+    loader.id = "goldenLoader";
+    loader.innerHTML = `<div class="loaderText">Cargando el Campus...</div>`;
+    document.body.appendChild(loader);
 
     setTimeout(() => {
       overlay.classList.add("fade-out");
     }, 150);
 
-    // 💫 Redirección automática al Campus (luego del flash)
     setTimeout(() => {
-      document.body.style.overflow = "auto";
       flash.classList.remove("active");
-      window.location.href = "../index.html"; // 🔁 ruta principal del Campus
-    }, 1000);
+      loader.classList.add("visible");
+    }, 400);
+
+    // 💫 Redirección final al Campus
+    setTimeout(() => {
+      window.location.href = "../index.html";
+    }, 1500);
   });
 });
 
-console.log("🧩 CFC_SYNC checkpoint:", "intro.js — CFC_FUNC_7_3D_V43_REDIRECT_FIX activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint:", "intro.js — CFC_FUNC_7_3E_V43_PREMIUM_REDIRECT activo", new Date().toLocaleString());
