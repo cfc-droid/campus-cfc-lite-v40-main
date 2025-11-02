@@ -1,7 +1,11 @@
 /* ==========================================================
-   ✅ CFC_FUNC_7_2BIS_20251102 — Mini Guía Visual Interactiva
+   ✅ CFC_FUNC_7_3_AUTO_20251103 — Mini Guía Visual (auto primer ingreso)
    ========================================================== */
-function showGuide() {
+
+function showGuide(auto = false) {
+  // Evitar múltiples instancias
+  if (document.querySelector(".guide-overlay")) return;
+
   const guide = document.createElement("div");
   guide.className = "guide-overlay";
   guide.innerHTML = `
@@ -15,8 +19,27 @@ function showGuide() {
       <button class="btn-guide" onclick="this.closest('.guide-overlay').remove()">Entendido ✅</button>
     </div>
   `;
+
   document.body.appendChild(guide);
+
+  // 🔒 Registrar primera vez
+  if (auto) localStorage.setItem("guide_seen", "true");
 }
 
-// 🔒 CFC-SYNC — QA-SYNC V7.8
-console.log("🧩 CFC_SYNC checkpoint: Mini Guía QA OK 7_2BIS", new Date().toLocaleString());
+/* ==========================================================
+   ✅ AUTO-MOSTRAR EN PRIMER INGRESO (una sola vez)
+   ========================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    const seen = localStorage.getItem("guide_seen");
+    if (!seen) {
+      // Espera 1.2s para no superponerse al splash
+      setTimeout(() => showGuide(true), 1200);
+    }
+  } catch (e) {
+    console.warn("⚠️ guide.js: no se pudo acceder a localStorage:", e);
+  }
+});
+
+// 🔒 CFC-SYNC — QA-SYNC V7.9
+console.log("🧩 CFC_SYNC checkpoint: Mini Guía AUTO OK 7_3_AUTO", new Date().toLocaleString());
