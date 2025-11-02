@@ -23,6 +23,7 @@
   // 🟡 CFC-PLUS extras
   injectScript("daily-review.js?v=20251102"); // Overlay diario motivacional
   injectScript("badge.js?v=20251102");        // Badge motivacional persistente
+  injectScript("backup.js?v=20251102"); 
 
   console.log(
     "🧩 CFC_SYNC checkpoint: auto_injector.js activo con CFC-PLUS (badge + overlay)",
