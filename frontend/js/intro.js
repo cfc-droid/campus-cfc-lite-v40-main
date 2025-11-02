@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🧠 Mostrar solo primer acceso (o modo test)
-  if (!localStorage.getItem("firstVisit") || window.location.search.includes("testIntro")) {
+  if (true) { // 🔁 QA MODE: siempre mostrar el video guía
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
     try {
