@@ -1,15 +1,30 @@
-// ✅ CFC_FUNC_7_2_20251102 — Control de visualización inicial aplicado
+/* =========================================================
+   ✅ CFC_FUNC_7_3_V43_OVERLAY — Control visual premium
+   ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("videoOverlay");
   const video = document.getElementById("welcomeVideo");
-  if (!video) return;
+  const closeBtn = document.getElementById("closeOverlay");
 
+  if (!overlay || !video || !closeBtn) return;
+
+  // Mostrar solo en primer acceso
   if (!localStorage.getItem("firstVisit")) {
-    video.style.display = "block";
-    video.play().catch(() => console.log("🔇 Autoplay bloqueado por el navegador."));
+    overlay.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    video.play().catch(() => console.warn("🔇 Autoplay bloqueado por navegador"));
     localStorage.setItem("firstVisit", "true");
-  } else {
-    video.style.display = "none";
   }
+
+  // Botón para cerrar overlay
+  closeBtn.addEventListener("click", () => {
+    overlay.classList.add("fade-out");
+    setTimeout(() => {
+      overlay.remove();
+      document.body.style.overflow = "auto";
+    }, 600);
+  });
 });
 
-console.log("🧩 CFC_SYNC checkpoint:", "intro.js", "Punto 7.2 actualizado", new Date().toLocaleString());
+// 🔒 QA-SYNC — Verificación de control inicial
+console.log("🧩 CFC_SYNC checkpoint:", "intro.js — Overlay premium activo (V43.3)", new Date().toLocaleString());
