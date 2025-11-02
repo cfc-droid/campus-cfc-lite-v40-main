@@ -250,67 +250,6 @@ function showUnlockOverlay(nextModule) {
 }
 
 /* =====================================================
-   BLOQUE B9 — Navegación automática entre capítulos
-   ===================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-  const path = window.location.pathname;
-  const match = path.match(/\/modules\/(\d+)\/cap(\d+)\.html$/);
-  if (!match) return;
-
-  const capNum = parseInt(match[2]);
-  let nextPath, btnText;
-  if (capNum < 4) {
-    nextPath = `cap${capNum + 1}.html`;
-    btnText = `➡ Continuar al Capítulo ${capNum + 1}`;
-  } else {
-    nextPath = `exam.html`;
-    btnText = `🏁 Ir al Examen Final`;
-  }
-
-  const createButton = () => {
-    const footer = document.querySelector("footer");
-    const container = footer || document.body;
-    if (document.getElementById("autoContinueBtn")) return;
-
-    const btn = document.createElement("button");
-    btn.id = "autoContinueBtn";
-    btn.className = "continue-btn";
-    btn.textContent = btnText;
-    Object.assign(btn.style, {
-      marginTop: "40px",
-      background: "linear-gradient(90deg,#FFD700,#FFEC8B)",
-      color: "#000",
-      fontWeight: "700",
-      border: "none",
-      borderRadius: "10px",
-      padding: "12px 24px",
-      cursor: "pointer",
-      boxShadow: "0 0 12px rgba(255,215,0,0.45)",
-      transition: "transform 0.25s ease"
-    });
-    btn.onmouseenter = () => (btn.style.transform = "scale(1.06)");
-    btn.onmouseleave = () => (btn.style.transform = "scale(1)");
-
-    btn.addEventListener("click", () => {
-      console.log(`🟡 CFC_SYNC → Transición dorada desde capítulo ${capNum}`);
-      launchGoldenTransition(nextPath);
-    });
-
-    container.appendChild(btn);
-    console.log("✅ CFC_SYNC → Botón de continuación insertado — QA-SYNC V9.8C");
-  };
-
-  const observer = new MutationObserver(() => {
-    if (document.body && (document.querySelector("footer") || document.readyState === "complete")) {
-      createButton();
-      observer.disconnect();
-    }
-  });
-  observer.observe(document, { childList: true, subtree: true });
-  setTimeout(createButton, 1500);
-});
-
-/* =====================================================
    FUNCIÓN — Transición dorada global
    ===================================================== */
 function launchGoldenTransition(targetPath) {
