@@ -4,7 +4,7 @@
 
 function playGoldBell() {
   try {
-    const audio = new Audio("../audio/bell-gold.wav");
+    const audio = new Audio("../audio/guide-gold.wav");
     audio.volume = 0.35; // volumen moderado
     audio.play().catch(err => console.warn("⚠️ No se pudo reproducir el sonido:", err));
   } catch (e) {
