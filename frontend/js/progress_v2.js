@@ -251,3 +251,57 @@ function showUnlockOverlay(nextModule) {
     console.error("⚠️ CFC_SYNC → Error overlay:", err);
   }
 }
+
+<!-- ✅ CFC_FUNC_V43.2 — Botón Continuar al siguiente capítulo -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Detectar número de módulo y capítulo actual
+  const match = window.location.pathname.match(/\/modules\/(\d+)\/cap(\d+)\.html/);
+  if (!match) return;
+  const moduleNum = parseInt(match[1]);
+  const chapterNum = parseInt(match[2]);
+  const nextChapter = chapterNum + 1;
+
+  // Crear el botón
+  const btn = document.createElement("button");
+  btn.textContent = `▶ Continuar al Capítulo ${nextChapter}`;
+  btn.style.cssText = `
+    display:block;
+    margin:40px auto 20px auto;
+    padding:12px 25px;
+    background:linear-gradient(90deg,#FFD700,#FFEC8B);
+    border:none;
+    border-radius:10px;
+    font-weight:700;
+    color:#000;
+    cursor:pointer;
+    font-size:1.1rem;
+    box-shadow:0 0 12px rgba(255,215,0,0.45);
+    transition:transform 0.2s ease-in-out;
+  `;
+  btn.onmouseenter = () => (btn.style.transform = "scale(1.05)");
+  btn.onmouseleave = () => (btn.style.transform = "scale(1)");
+
+  // Insertar antes del botón volver
+  const backBtn = document.querySelector("script[src*='backButton.js']");
+  if (backBtn) {
+    backBtn.insertAdjacentElement("beforebegin", btn);
+  } else {
+    document.body.appendChild(btn);
+  }
+
+  // Acción del botón
+  btn.addEventListener("click", () => {
+    const nextCapPath = `./cap${nextChapter}.html`;
+    fetch(nextCapPath, { method: "HEAD" })
+      .then((res) => {
+        if (res.ok) {
+          window.location.href = nextCapPath;
+        } else {
+          window.location.href = `../index.html`; // si no hay siguiente capítulo, volver al módulo
+        }
+      })
+      .catch(() => window.location.href = `../index.html`);
+  });
+});
+</script>
