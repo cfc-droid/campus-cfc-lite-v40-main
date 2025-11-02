@@ -10,23 +10,28 @@
 
   <!-- ✅ motivación universal -->
   <script src="../../js/motivation.js" defer></script>
+  <!-- ✅ modo oscuro / claro -->
+  <script src="../../js/theme.js" defer></script>
 </head>
 
 <body data-module="3">
+  <!-- 🌗 Botón cambio de tema -->
+  <button id="theme-toggle" title="Cambiar modo">🌙</button>
+
   <main class="contenido">
     <h1>Módulo 3 — Fundamentos de Psicología Profunda</h1>
     <p>Seleccioná una sección para continuar con tu formación:</p>
 
     <nav>
-      <a href="./cap1.html">📘 Capítulo 1</a><br>
-      <a href="./cap2.html">📗 Capítulo 2</a><br>
-      <a href="./cap3.html">📙 Capítulo 3</a><br>
-      <a href="./cap4.html">📕 Capítulo 4</a><br>
-      <a href="./exam.html">🧠 Examen final</a>
+      <a href="./cap1.html" class="btn-main">📘 Capítulo 1</a>
+      <a href="./cap2.html" class="btn-main">📗 Capítulo 2</a>
+      <a href="./cap3.html" class="btn-main">📙 Capítulo 3</a>
+      <a href="./cap4.html" class="btn-main">📕 Capítulo 4</a>
+      <a href="./exam.html" class="btn-main">🧠 Examen final</a>
     </nav>
 
     <br>
-    <button onclick="window.location.href='../index.html'">⬅ Volver al listado de módulos</button>
+    <button class="btn-main" onclick="window.location.href='../index.html'">⬅ Volver al listado de módulos</button>
   </main>
 
   <!-- 🧩 [CFC-SYNC INSERT BEGIN] -->
