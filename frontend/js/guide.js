@@ -1,6 +1,16 @@
 /* ==========================================================
-   ✅ CFC_FUNC_7_3_AUTO_20251103 — Mini Guía Visual (auto primer ingreso)
+   ✅ CFC_FUNC_7_3BIS_20251103_AUDIO — Mini Guía Visual + Sonido Dorado
    ========================================================== */
+
+function playGoldBell() {
+  try {
+    const audio = new Audio("../audio/bell-gold.wav");
+    audio.volume = 0.35; // volumen moderado
+    audio.play().catch(err => console.warn("⚠️ No se pudo reproducir el sonido:", err));
+  } catch (e) {
+    console.warn("⚠️ Error al reproducir audio dorado:", e);
+  }
+}
 
 function showGuide(auto = false) {
   // Evitar múltiples instancias
@@ -21,8 +31,9 @@ function showGuide(auto = false) {
   `;
 
   document.body.appendChild(guide);
+  playGoldBell(); // 🔔 sonido dorado cada vez que se abre
 
-  // 🔒 Registrar primera vez
+  // 🔒 Registrar primera vez si es automático
   if (auto) localStorage.setItem("guide_seen", "true");
 }
 
@@ -41,5 +52,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// 🔒 CFC-SYNC — QA-SYNC V7.9
-console.log("🧩 CFC_SYNC checkpoint: Mini Guía AUTO OK 7_3_AUTO", new Date().toLocaleString());
+// 🔒 CFC-SYNC — QA-SYNC V8.0
+console.log("🧩 CFC_SYNC checkpoint: Mini Guía + Sonido Dorado (7_3BIS_20251103_AUDIO)", new Date().toLocaleString());
