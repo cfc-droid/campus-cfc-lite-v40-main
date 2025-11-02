@@ -1,7 +1,7 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1_20251102 — Sistema de Backup Local (Export/Restore)
+✅ CFC_FUNC_10_1_20251102_FINAL — Sistema de Backup Local (Export/Restore)
 📄 Archivo: /frontend/js/backup.js
-🔒 CFC-SYNC V7.9E | QA-SYNC V41.6
+🔒 CFC-SYNC V7.9E | QA-SYNC V41.7
 ========================================================== */
 
 function backupData() {
@@ -24,14 +24,13 @@ function restoreData(file) {
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target.result);
-        for (let k in data) {
-          localStorage.setItem(k, data[k]);
-        }
+        for (let k in data) localStorage.setItem(k, data[k]);
         console.log("🔁 Backup restaurado con éxito");
         alert("✅ Backup restaurado correctamente. El Campus se recargará.");
         location.reload();
       } catch (parseErr) {
         console.error("⚠️ Error al procesar el archivo JSON:", parseErr);
+        alert("❌ Error: el archivo de respaldo no es válido.");
       }
     };
     reader.readAsText(file);
@@ -40,4 +39,5 @@ function restoreData(file) {
   }
 }
 
-console.log("🧩 CFC_SYNC checkpoint: backup.js — Punto 10.1 actualizado", new Date().toLocaleString());
+// 🧩 Log de control CFC-SYNC
+console.log("🧩 CFC_SYNC checkpoint: backup.js — Punto 10.1 FINALIZADO", new Date().toLocaleString());
