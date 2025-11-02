@@ -5,7 +5,7 @@
   <title>Video Guía — Campus CFC Trading</title>
   <link rel="stylesheet" href="./css/premium.min.css?v=20251103">
 
-  <!-- ✅ CFC_FUNC_7_3_V43_OVERLAY — Intro premium -->
+  <!-- ✅ CFC_FUNC_7_3B_V43_GOLDENFLASH — Overlay cinematográfico + destello -->
   <style>
     .video-overlay {
       position: fixed;
@@ -51,6 +51,27 @@
       color: #ffd700;
       transform: scale(1.05);
     }
+
+    /* ✨ Efecto Golden Flash */
+    #goldenFlash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,215,0,0.9) 0%, rgba(255,215,0,0.1) 60%, transparent 100%);
+      z-index: 999999;
+      opacity: 0;
+      pointer-events: none;
+      animation: none;
+    }
+    #goldenFlash.active {
+      animation: goldenFlashAnim 0.6s ease-in-out forwards;
+    }
+
+    @keyframes goldenFlashAnim {
+      0% { opacity: 0; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0; transform: scale(2.5); }
+    }
+
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
     @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -58,7 +79,7 @@
 </head>
 
 <body>
-  <!-- ✅ Overlay de video premium -->
+  <!-- 🎬 Overlay de video premium -->
   <div id="videoOverlay" class="video-overlay" style="display:none;">
     <div class="video-box">
       <video id="welcomeVideo" src="/frontend/media/guia.mp4" autoplay controls playsinline preload="auto"></video>
@@ -66,11 +87,14 @@
     </div>
   </div>
 
+  <!-- ⚡ Efecto de transición -->
+  <div id="goldenFlash"></div>
+
   <script src="./js/intro.js?v=20251103"></script>
 
   <!-- 🔒 CFC-SYNC -->
   <script>
-    console.log("🧩 CFC_SYNC checkpoint:", "intro.html — CFC_FUNC_7_3_V43_OVERLAY aplicado", new Date().toLocaleString());
+    console.log("🧩 CFC_SYNC checkpoint:", "intro.html — CFC_FUNC_7_3B_V43_GOLDENFLASH aplicado", new Date().toLocaleString());
   </script>
 </body>
 </html>
