@@ -178,14 +178,16 @@ main.card {
 
 /* 🌙 Modo oscuro */
 [data-theme="dark"] .reading-bg {
-  background: linear-gradient(180deg, rgba(0,0,0,.85), rgba(10,10,10,.8)),
+  background: linear-gradient(180deg, rgba(0,0,0,.80), rgba(10,10,10,.75)),
               url("../img/bg-reading-dark.jpg") center/cover no-repeat;
+  filter: brightness(1.05);
 }
 
 /* ☀️ Modo claro */
 [data-theme="light"] .reading-bg {
-  background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(240,240,240,.75)),
+  background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(235,235,235,.65)),
               url("../img/bg-reading-light.jpg") center/cover no-repeat;
+  filter: brightness(0.98);
 }
 
 /* ⚙️ Encabezado modular */
