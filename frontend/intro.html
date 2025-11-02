@@ -113,3 +113,37 @@
   </script>
 </body>
 </html>
+
+/* =========================================================
+   ✅ CFC_FUNC_7_3E_V43_PREMIUM_REDIRECT — Loader dorado
+   ========================================================= */
+#goldenLoader {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.9) 100%);
+  color: #ffd700;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  z-index: 999999;
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+
+#goldenLoader.visible {
+  display: flex;
+  opacity: 1;
+}
+
+.loaderText {
+  animation: pulseText 1.2s infinite;
+}
+
+@keyframes pulseText {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.6; transform: scale(0.95); }
+}
