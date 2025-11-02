@@ -1,5 +1,5 @@
 /* =========================================================
-   ✅ CFC_FUNC_7_3C_V43_FIX — Overlay + Flash + Audio
+   ✅ CFC_FUNC_7_3D_V43_REDIRECT_FIX — Overlay + Flash + Redirección
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("videoOverlay");
@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 🧠 Mostrar solo primer acceso
-  if (!localStorage.getItem("firstVisit")) {
+  // 🧠 Mostrar solo primer acceso (o modo test)
+  if (!localStorage.getItem("firstVisit") || window.location.search.includes("testIntro")) {
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
     try {
@@ -26,23 +26,26 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("👀 Primer acceso ya registrado, no mostrar overlay.");
   }
 
-  // 🎵 Efecto sonoro dorado (opcional)
+  // 🎵 Efecto sonoro dorado
   const goldSound = new Audio("../audio/bell-gold.wav");
   goldSound.volume = 0.7;
 
-  // 🎬 Cerrar con transición dorada
+  // 🎬 Cerrar con efecto + redirección
   closeBtn.addEventListener("click", () => {
     flash.classList.add("active");
     goldSound.play().catch(() => console.warn("🔇 Audio bloqueado por política del navegador."));
+
     setTimeout(() => {
       overlay.classList.add("fade-out");
     }, 150);
+
+    // 💫 Redirección automática al Campus (luego del flash)
     setTimeout(() => {
-      overlay.remove();
       document.body.style.overflow = "auto";
       flash.classList.remove("active");
-    }, 800);
+      window.location.href = "../index.html"; // 🔁 ruta principal del Campus
+    }, 1000);
   });
 });
 
-console.log("🧩 CFC_SYNC checkpoint:", "intro.js — CFC_FUNC_7_3C_V43_FIX activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint:", "intro.js — CFC_FUNC_7_3D_V43_REDIRECT_FIX activo", new Date().toLocaleString());
