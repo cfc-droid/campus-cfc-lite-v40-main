@@ -252,3 +252,32 @@ main.card {
 /* 🔒 QA-SYNC */
  /* ✅ CFC_FUNC_6_5_V42 — QA Visual completado (Lectura Premium Dual + Modular) */
  /* 🧩 CFC_SYNC checkpoint: premium.min.css | Fondo dual + modular activo (V42.2 FINAL) */
+
+/* =========================================================
+✅ CFC_FIX_V43.1_20251102 — Línea superior fantasma en módulos
+========================================================= */
+
+/* Limpia cualquier borde, sombra o pseudo-elemento residual arriba del contenido */
+main, section, .modules-container, .modules-page {
+  border-top: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Algunos navegadores agregan un pseudo-elemento transparente */
+main::before, section::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Elimina márgenes o bordes del primer bloque visible */
+body > *:first-child {
+  border-top: none !important;
+  margin-top: 0 !important;
+}
+
+/* Opcional: asegura que la barra de progreso quede pegada al header sin separación */
+.progress-container {
+  margin-top: 0 !important;
+  border-top: none !important;
+}
