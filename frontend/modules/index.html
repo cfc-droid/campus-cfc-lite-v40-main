@@ -6,31 +6,36 @@
   <title>Módulos del Campus CFC LITE</title>
 
   <!-- CSS principal -->
-  <link rel="stylesheet" href="../css/premium.css?v=20251101" />
+  <link rel="stylesheet" href="../css/premium.css?v=20251103" />
   <link rel="stylesheet" href="../css/extra-extra.css?v=20251101" />
   <link rel="stylesheet" href="../css/variables.css?v=20251101" />
 
+  <!-- ✅ CFC_FIX_V43 — Fondos dinámicos por tema -->
   <style>
     body {
       font-family: "Poppins", sans-serif;
-      background-color: #f5f5f5;
+      background-color: var(--color-bg);
+      color: var(--color-text);
       margin: 0;
       padding: 0;
+      transition: background-color 0.5s ease, color 0.5s ease;
     }
 
     main {
       max-width: 1100px;
       margin: 40px auto;
-      background: #fff;
+      background: var(--color-panel);
       border-radius: 10px;
-      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
       padding: 30px;
+      transition: background-color 0.5s ease, color 0.5s ease;
     }
 
     h1 {
       text-align: center;
-      color: #333;
+      color: var(--color-accent);
       margin-bottom: 30px;
+      transition: color 0.5s ease;
     }
 
     ul {
@@ -43,41 +48,15 @@
     }
 
     li {
-      background: #fafafa;
+      background: var(--color-panel);
       border-radius: 8px;
       padding: 14px;
       text-align: center;
       font-weight: 600;
-      box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 0px 8px rgba(0, 0, 0, 0.25);
+      transition: transform 0.25s, box-shadow 0.25s, background-color 0.5s ease;
       opacity: 0;
       animation: fadeIn 0.8s ease forwards;
-    }
-
-    li:nth-child(1) { animation-delay: 0.05s; }
-    li:nth-child(2) { animation-delay: 0.1s; }
-    li:nth-child(3) { animation-delay: 0.15s; }
-    li:nth-child(4) { animation-delay: 0.2s; }
-    li:nth-child(5) { animation-delay: 0.25s; }
-    li:nth-child(6) { animation-delay: 0.3s; }
-    li:nth-child(7) { animation-delay: 0.35s; }
-    li:nth-child(8) { animation-delay: 0.4s; }
-    li:nth-child(9) { animation-delay: 0.45s; }
-    li:nth-child(10) { animation-delay: 0.5s; }
-    li:nth-child(11) { animation-delay: 0.55s; }
-    li:nth-child(12) { animation-delay: 0.6s; }
-    li:nth-child(13) { animation-delay: 0.65s; }
-    li:nth-child(14) { animation-delay: 0.7s; }
-    li:nth-child(15) { animation-delay: 0.75s; }
-    li:nth-child(16) { animation-delay: 0.8s; }
-    li:nth-child(17) { animation-delay: 0.85s; }
-    li:nth-child(18) { animation-delay: 0.9s; }
-    li:nth-child(19) { animation-delay: 0.95s; }
-    li:nth-child(20) { animation-delay: 1s; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     li:hover {
@@ -86,20 +65,23 @@
     }
 
     a {
-      color: #333;
+      color: var(--color-text);
       text-decoration: none;
       display: block;
+      transition: color 0.3s ease;
     }
 
     a:hover {
-      color: #0000cc;
+      color: var(--color-accent);
     }
 
     footer {
       text-align: center;
       margin-top: 40px;
       font-size: 0.9em;
-      color: #777;
+      color: var(--color-text);
+      opacity: 0.8;
+      transition: color 0.5s ease;
     }
 
     .btn-volver {
@@ -120,7 +102,6 @@
       background: linear-gradient(90deg, #005dd4, #00a3cc);
     }
 
-    /* ========================================================== */
     #cfc-progress-container {
       width: 90%;
       margin: 0 auto 30px auto;
@@ -148,6 +129,11 @@
       font-weight: bold;
       font-size: 14px;
       text-shadow: 1px 1px 3px #000;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     #motivationalOverlay {
@@ -180,13 +166,18 @@
       margin: 0 20px;
     }
   </style>
+
+  <!-- ✅ modo oscuro / claro -->
+  <script src="../js/theme.js" defer></script>
 </head>
 
 <body>
+  <!-- 🌗 Botón de tema -->
+  <button id="theme-toggle" title="Cambiar modo">🌙</button>
+
   <main id="dashboard">
     <h1>📘 Módulos del Campus CFC Trading LITE</h1>
 
-    <!-- ✅ CFC_FUNC_4_7_20251101 — Logro visible -->
     <div id="achievement" class="achievement-box">—</div>
 
     <div id="cfc-progress-container">
@@ -221,37 +212,18 @@
       <button class="btn-volver" onclick="window.location.href='../loader.html?v=20251101'">⬅ Volver al inicio</button>
       <button id="continueBtn" class="continue-btn">▶ Continuar último módulo</button>
       <button id="resetProgressBtn" class="reset-btn">🔄 Reiniciar progreso</button>
-
-      <script>
-        console.log("🧩 CFC_SYNC checkpoint:", "modules/index.html", "P2.7 + 2.14 + 2.15.2 + 4.7 activos", new Date().toLocaleString());
-        function showMotivationalOverlay() {
-          const overlay = document.createElement("div");
-          overlay.id = "motivationalOverlay";
-          overlay.innerHTML = `<p>✨ Volver a empezar también es progreso.<br>Cada reinicio te acerca a la versión más consciente de vos mismo.</p>`;
-          document.body.appendChild(overlay);
-          const bell = new Audio("../audio/bell-gold.wav");
-          bell.volume = 0.6;
-          setTimeout(() => bell.play().catch(err => console.warn("Audio playback blocked:", err)), 300);
-          setTimeout(() => overlay.classList.add("visible"), 100);
-          setTimeout(() => overlay.classList.remove("visible"), 3200);
-          setTimeout(() => overlay.remove(), 4000);
-        }
-        document.addEventListener("DOMContentLoaded", () => {
-          const resetBtn = document.getElementById("resetProgressBtn");
-          if (resetBtn) resetBtn.addEventListener("click", showMotivationalOverlay);
-        });
-      </script>
     </div>
   </main>
 
-  <footer>© 2025 Campus CFC Trading — Versión V41 REAL</footer>
+  <footer>© 2025 Campus CFC Trading — Versión V43 REAL</footer>
 
-  <!-- Scripts principales -->
   <script src="../js/progress_v2.js?v=20251101" defer></script>
   <script src="../js/exam-logic_v2.js?v=20251101" defer></script>
   <script src="../js/motivation_v2.js?v=20251101" defer></script>
-
-  <!-- ✅ QA-SYNC V41.3 — Auto-Injector Global -->
   <script src="../js/auto_injector.js?v=20251102" defer></script>
+
+  <script>
+    console.log("🧩 CFC_SYNC checkpoint:", "modules/index.html — FIX_V43 aplicado — QA-SYNC V7.8", new Date().toLocaleString());
+  </script>
 </body>
 </html>
