@@ -218,13 +218,21 @@ main.card {
 }
 
 /* ============================================================
-✅ CFC_FUNC_6_4_V42 — Identidad visual modular
+✅ CFC_FUNC_6_4_V42.1 — Identidad visual modular (ajuste final)
 ============================================================ */
-[data-module="1"] .chapter-icon { content:"💭"; color:#ffd700; }
-[data-module="2"] .chapter-icon { content:"⚡"; color:#ffae00; }
-[data-module="3"] .chapter-icon { content:"🎯"; color:#00d4ff; }
-[data-module="4"] .chapter-icon { content:"🧘"; color:#8aff00; }
-[data-module="5"] .chapter-icon { content:"💎"; color:#ff66b2; }
+.chapter-icon::before {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+/* 💎 Íconos y colores por módulo */
+[data-module="1"] .chapter-icon::before { content:"💭"; color:#ffd700; }
+[data-module="2"] .chapter-icon::before { content:"⚡"; color:#ffae00; }
+[data-module="3"] .chapter-icon::before { content:"🎯"; color:#00d4ff; }
+[data-module="4"] .chapter-icon::before { content:"🧘"; color:#8aff00; }
+[data-module="5"] .chapter-icon::before { content:"💎"; color:#ff66b2; }
 /* …continuar hasta módulo 20 según esquema CFC */
 
-console.log("🧩 CFC_SYNC checkpoint: premium.min.css | Fondo dual + modular activo");
+/* 🔒 QA-SYNC */
+ /* ✅ CFC_FUNC_6_5_V42 — QA Visual completado (Lectura Premium Dual + Modular) */
+ /* 🧩 CFC_SYNC checkpoint: premium.min.css | Fondo dual + modular activo (V42.1 FINAL) */
