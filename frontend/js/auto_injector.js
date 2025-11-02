@@ -1,12 +1,12 @@
 /* =========================================================
-   ✅ CFC_FUNC_5_1_AUTOLOAD_V20251102 — Inyección global de theme.js y theme_chapter.js
+   ✅ CFC_FUNC_5_1_AUTOLOAD_V20251102 — Inyección global de theme.js, theme_chapter.js y daily-review.js
    📄 Archivo: /frontend/js/auto_injector.js
    🔒 CFC-SYNC V7.9D | QA-SYNC V41.5
    ========================================================= */
 
 (function () {
   const base = window.location.hostname.includes("pages.dev")
-    ? "/js/"
+    ? "/frontend/js/"
     : "../js/";
 
   const injectScript = (file) => {
@@ -16,13 +16,16 @@
     document.head.appendChild(s);
   };
 
-  // Inyectar archivos reales (según build Cloudflare)
+  // 🧩 Inyección global base (LITE)
   injectScript("theme.js?v=20251102");
   injectScript("theme_chapter.js?v=20251102");
 
-  console.log("🧩 CFC_SYNC checkpoint:", "auto_injector.js activo desde", base);
+  // 🟡 CFC-PLUS extras
+  injectScript("daily-review.js?v=20251102"); // Overlay diario motivacional
+  injectScript("badge.js?v=20251102");        // Badge motivacional persistente
 
-  <!-- ✅ CFC_FUNC_10_2_20251029 — Overlay de revisión diaria -->
-<script src="../../js/daily-review.js?v=20251102" defer></script>
- 
+  console.log(
+    "🧩 CFC_SYNC checkpoint: auto_injector.js activo con CFC-PLUS (badge + overlay)",
+    new Date().toLocaleString()
+  );
 })();
