@@ -1,9 +1,76 @@
-<!-- ✅ CFC_FUNC_7_1_20251102 — Video guía insertado -->
-<video id="welcomeVideo" src="/frontend/media/guia.mp4" autoplay controls playsinline preload="auto"
-  style="display:none; width:100%; max-width:900px; border-radius:12px; box-shadow:0 0 20px rgba(255,215,0,0.35); margin:40px auto; outline:none;">
-  Tu navegador no soporta videos HTML5.
-</video>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Guía — Campus CFC Trading</title>
+  <link rel="stylesheet" href="./css/premium.min.css?v=20251103">
 
-<script>
-console.log("🧩 CFC_SYNC checkpoint:", "intro.html", "Punto 7.1 actualizado", new Date().toLocaleString());
-</script>
+  <!-- ✅ CFC_FUNC_7_3_V43_OVERLAY — Intro premium -->
+  <style>
+    .video-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(6px);
+      z-index: 99999;
+      animation: fadeIn 0.6s ease;
+    }
+    .video-overlay.fade-out { animation: fadeOut 0.6s ease forwards; }
+    .video-box {
+      text-align: center;
+      max-width: 900px;
+      width: 90%;
+      background: rgba(20, 20, 20, 0.6);
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.35);
+      padding: 20px;
+      animation: zoomIn 0.8s ease;
+    }
+    #welcomeVideo {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+      margin-bottom: 16px;
+    }
+    #closeOverlay {
+      background: linear-gradient(90deg, #ffd700, #f0c03d);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    }
+    #closeOverlay:hover {
+      background: #000;
+      color: #ffd700;
+      transform: scale(1.05);
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+
+<body>
+  <!-- ✅ Overlay de video premium -->
+  <div id="videoOverlay" class="video-overlay" style="display:none;">
+    <div class="video-box">
+      <video id="welcomeVideo" src="/frontend/media/guia.mp4" autoplay controls playsinline preload="auto"></video>
+      <button id="closeOverlay">Entrar al Campus ✅</button>
+    </div>
+  </div>
+
+  <script src="./js/intro.js?v=20251103"></script>
+
+  <!-- 🔒 CFC-SYNC -->
+  <script>
+    console.log("🧩 CFC_SYNC checkpoint:", "intro.html — CFC_FUNC_7_3_V43_OVERLAY aplicado", new Date().toLocaleString());
+  </script>
+</body>
+</html>
