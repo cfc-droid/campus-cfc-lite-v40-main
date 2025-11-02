@@ -184,7 +184,6 @@
     </div>
 
     <ul>
-      <!-- Lista de módulos -->
       <li><a class="module-link" href="./1/index.html">Módulo 1 – Introducción a la Psicología del Trader</a></li>
       <li><a class="module-link" href="./2/index.html">Módulo 2 – Neurociencia del Trading</a></li>
       <li><a class="module-link" href="./3/index.html">Módulo 3 – Fundamentos de Psicología Profunda</a></li>
@@ -216,41 +215,41 @@
 
   <footer>© 2025 Campus CFC Trading — Versión V43 REAL</footer>
 
-  <!-- Scripts base -->
   <script src="../js/progress_v2.js?v=20251101" defer></script>
   <script src="../js/exam-logic_v2.js?v=20251101" defer></script>
   <script src="../js/motivation_v2.js?v=20251101" defer></script>
   <script src="../js/auto_injector.js?v=20251102" defer></script>
 
-  <!-- ✅ Integración del Badge Motivacional -->
-  <script src="../js/badge.js?v=20251102" defer></script>
-
   <script>
-    console.log("🧩 CFC_SYNC checkpoint:", "modules/index.html — FIX_V43.4 + Badge Motivacional activo", new Date().toLocaleString());
+    console.log("🧩 CFC_SYNC checkpoint:", "modules/index.html — FIX_V41 aplicado — QA-SYNC V7.8", new Date().toLocaleString());
   </script>
+<!-- ✅ CFC_FUNC_2_14_V43_RESTORE — Overlay motivacional al reiniciar progreso -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const resetBtn = document.getElementById("resetProgressBtn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      // Crear overlay visual
+      const overlay = document.createElement("div");
+      overlay.id = "motivationalOverlay";
+      overlay.innerHTML = `
+        <p>✨ Volver a empezar también es progreso.<br>
+        Cada reinicio te acerca a la versión más consciente de vos mismo.</p>
+      `;
+      document.body.appendChild(overlay);
 
-  <!-- ✅ CFC_FUNC_2_14_V43_RESTORE — Overlay motivacional al reiniciar progreso -->
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const resetBtn = document.getElementById("resetProgressBtn");
-    if (resetBtn) {
-      resetBtn.addEventListener("click", () => {
-        const overlay = document.createElement("div");
-        overlay.id = "motivationalOverlay";
-        overlay.innerHTML = `
-          <p>✨ Volver a empezar también es progreso.<br>
-          Cada reinicio te acerca a la versión más consciente de vos mismo.</p>
-        `;
-        document.body.appendChild(overlay);
-        const bell = new Audio("../audio/bell-gold.wav");
-        bell.volume = 0.6;
-        setTimeout(() => bell.play().catch(err => console.warn("Audio bloqueado:", err)), 300);
-        setTimeout(() => overlay.classList.add("visible"), 100);
-        setTimeout(() => overlay.classList.remove("visible"), 3200);
-        setTimeout(() => overlay.remove(), 4000);
-      });
-    }
-  });
-  </script>
+      // Reproducir sonido dorado
+      const bell = new Audio("../audio/bell-gold.wav");
+      bell.volume = 0.6;
+      setTimeout(() => bell.play().catch(err => console.warn("Audio bloqueado:", err)), 300);
+
+      // Mostrar y ocultar con efecto
+      setTimeout(() => overlay.classList.add("visible"), 100);
+      setTimeout(() => overlay.classList.remove("visible"), 3200);
+      setTimeout(() => overlay.remove(), 4000);
+    });
+  }
+});
+</script>
 </body>
 </html>
