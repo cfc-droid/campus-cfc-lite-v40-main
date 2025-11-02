@@ -360,3 +360,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   waitForFooter();
 });
+
+window.addEventListener("progressUpdated", updateProgressDisplay);
+
