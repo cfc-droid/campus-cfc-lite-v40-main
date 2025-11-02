@@ -225,5 +225,33 @@
   <script>
     console.log("🧩 CFC_SYNC checkpoint:", "modules/index.html — FIX_V41 aplicado — QA-SYNC V7.8", new Date().toLocaleString());
   </script>
+<!-- ✅ CFC_FUNC_2_14_V43_RESTORE — Overlay motivacional al reiniciar progreso -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const resetBtn = document.getElementById("resetProgressBtn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      // Crear overlay visual
+      const overlay = document.createElement("div");
+      overlay.id = "motivationalOverlay";
+      overlay.innerHTML = `
+        <p>✨ Volver a empezar también es progreso.<br>
+        Cada reinicio te acerca a la versión más consciente de vos mismo.</p>
+      `;
+      document.body.appendChild(overlay);
+
+      // Reproducir sonido dorado
+      const bell = new Audio("../audio/bell-gold.wav");
+      bell.volume = 0.6;
+      setTimeout(() => bell.play().catch(err => console.warn("Audio bloqueado:", err)), 300);
+
+      // Mostrar y ocultar con efecto
+      setTimeout(() => overlay.classList.add("visible"), 100);
+      setTimeout(() => overlay.classList.remove("visible"), 3200);
+      setTimeout(() => overlay.remove(), 4000);
+    });
+  }
+});
+</script>
 </body>
 </html>
