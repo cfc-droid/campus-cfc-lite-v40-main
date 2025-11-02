@@ -21,4 +21,8 @@
   injectScript("theme_chapter.js?v=20251102");
 
   console.log("🧩 CFC_SYNC checkpoint:", "auto_injector.js activo desde", base);
+
+  <!-- ✅ CFC_FUNC_10_2_20251029 — Overlay de revisión diaria -->
+<script src="../../js/daily-review.js?v=20251102" defer></script>
+ 
 })();
