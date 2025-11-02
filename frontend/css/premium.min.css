@@ -252,3 +252,11 @@ main.card {
 /* 🔒 QA-SYNC */
  /* ✅ CFC_FUNC_6_5_V42 — QA Visual completado (Lectura Premium Dual + Modular) */
  /* 🧩 CFC_SYNC checkpoint: premium.min.css | Fondo dual + modular activo (V42.2 FINAL) */
+
+/* ✅ CFC_FUNC_6_6_MINI — Reforzar color botón “Volver al módulo” */
+.back-button {
+  background: linear-gradient(90deg,#f1c232,#ffd700);
+  color: #111 !important;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+}
