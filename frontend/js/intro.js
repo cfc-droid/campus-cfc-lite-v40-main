@@ -1,5 +1,5 @@
 /* =========================================================
-   ✅ CFC_FUNC_7_3B_V43_GOLDENFLASH — Overlay + efecto dorado
+   ✅ CFC_FUNC_7_3C_V43_FIX — Overlay + Flash + Audio
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("videoOverlay");
@@ -7,22 +7,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeBtn = document.getElementById("closeOverlay");
   const flash = document.getElementById("goldenFlash");
 
-  if (!overlay || !video || !closeBtn || !flash) return;
+  if (!overlay || !video || !closeBtn || !flash) {
+    console.warn("⚠️ Elementos no encontrados en intro.html");
+    return;
+  }
 
-  // Mostrar solo en primer acceso
+  // 🧠 Mostrar solo primer acceso
   if (!localStorage.getItem("firstVisit")) {
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
-    video.play().catch(() => console.warn("🔇 Autoplay bloqueado por navegador"));
+    try {
+      video.play();
+    } catch (e) {
+      console.warn("🔇 Autoplay bloqueado:", e);
+    }
     localStorage.setItem("firstVisit", "true");
+  } else {
+    console.log("👀 Primer acceso ya registrado, no mostrar overlay.");
   }
 
-  // Botón para cerrar overlay con transición dorada
+  // 🎵 Efecto sonoro dorado (opcional)
+  const goldSound = new Audio("../audio/bell-gold.wav");
+  goldSound.volume = 0.7;
+
+  // 🎬 Cerrar con transición dorada
   closeBtn.addEventListener("click", () => {
     flash.classList.add("active");
+    goldSound.play().catch(() => console.warn("🔇 Audio bloqueado por política del navegador."));
     setTimeout(() => {
       overlay.classList.add("fade-out");
-    }, 200);
+    }, 150);
     setTimeout(() => {
       overlay.remove();
       document.body.style.overflow = "auto";
@@ -31,5 +45,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// 🔒 QA-SYNC — Verificación visual final
-console.log("🧩 CFC_SYNC checkpoint:", "intro.js — CFC_FUNC_7_3B_V43_GOLDENFLASH activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint:", "intro.js — CFC_FUNC_7_3C_V43_FIX activo", new Date().toLocaleString());
