@@ -218,7 +218,7 @@ main.card {
 }
 
 /* ============================================================
-✅ CFC_FUNC_6_4_V42.1 — Identidad visual modular (ajuste final)
+✅ CFC_FUNC_6_4_V42.2 — Identidad visual modular (20 módulos)
 ============================================================ */
 .chapter-icon::before {
   display: inline-block;
@@ -226,13 +226,27 @@ main.card {
 }
 
 /* 💎 Íconos y colores por módulo */
-[data-module="1"] .chapter-icon::before { content:"💭"; color:#ffd700; }
-[data-module="2"] .chapter-icon::before { content:"⚡"; color:#ffae00; }
-[data-module="3"] .chapter-icon::before { content:"🎯"; color:#00d4ff; }
-[data-module="4"] .chapter-icon::before { content:"🧘"; color:#8aff00; }
-[data-module="5"] .chapter-icon::before { content:"💎"; color:#ff66b2; }
-/* …continuar hasta módulo 20 según esquema CFC */
+[data-module="1"]  .chapter-icon::before { content:"💭"; color:#ffd700; }
+[data-module="2"]  .chapter-icon::before { content:"⚡"; color:#ffae00; }
+[data-module="3"]  .chapter-icon::before { content:"🎯"; color:#00d4ff; }
+[data-module="4"]  .chapter-icon::before { content:"🧠"; color:#a5f5ff; }
+[data-module="5"]  .chapter-icon::before { content:"🧘"; color:#8aff00; }
+[data-module="6"]  .chapter-icon::before { content:"🌊"; color:#00c3ff; }
+[data-module="7"]  .chapter-icon::before { content:"🔥"; color:#ff5e00; }
+[data-module="8"]  .chapter-icon::before { content:"🌀"; color:#007bff; }
+[data-module="9"]  .chapter-icon::before { content:"📈"; color:#00ff88; }
+[data-module="10"] .chapter-icon::before { content:"⏳"; color:#d1a200; }
+[data-module="11"] .chapter-icon::before { content:"🚀"; color:#ffcc00; }
+[data-module="12"] .chapter-icon::before { content:"🎯"; color:#ffdd55; }
+[data-module="13"] .chapter-icon::before { content:"🧩"; color:#66c2ff; }
+[data-module="14"] .chapter-icon::before { content:"👁️"; color:#cccccc; }
+[data-module="15"] .chapter-icon::before { content:"🗣️"; color:#ffb366; }
+[data-module="16"] .chapter-icon::before { content:"⏰"; color:#ffd54f; }
+[data-module="17"] .chapter-icon::before { content:"💎"; color:#00ffe5; }
+[data-module="18"] .chapter-icon::before { content:"🕰️"; color:#e8b800; }
+[data-module="19"] .chapter-icon::before { content:"🌪️"; color:#00c0ff; }
+[data-module="20"] .chapter-icon::before { content:"🧬"; color:#9f79ff; }
 
 /* 🔒 QA-SYNC */
  /* ✅ CFC_FUNC_6_5_V42 — QA Visual completado (Lectura Premium Dual + Modular) */
- /* 🧩 CFC_SYNC checkpoint: premium.min.css | Fondo dual + modular activo (V42.1 FINAL) */
+ /* 🧩 CFC_SYNC checkpoint: premium.min.css | Fondo dual + modular activo (V42.2 FINAL) */
