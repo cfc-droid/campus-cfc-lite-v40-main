@@ -1,4 +1,4 @@
-# 🧭 Campus CFC Trading LITE — Versión V37
+# 🧭 Campus CFC Trading LITE — Versión V41
 
 ## 🏗️ Base técnica
 Estructura estática optimizada para despliegue gratuito en **Cloudflare Pages**.  
