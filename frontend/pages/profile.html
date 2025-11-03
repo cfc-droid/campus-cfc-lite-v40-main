@@ -1,11 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil — Campus CFC LITE</title>
-  <link rel="stylesheet" href="../css/premium.css?v=20251101" />
+  <link rel="stylesheet" href="../css/premium.css?v=20251105" />
 </head>
 <body>
   <header>
@@ -15,47 +14,39 @@
   <main style="text-align:center;">
     <p>Esta es la página de Perfil del Campus CFC LITE V41 REAL.</p>
 
+    <!-- ✅ CFC_FUNC_8_1_20251105 — Botón de analítica CFC-STATS V1 -->
+    <div style="margin-top:30px;">
+      <button id="btnStats" class="btn-main">📊 Mi progreso</button>
+    </div>
+
     <!-- ✅ CFC_FUNC_10_2_20251101 — Visualización de Autoevaluación Emocional -->
     <section id="emocion-section" style="margin-top:30px;">
       <h3>🧠 Estado Emocional Diario</h3>
-      <div id="emotionScore" 
-           style="font-size:1.5rem;margin-top:10px;font-weight:bold;color:#FFD700;">
-        <!-- valor se inyecta por JS -->
-      </div>
-      <p id="emotionMessage" style="color:#ccc;font-size:0.9rem;margin-top:8px;">
-        <!-- mensaje dinámico -->
-      </p>
+      <div id="emotionScore" style="font-size:1.5rem;margin-top:10px;font-weight:bold;color:#FFD700;"></div>
+      <p id="emotionMessage" style="color:#ccc;font-size:0.9rem;margin-top:8px;"></p>
     </section>
 
     <!-- ✅ CFC_FUNC_4_3_20251101 — Acceso a Bitácora Mental -->
     <div class="bitacora-access" style="margin-top:30px;">
-      <button class="btn-bitacora"
-              onclick="window.open('../bitacora.html','_blank')">
-        🧠 Bitácora mental
-      </button>
-      <p style="font-size:0.85rem;color:#aaa;margin-top:6px;">
-        Registrá tus reflexiones y aprendizajes del día.
-      </p>
+      <button class="btn-bitacora" onclick="window.open('../bitacora.html','_blank')">🧠 Bitácora mental</button>
+      <p style="font-size:0.85rem;color:#aaa;margin-top:6px;">Registrá tus reflexiones y aprendizajes del día.</p>
     </div>
 
     <!-- ✅ CFC_FUNC_4_5_20251101_NAVBACK — Retorno al Índice -->
     <div class="return-container" style="margin-top:25px;">
-      <button class="btn-return"
-              onclick="window.location.href='../modules/index.html'">
-        ⬅ Volver al Campus
-      </button>
+      <button class="btn-return" onclick="window.location.href='../modules/index.html'">⬅ Volver al Campus</button>
     </div>
   </main>
 
   <div id="footer-placeholder"></div>
   <script src="../js/footer.js" defer></script>
+  <script src="../js/stats_v1.js" defer></script>
 
   <!-- ✅ CFC_FUNC_10_2_20251101 — Script de visualización emocional -->
   <script>
-    const scoreRaw = localStorage.getItem('emotionScore');
-    const box = document.getElementById('emotionScore');
-    const msg = document.getElementById('emotionMessage');
-
+    const scoreRaw = localStorage.getItem("emotionScore");
+    const box = document.getElementById("emotionScore");
+    const msg = document.getElementById("emotionMessage");
     if (scoreRaw && !isNaN(parseInt(scoreRaw))) {
       const val = parseInt(scoreRaw, 10);
       let emoji = "🙂", mensaje = "Buen enfoque mental.";
@@ -63,7 +54,6 @@
       else if (val <= 6) { emoji = "😐"; mensaje = "Estás estable, pero podés mejorar tu enfoque."; }
       else if (val <= 8) { emoji = "😊"; mensaje = "Excelente disciplina emocional."; }
       else if (val <= 10) { emoji = "🔥"; mensaje = "Máxima claridad mental, seguí así."; }
-
       box.textContent = `${emoji} ${val}/10`;
       msg.textContent = mensaje;
       console.log(`🧠 Estado emocional mostrado: ${val}/10 — ${mensaje}`);
@@ -74,7 +64,6 @@
     }
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.10-profile_emotion-20251101-0352 -->
+  <!-- 🔒 CFC_LOCK: V41.10-profile_emotion-20251105-SYNC-STATS -->
 </body>
 </html>
-```
