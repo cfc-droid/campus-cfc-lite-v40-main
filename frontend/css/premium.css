@@ -548,26 +548,27 @@ main, section, footer, header {
 }
 
 /* ==========================================================
-✅ CFC_FUNC_8_1_20251105 — Estilo visual del panel de progreso
+✅ CFC_FUNC_8_1_20251105 — Estilo visual del panel de progreso (QA-FIX)
 ========================================================== */
 .stats-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(10, 10, 10, 0.95);
+  background: rgba(15, 15, 15, 0.96);
   color: #ffd700;
-  padding: 24px 28px;
-  border-radius: 16px;
-  box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
-  z-index: 9999;
+  padding: 28px 32px;
+  border-radius: 18px;
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.45);
+  z-index: 99999;
   text-align: center;
   width: 90%;
   max-width: 420px;
   font-family: "Poppins", sans-serif;
+  animation: fadeInStats 0.4s ease;
 }
 .stats-modal h3 {
-  font-size: 1.4rem;
+  font-size: 1.45rem;
   color: #ffd700;
   margin-bottom: 12px;
 }
@@ -577,22 +578,27 @@ main, section, footer, header {
   color: #fff;
 }
 .stats-modal button {
-  margin-top: 16px;
+  margin-top: 18px;
   background: linear-gradient(90deg, #ffd700, #f0c03d);
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   color: #000;
   font-weight: 700;
-  padding: 10px 22px;
+  padding: 10px 26px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
 }
 .stats-modal button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+  transform: scale(1.06);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+}
+@keyframes fadeInStats {
+  from { opacity: 0; transform: translate(-50%, -60%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
 }
 /* ==========================================================
 🔒 CFC-SYNC
-# ✅ CFC_FUNC_8_1_20251105 — CSS del modal integrado
-echo "🧩 CFC_SYNC checkpoint: estilo dorado premium aplicado"
+# ✅ CFC_FUNC_8_1_20251105 — CSS verificado QA-V41 dorado premium
+echo "🧩 CFC_SYNC checkpoint: modal animado y compatible con modo claro/oscuro"
 ========================================================== */
