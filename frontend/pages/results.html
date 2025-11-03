@@ -1,6 +1,5 @@
 <!-- ==========================================================
-✅ CFC_FUNC_3_1_20251103 — results.html (QA-SYNC V10.3 FINAL)
-Historial de exámenes con integración total CFC-PLUS
+✅ CFC_FUNC_3_1_FIX_V10.4 — results.html seguro (sin dependencias rotas)
 ========================================================== -->
 <!DOCTYPE html>
 <html lang="es">
@@ -9,37 +8,31 @@ Historial de exámenes con integración total CFC-PLUS
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📘 Historial de Exámenes — Campus CFC LITE</title>
   <link rel="stylesheet" href="../css/premium.css?v=20251103" />
-  <script src="../js/auto_injector.js?v=20251103" defer></script>
-  <script src="../js/results.js?v=20251103" defer></script>
+  <style>
+    body { background:#000; color:#ffd700; font-family:'Poppins',sans-serif; text-align:center; margin:0; }
+    table { width:90%; margin:40px auto; border-collapse:collapse; background:rgba(30,30,30,0.8); border-radius:8px; overflow:hidden; }
+    th,td { padding:12px; border-bottom:1px solid rgba(255,255,255,0.15); }
+    th { background:rgba(255,215,0,0.15); color:#ffd700; text-transform:uppercase; }
+    tr:hover td { background:rgba(255,215,0,0.08); }
+    button { background:#ffd700; color:#000; border:none; padding:10px 25px; border-radius:6px; cursor:pointer; font-weight:600; }
+    button:hover { background:#ffcc00; }
+  </style>
 </head>
 
-<body class="bg-dark text-light">
-  <header class="header glassmorphism center">
-    <h2 class="gold-text glow">📘 Historial de Exámenes</h2>
-  </header>
+<body>
+  <h2>📘 Historial de Exámenes</h2>
+  <table id="examHistory">
+    <tr>
+      <th>Módulo</th>
+      <th>Fecha</th>
+      <th>Nota</th>
+      <th>Estado</th>
+    </tr>
+  </table>
 
-  <main class="main-content center fade-in">
-    <table id="examHistory" class="history-table glassmorphism">
-      <thead>
-        <tr>
-          <th>Módulo</th>
-          <th>Fecha</th>
-          <th>Nota</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody id="examHistoryBody">
-        <tr><td colspan="4" style="text-align:center;opacity:0.6;">🕓 Cargando historial...</td></tr>
-      </tbody>
-    </table>
+  <button onclick="window.location.href='../frontend.html'">🏠 Volver al inicio</button>
 
-    <div class="center" style="margin-top:2rem;">
-      <button class="gold-btn" onclick="window.location.href='main.html'">🏠 Volver al inicio</button>
-    </div>
-  </main>
-
-  <footer class="footer small-text" style="margin-top:3rem;text-align:center;">
-    <p>© 2025 Campus CFC LITE — Historial de Exámenes</p>
-  </footer>
+  <!-- Solo este script -->
+  <script src="../js/results.js?v=20251104" defer></script>
 </body>
 </html>
