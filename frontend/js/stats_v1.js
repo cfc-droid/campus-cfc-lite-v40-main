@@ -1,6 +1,7 @@
 /* ==========================================================
-✅ CFC_FUNC_8_1_20251105 — CFC-STATS V1 (Analítica interna de progreso)
+✅ CFC_FUNC_8_1_FIX_20251105 — Analítica interna de progreso (sincronizada con progress_v2.js)
 ========================================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("btnStats");
   if (!btn) return;
@@ -8,67 +9,70 @@ document.addEventListener("DOMContentLoaded", () => {
   btn.addEventListener("click", openStatsModal);
 });
 
-/**
- * Abre un panel modal con estadísticas del usuario.
- * Lee y calcula datos desde localStorage.
- */
 function openStatsModal() {
-  // ============================
-  // BLOQUE A — Cálculo principal
-  // ============================
-  const modules = parseInt(localStorage.getItem("CFC_modulesCompleted") || 0);
-  const exams = parseInt(localStorage.getItem("CFC_examsPassed") || 0);
-  const timeRaw = parseFloat(localStorage.getItem("CFC_time") || 0);
-  const hours = (timeRaw / 3600).toFixed(1);
+  // 🧩 Leer datos del objeto progressData (nuevo formato)
+  let modules = 0;
+  let exams = 0;
+  let time = 0;
+  let days = 1;
 
-  // ============================
-  // BLOQUE B — Cálculo de días consecutivos
-  // ============================
-  const today = new Date().toISOString().split("T")[0];
-  const lastLogin = localStorage.getItem("CFC_lastLoginDate");
-  let streak = parseInt(localStorage.getItem("CFC_days") || 0);
-
-  if (!lastLogin) {
-    streak = 1;
-  } else {
-    const diff =
-      (new Date(today) - new Date(lastLogin)) / (1000 * 60 * 60 * 24);
-    if (diff === 1) streak += 1;
-    else if (diff > 1) streak = 1;
+  try {
+    const progressData = JSON.parse(localStorage.getItem("progressData") || "{}");
+    if (progressData.completed && Array.isArray(progressData.completed)) {
+      modules = progressData.completed.length;
+    }
+  } catch (err) {
+    console.warn("⚠️ CFC-STATS: No se pudo leer progressData:", err);
   }
-  localStorage.setItem("CFC_lastLoginDate", today);
-  localStorage.setItem("CFC_days", streak);
 
-  // ============================
-  // BLOQUE C — Limpieza y renderizado
-  // ============================
+  // 🧩 Compatibilidad con claves antiguas
+  const legacyModules = parseInt(localStorage.getItem("CFC_modulesCompleted") || 0);
+  const legacyExams = parseInt(localStorage.getItem("CFC_examsPassed") || 0);
+  const legacyTime = parseFloat(localStorage.getItem("CFC_time") || 0);
+  const legacyDays = parseInt(localStorage.getItem("CFC_days") || 1);
+
+  // Combinar valores
+  modules = Math.max(modules, legacyModules);
+  exams = legacyExams;
+  time = legacyTime / 3600; // convertir a horas
+  days = legacyDays;
+
+  // Si hay examResult pendiente, sincronizarlo también
+  const examResult = localStorage.getItem("examResult");
+  if (examResult) {
+    try {
+      const parsed = JSON.parse(examResult);
+      if (parsed.passed) exams += 1;
+    } catch {}
+  }
+
+  // 🔍 Log de control
+  console.log(
+    `CFC-STATS V1 — Módulos:${modules}, Exámenes:${exams}, Horas:${time.toFixed(
+      1
+    )}, Días:${days}`
+  );
+
+  // 🧼 Eliminar si ya hay otro modal abierto
   document.querySelector(".stats-modal")?.remove();
 
-  const html = `
+  // 🪶 Crear modal con datos actuales
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
     <div class="stats-modal">
       <h3>📊 Tu progreso</h3>
       <p>Módulos completados: <b>${modules}/20</b></p>
       <p>Exámenes aprobados: <b>${exams}/20</b></p>
-      <p>Horas activas: <b>${hours} h</b></p>
-      <p>Días consecutivos de estudio: <b>${streak}</b></p>
-      <button id="closeStats">Cerrar</button>
-    </div>`;
-  document.body.insertAdjacentHTML("beforeend", html);
-
-  // ============================
-  // BLOQUE D — Cierre del modal
-  // ============================
-  document.getElementById("closeStats").addEventListener("click", () => {
-    document.querySelector(".stats-modal")?.remove();
-  });
-
-  console.log(
-    `✅ CFC-STATS V1 — Módulos:${modules}, Exámenes:${exams}, Horas:${hours}, Días:${streak}`
+      <p>Horas activas: <b>${time.toFixed(1)} h</b></p>
+      <p>Días consecutivos de estudio: <b>${days}</b></p>
+      <button onclick="document.querySelector('.stats-modal').remove()">Cerrar</button>
+    </div>`
   );
 }
 
 /* ==========================================================
 🔒 CFC-SYNC
-# ✅ CFC_FUNC_8_1_20251105 — stats_v1.js final validado QA-SYNC V41
-echo "🧩 CFC_SYNC checkpoint: analítica localStorage funcional y estable"
+# ✅ CFC_FUNC_8_1_FIX_20251105 — Lectura sincronizada con progressData
+echo "🧩 CFC_SYNC checkpoint: CFC-STATS V1 sincronizado con PROGRESS V2"
 ========================================================== */
