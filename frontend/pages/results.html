@@ -1,5 +1,5 @@
 <!-- ==========================================================
-✅ CFC_FUNC_3_1_FIX_V10.7A — results.html con rutas absolutas y fallback
+✅ CFC_FUNC_3_1_FIX_V10.8 — results.html dual-context (rutas autoajustables)
 ========================================================== -->
 <!DOCTYPE html>
 <html lang="es">
@@ -7,48 +7,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📘 Historial de Exámenes — Campus CFC LITE</title>
-
-  <!-- 🔒 Rutas seguras absolutas -->
-  <link rel="stylesheet" href="/frontend/css/premium.css?v=20251107" />
-
+  <link rel="stylesheet" href="/frontend/css/premium.css?v=20251108" />
   <style>
-    body {
-      background:#000;
-      color:#ffd700;
-      font-family:'Poppins',sans-serif;
-      text-align:center;
-      margin:0;
-    }
-    table {
-      width:90%;
-      margin:40px auto;
-      border-collapse:collapse;
-      background:rgba(30,30,30,0.8);
-      border-radius:8px;
-      overflow:hidden;
-    }
-    th,td {
-      padding:12px;
-      border-bottom:1px solid rgba(255,255,255,0.15);
-    }
-    th {
-      background:rgba(255,215,0,0.15);
-      color:#ffd700;
-      text-transform:uppercase;
-    }
-    tr:hover td {
-      background:rgba(255,215,0,0.08);
-    }
-    button {
-      background:#ffd700;
-      color:#000;
-      border:none;
-      padding:10px 25px;
-      border-radius:6px;
-      cursor:pointer;
-      font-weight:600;
-      margin-bottom:40px;
-    }
+    body { background:#000; color:#ffd700; font-family:'Poppins',sans-serif; text-align:center; margin:0; }
+    table { width:90%; margin:40px auto; border-collapse:collapse; background:rgba(30,30,30,0.8); border-radius:8px; overflow:hidden; }
+    th,td { padding:12px; border-bottom:1px solid rgba(255,255,255,0.15); }
+    th { background:rgba(255,215,0,0.15); color:#ffd700; text-transform:uppercase; }
+    tr:hover td { background:rgba(255,215,0,0.08); }
+    button { background:#ffd700; color:#000; border:none; padding:10px 25px; border-radius:6px; cursor:pointer; font-weight:600; margin-bottom:40px; }
     button:hover { background:#ffcc00; }
   </style>
 </head>
@@ -66,19 +32,35 @@
 
   <button onclick="window.location.href='/frontend/index.html'">🏠 Volver al inicio</button>
 
-  <!-- ✅ Ruta fija + fallback -->
+  <!-- ==========================================================
+       🧩 AUTO-DETECCIÓN DE RUTA DE JS — QA-SYNC V10.8
+  ========================================================== -->
   <script>
-    const script = document.createElement("script");
-    script.src = "/frontend/js/results.js?v=20251107";
-    script.defer = true;
-    script.onerror = () => {
-      console.warn("⚠️ results.js no cargó desde ruta absoluta, probando fallback...");
-      const alt = document.createElement("script");
-      alt.src = "../../js/results.js?v=20251107";
-      alt.defer = true;
-      document.head.appendChild(alt);
-    };
-    document.head.appendChild(script);
+    (function() {
+      const paths = [
+        "/frontend/js/results.js?v=20251108",
+        "../js/results.js?v=20251108",
+        "../../js/results.js?v=20251108"
+      ];
+
+      function tryLoad(i = 0) {
+        if (i >= paths.length) {
+          console.error("❌ Ninguna ruta válida para results.js — QA-SYNC V10.8");
+          return;
+        }
+        const s = document.createElement("script");
+        s.src = paths[i];
+        s.defer = true;
+        s.onload = () => console.log("✅ CFC_SYNC checkpoint:", "results.js cargado desde", paths[i]);
+        s.onerror = () => {
+          console.warn("⚠️ Fallback activo — results.js no encontrado en", paths[i]);
+          tryLoad(i + 1);
+        };
+        document.head.appendChild(s);
+      }
+
+      tryLoad();
+    })();
   </script>
 </body>
 </html>
