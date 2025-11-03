@@ -1,13 +1,13 @@
 /* ==========================================================
-   CFC — EXAM LOGIC V2 (SYNC FIX v6.2 + AUDIO V9.2 FINAL + HISTORIAL OK)
+   CFC — EXAM LOGIC V2 (SYNC FIX v6.3 + AUDIO V9.2 FINAL + HISTORIAL LIVE)
    ========================================================== */
-// ✅ CFC_FUNC_3_2_EXAM_SOUND_V9.2 — Solución definitiva audio examen + historial — QA-SYNC 2025-11-03
+// ✅ CFC_FUNC_3_2_EXAM_SOUND_V9.2 — Audio examen + historial en vivo — QA-SYNC 2025-11-03
 
 document.addEventListener("DOMContentLoaded", () => {
   const examForm = document.querySelector("#exam-form");
   if (!examForm) return;
 
-  // 🎧 Pre-cargar sonidos y desbloquear contexto al primer click
+  // 🎧 Sonidos
   const successSound = new Audio("../../sounds/success.wav");
   const errorSound   = new Audio("../../sounds/error.wav");
   successSound.volume = 0.6;
@@ -42,30 +42,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const score = Math.round((correctAnswers / totalQuestions) * 100);
     const passed = score >= 70;
 
-    // 💾 Guardar datos inmediatos del examen
     localStorage.setItem("lastExamScore", score);
     localStorage.setItem("lastExamDate", new Date().toISOString());
 
-    // ✅ Mostrar resultado
     const msg = passed
       ? `✅ ¡Aprobado! Obtuviste ${correctAnswers}/${totalQuestions} (${score}%).`
       : `❌ Reprobado. Obtuviste ${correctAnswers}/${totalQuestions} (${score}%).`;
 
-    console.log("🧩 CFC_SYNC checkpoint: antes del alert() — QA-SYNC V9.2");
     alert(msg);
-    console.log("🧩 CFC_SYNC checkpoint: después del alert() — QA-SYNC V9.2");
 
-    // 🔊 Reproducción controlada posterior al alert()
+    // 🔊 Audio
     setTimeout(() => {
       const snd = passed ? successSound : errorSound;
       snd.currentTime = 0;
-      snd.play()
-        .then(() => console.log(`🧩 CFC_SYNC checkpoint: ${(passed ? "success" : "error")}.wav reproducido — QA-SYNC V9.2`))
-        .catch(err => console.warn("Audio playback bloqueado:", err));
+      snd.play().catch(() => {});
     }, 300);
 
     /* ==========================================================
-       🧠 BLOQUE CFC SYNC GLOBAL — Progreso y desbloqueos
+       🧠 BLOQUE CFC SYNC GLOBAL — Progreso
        ========================================================== */
     const moduleNumber = parseInt(document.body.dataset.module || localStorage.getItem("currentModule") || 1);
 
@@ -87,21 +81,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ==========================================================
-       🧾 BLOQUE HISTORIAL DE EXÁMENES — Guardado local
+       🧾 BLOQUE HISTORIAL DE EXÁMENES — Guardado + Sincronización Live
        ========================================================== */
     try {
       const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
       const moduleName = `Módulo ${moduleNumber}`;
       const date = new Date().toLocaleDateString("es-AR");
 
-      examResults.push({
+      // Evitar duplicados: eliminar entradas anteriores del mismo módulo
+      const filtered = examResults.filter(r => r.module !== moduleName);
+
+      filtered.push({
         module: moduleName,
         date,
         score,
+        status: passed ? "✅ Aprobado" : "❌ Reprobado"
       });
 
-      localStorage.setItem("examResults", JSON.stringify(examResults));
-      console.log("🧩 CFC_SYNC checkpoint: historial actualizado — QA-SYNC P3.2 OK", examResults);
+      localStorage.setItem("examResults", JSON.stringify(filtered));
+      console.log("🧩 CFC_SYNC checkpoint: historial actualizado — QA-SYNC P3.3 OK", filtered);
+
+      // 🔁 Actualización directa si está abierta results.html
+      if (window.location.pathname.includes("results")) {
+        const table = document.getElementById("examHistory");
+        if (table) {
+          const last = filtered[filtered.length - 1];
+          const row = `
+            <tr>
+              <td>${last.module}</td>
+              <td>${last.date}</td>
+              <td>${last.score}%</td>
+              <td>${last.status}</td>
+            </tr>`;
+          table.insertAdjacentHTML("beforeend", row);
+          console.log("🧩 CFC_SYNC checkpoint: fila añadida en vivo al historial");
+        }
+      }
+
     } catch (err) {
       console.error("❌ Error guardando historial:", err);
     }
