@@ -30,8 +30,10 @@ function openStatsModal() {
 
   modules = Math.max(modules, legacyModules);
   exams = legacyExams;
-  hours = legacyTime / 3600;
-  minutes = legacyTime / 60;
+  const tempTime = parseFloat(localStorage.getItem("CFC_time_temp") || 0);
+  const totalTime = Math.max(legacyTime, tempTime);
+  hours = totalTime / 3600;
+  minutes = totalTime / 60;
   days = legacyDays;
   totalDays = legacyTotalDays;
 
@@ -54,7 +56,6 @@ function openStatsModal() {
     <div class="stats-modal">
       <h3>📊 Tu progreso</h3>
       <p>Módulos completados: <b>${modules}/20</b></p>
-      <p>Exámenes aprobados: <b>${exams}/20</b></p>
       <p>Horas activas: <b>${hours.toFixed(1)} h</b> (<b>${minutes.toFixed(0)} min</b>)</p>
       <p>Días consecutivos de estudio: <b>${days}</b></p>
       <p>Días totales de estudio: <b>${totalDays}</b></p>
