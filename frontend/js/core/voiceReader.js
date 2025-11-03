@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1L_20251107 — Narrador IA Integrado (V1.8 Smart-Rate + Adaptive-Highlight)
+✅ CFC_FUNC_10_1P_20251107 — Narrador IA Integrado (V2.0 Restore Mode)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,6 +14,8 @@ let currentIndex = 0;
 let sentences = [];
 let utter = null;
 let beep = null;
+let originalHTML = ""; // 🧩 Guardará el HTML original para restaurar
+let textContainer = null;
 
 // 🎧 Sonido metálico corto Premium
 function initBeep() {
@@ -50,7 +52,7 @@ function openVoicePanel() {
         <button id="pause">⏸️</button>
         <button id="resume">▶️</button>
         <button id="stop">⏹️</button>
-        <button id="close">❌</button>
+        <button id="close" class="tts-close">❌</button>
       </div>
     </div>
   `
@@ -67,7 +69,7 @@ function openVoicePanel() {
   const voiceSelect = document.getElementById("voiceSelect");
   const speedBtns = document.querySelectorAll(".speed-btn");
 
-  // 🧠 Cambiar velocidad (afecta lectura actual)
+  // 🧠 Cambiar velocidad
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
@@ -75,7 +77,6 @@ function openVoicePanel() {
       btn.classList.add("active");
       if (beep) beep.play();
 
-      // Si está leyendo, reanuda con nueva velocidad
       if (utter && speechSynthesis.speaking) {
         speechSynthesis.pause();
         const resumeIndex = currentIndex;
@@ -106,8 +107,13 @@ function openVoicePanel() {
     if (beep) beep.play();
   };
   stopBtn.onclick = () => stopReading();
+
+  // ❌ Al cerrar: restaurar el texto original
   closeBtn.onclick = () => {
     stopReading();
+    if (textContainer && originalHTML) {
+      textContainer.innerHTML = originalHTML; // 🔄 restaurar DOM original
+    }
     document.querySelector(".tts-panel").remove();
   };
 }
@@ -117,15 +123,15 @@ function openVoicePanel() {
 // ==========================================================
 function startReading() {
   stopReading();
-  const textContainer = document.querySelector("main") || document.body;
-  const text = textContainer.innerText;
 
-  // Dividimos el texto en frases
+  textContainer = document.querySelector("main") || document.body;
+  originalHTML = textContainer.innerHTML; // Guardamos el HTML original 🧠
+
+  const text = textContainer.innerText;
   sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
   currentIndex = 0;
   isPaused = false;
 
-  // Insertamos spans para resaltado
   const html = sentences
     .map((s, i) => `<span class="tts-sentence" data-index="${i}">${s}</span>`)
     .join(" ");
@@ -143,7 +149,6 @@ function readNextSentence() {
   const currentEl = sentenceEls[currentIndex];
   if (!currentEl) return;
 
-  // Detectar fondo (claro u oscuro)
   const bgColor = window.getComputedStyle(document.body).backgroundColor;
   const isDark = getLuminance(bgColor) < 128;
   currentEl.classList.add(isDark ? "tts-active-dark" : "tts-active-light");
@@ -166,7 +171,9 @@ function readNextSentence() {
   speechSynthesis.speak(utter);
 }
 
-// Utilidad para calcular luminancia
+// ==========================================================
+// 🧮 Utilidad luminancia
+// ==========================================================
 function getLuminance(rgb) {
   const nums = rgb.match(/\d+/g);
   if (!nums) return 255;
@@ -182,54 +189,34 @@ function stopReading() {
   currentIndex = 0;
   isPaused = false;
 
-  // Limpiar resaltado
   document.querySelectorAll(".tts-sentence").forEach((el) =>
     el.classList.remove("tts-active", "tts-active-dark", "tts-active-light")
   );
 }
 
 // ==========================================================
-// 🗣️ Voces en español (2F + 1M)
+// 🗣️ Voces disponibles
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
   if (!select) return;
   select.innerHTML = "";
 
-  const allVoices = speechSynthesis.getVoices();
-  const spanish = allVoices.filter((v) => v.lang.startsWith("es"));
-
-  const femalePriority = ["Helena", "Laura", "Elena", "Sofía"];
-  const malePriority = ["Pablo", "Enrique", "Carlos", "Jorge"];
-
-  const female = spanish
-    .filter((v) => femalePriority.some((n) => v.name.includes(n)))
-    .slice(0, 2);
-  const male = spanish
-    .filter((v) => malePriority.some((n) => v.name.includes(n)))
-    .slice(0, 1);
-
-  let finalVoices = [...female, ...male];
-  if (finalVoices.length < 3)
-    finalVoices = [...finalVoices, ...spanish.slice(0, 3 - finalVoices.length)];
-  finalVoices = finalVoices.slice(0, 3);
-
-  finalVoices.forEach((v) => {
+  const voices = speechSynthesis.getVoices().filter((v) => v.lang.startsWith("es"));
+  voices.slice(0, 5).forEach((v) => {
     const opt = document.createElement("option");
     opt.value = v.name;
     opt.textContent = `${v.name} (${v.lang})`;
     select.appendChild(opt);
   });
 
-  currentVoice = finalVoices[0]?.name || null;
+  currentVoice = voices[0]?.name || null;
 }
-
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.8 Smart-Rate + Adaptive-Highlight
-✅ Cambio de velocidad instantáneo (sin reinicio)
-✅ Cambio de voz estable (1–2 s)
-✅ Resaltado adaptativo según fondo claro/oscuro
-✅ Voces: 2 F + 1 M en español
+🔒 CFC-SYNC QA — V2.0 Restore Mode (Fix Final)
+✅ Restaura el texto original al cerrar (sin perder formato)
+✅ Lee todo el módulo completo (sin detenerse)
+✅ Resaltado adaptativo dorado/blanco según fondo
 ========================================================== */
