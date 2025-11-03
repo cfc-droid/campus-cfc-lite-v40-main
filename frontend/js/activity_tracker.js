@@ -1,11 +1,11 @@
 /* ==========================================================
-✅ CFC_FUNC_8_3_FIX_V1.5_REALTIME_20251106
-Tracker de actividad avanzado + autosync cada 10 s (sin pérdidas)
+✅ CFC_FUNC_8_3_FIX_V1.6_REALTIME_RESET_20251106
+Tracker de actividad avanzado + autosync cada 10 s (sin pérdidas ni duplicados)
 Sistema persistente localStorage + minutos activos visibles
 ========================================================== */
 
 (function () {
-  const startTime = Date.now();
+  let startTime = Date.now(); // 🔧 ← ahora variable reiniciable
   const today = new Date().toISOString().split("T")[0];
 
   // 🧩 Cargar valores previos o inicializar
@@ -50,6 +50,7 @@ Sistema persistente localStorage + minutos activos visibles
   indicator.style.backdropFilter = "blur(6px)";
   document.body.appendChild(indicator);
 
+  // 🧮 Actualización visual cada segundo
   function updateVisualTime() {
     const elapsed = (Date.now() - startTime) / 1000;
     const minutes = Math.floor(elapsed / 60);
@@ -58,7 +59,6 @@ Sistema persistente localStorage + minutos activos visibles
       .toString()
       .padStart(2, "0")} s`;
   }
-
   setInterval(updateVisualTime, 1000);
 
   // 🔄 Guardado temporal cada 10 s para evitar pérdidas
@@ -67,14 +67,17 @@ Sistema persistente localStorage + minutos activos visibles
     localStorage.setItem("CFC_time_temp", totalSeconds + elapsed);
   }, 10000);
 
-  // 💾 Sincronización automática cada 10 s (total persistente)
+  // 💾 Sincronización automática cada 10 s (persistente + reset base)
   setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000;
     const newTotal = totalSeconds + elapsed;
     totalSeconds = newTotal;
     localStorage.setItem("CFC_time", newTotal);
     localStorage.removeItem("CFC_time_temp");
-    console.log(`💾 AutoSync (10s) — Tiempo total ${(newTotal / 60).toFixed(1)} min`);
+    console.log(`💾 AutoSync (10 s) — Total ${(newTotal / 60).toFixed(1)} min`);
+
+    // 🧠 Reiniciar base temporal para evitar duplicación
+    startTime = Date.now();
   }, 10000);
 
   // 🕐 Guardado al cerrar o recargar
@@ -90,9 +93,9 @@ Sistema persistente localStorage + minutos activos visibles
     );
   });
 
-  // 🧠 Log de control
+  // 🧩 Log de control
   console.log(
-    `✅ CFC-ACTIVITY FIX V1.5 — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Tiempo acumulado:${(
+    `✅ CFC-ACTIVITY FIX V1.6 — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Tiempo acumulado:${(
       totalSeconds / 3600
     ).toFixed(2)} h`
   );
@@ -100,6 +103,6 @@ Sistema persistente localStorage + minutos activos visibles
 
 /* ==========================================================
 🔒 CFC-SYNC
-# ✅ CFC_FUNC_8_3_FIX_V1.5_REALTIME_20251106 — AutoSync cada 10 s + visual estable
-echo "🧩 CFC_SYNC checkpoint: CFC-ACTIVITY V1.5 REALTIME QA-SYNC OK"
+# ✅ CFC_FUNC_8_3_FIX_V1.6_REALTIME_RESET_20251106 — AutoSync 10 s + Reset base OK
+echo "🧩 CFC_SYNC checkpoint: CFC-ACTIVITY V1.6 REALTIME RESET QA-SYNC OK"
 ========================================================== */
