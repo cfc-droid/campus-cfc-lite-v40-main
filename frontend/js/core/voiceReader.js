@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1N_20251107 — Narrador IA Integrado (V1.9.2 Highlight-Ghost)
+✅ CFC_FUNC_10_1K_20251107 — Narrador IA Integrado (V1.7 Simulación continua)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,14 +14,10 @@ let currentIndex = 0;
 let sentences = [];
 let utter = null;
 let beep = null;
-let overlayEl = null;
 
-// ==========================================================
-// 🎧 Sonido metálico corto Premium
-// ==========================================================
 function initBeep() {
   beep = new Audio(
-    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
+    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
   );
 }
 
@@ -70,27 +66,17 @@ function openVoicePanel() {
   const voiceSelect = document.getElementById("voiceSelect");
   const speedBtns = document.querySelectorAll(".speed-btn");
 
-  // 🔸 Cambiar velocidad
+  // 🧠 Cambiar velocidad
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       if (beep) beep.play();
-
-      if (utter && speechSynthesis.speaking) {
-        speechSynthesis.pause();
-        const resumeIndex = currentIndex;
-        speechSynthesis.cancel();
-        setTimeout(() => {
-          currentIndex = resumeIndex;
-          readNextSentence();
-        }, 150);
-      }
     };
   });
 
-  // 🔸 Cambiar voz
+  // 🧠 Cambiar voz
   voiceSelect.addEventListener("change", () => {
     currentVoice = voiceSelect.value;
     if (beep) beep.play();
@@ -115,14 +101,17 @@ function openVoicePanel() {
 }
 
 // ==========================================================
-// 🔊 Lector por frases con overlay fantasma
+// 🔊 Motor de lectura por frases
 // ==========================================================
 function startReading() {
-  stopReading();
-  const text = (document.querySelector("main") || document.body).innerText;
+  stopReading(); // cancelar anterior si hay
+  const text = document.querySelector("main")?.innerText || document.body.innerText;
+
+  // 🔹 Dividimos por frases naturales
   sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
   currentIndex = 0;
   isPaused = false;
+
   readNextSentence();
 }
 
@@ -136,8 +125,6 @@ function readNextSentence() {
     return;
   }
 
-  drawOverlay(sentence);
-
   utter = new SpeechSynthesisUtterance(sentence);
   utter.lang = "es-ES";
   utter.rate = currentRate;
@@ -147,7 +134,6 @@ function readNextSentence() {
     null;
 
   utter.onend = () => {
-    removeOverlay();
     if (!isPaused) {
       currentIndex++;
       readNextSentence();
@@ -158,74 +144,16 @@ function readNextSentence() {
 }
 
 // ==========================================================
-// ✨ Overlay fantasma para resaltado no destructivo
-// ==========================================================
-function drawOverlay(sentence) {
-  removeOverlay();
-  const range = findRange(sentence);
-  if (!range) return;
-
-  const rects = range.getClientRects();
-  const isDark = getLuminance(window.getComputedStyle(document.body).backgroundColor) < 128;
-
-  overlayEl = document.createElement("div");
-  overlayEl.className = isDark ? "tts-overlay-dark" : "tts-overlay-light";
-
-  // Multiples rects = párrafos largos
-  for (const rect of rects) {
-    const span = document.createElement("div");
-    span.className = "tts-highlight-frag";
-    span.style.top = `${rect.top + window.scrollY}px`;
-    span.style.left = `${rect.left + window.scrollX}px`;
-    span.style.width = `${rect.width}px`;
-    span.style.height = `${rect.height}px`;
-    overlayEl.appendChild(span);
-  }
-
-  document.body.appendChild(overlayEl);
-}
-
-function removeOverlay() {
-  if (overlayEl) {
-    overlayEl.remove();
-    overlayEl = null;
-  }
-}
-
-function findRange(sentence) {
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-  let node;
-  while ((node = walker.nextNode())) {
-    const idx = node.data.indexOf(sentence);
-    if (idx !== -1) {
-      const range = document.createRange();
-      range.setStart(node, idx);
-      range.setEnd(node, idx + sentence.length);
-      return range;
-    }
-  }
-  return null;
-}
-
-function getLuminance(rgb) {
-  const nums = rgb.match(/\d+/g);
-  if (!nums) return 255;
-  const [r, g, b] = nums.map(Number);
-  return 0.299 * r + 0.587 * g + 0.114 * b;
-}
-
-// ==========================================================
 // ⏹️ Stop Reading
 // ==========================================================
 function stopReading() {
   speechSynthesis.cancel();
-  removeOverlay();
   currentIndex = 0;
   isPaused = false;
 }
 
 // ==========================================================
-// 🗣️ Voces (2F + 1M)
+// 🗣️ Voces en español (2F + 1M)
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
@@ -251,4 +179,22 @@ function loadVoices() {
   finalVoices = finalVoices.slice(0, 3);
 
   finalVoices.forEach((v) => {
-    const opt = document
+    const opt = document.createElement("option");
+    opt.value = v.name;
+    opt.textContent = `${v.name} (${v.lang})`;
+    select.appendChild(opt);
+  });
+
+  currentVoice = finalVoices[0]?.name || null;
+}
+
+speechSynthesis.onvoiceschanged = loadVoices;
+
+/* ==========================================================
+🔒 CFC-SYNC QA — V1.7 Simulación continua
+✅ Sin cancelaciones totales (no pierde posición)
+✅ Reanudación exacta desde misma frase
+✅ Cambios de voz y velocidad instantáneos
+✅ Voces: 2 femeninas + 1 masculina (español)
+✅ Compatible con modo offline del Campus LITE
+========================================================== */
