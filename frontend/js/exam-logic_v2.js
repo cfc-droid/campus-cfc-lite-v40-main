@@ -1,7 +1,7 @@
 /* ==========================================================
-   CFC — EXAM LOGIC V2 (SYNC FIX v6.1 + AUDIO V9.2 FINAL)
+   CFC — EXAM LOGIC V2 (SYNC FIX v6.2 + AUDIO V9.2 FINAL + HISTORIAL OK)
    ========================================================== */
-// ✅ CFC_FUNC_3_2_EXAM_SOUND_V9.2 — Solución definitiva audio examen — QA-SYNC 2025-10-30
+// ✅ CFC_FUNC_3_2_EXAM_SOUND_V9.2 — Solución definitiva audio examen + historial — QA-SYNC 2025-11-03
 
 document.addEventListener("DOMContentLoaded", () => {
   const examForm = document.querySelector("#exam-form");
@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }).catch(()=>{});
   }, { once:true });
 
+  /* ==========================================================
+     📘 EVENTO PRINCIPAL — Al enviar examen
+     ========================================================== */
   examForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -37,10 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const score = Math.round((correctAnswers / totalQuestions) * 100);
+    const passed = score >= 70;
+
+    // 💾 Guardar datos inmediatos del examen
     localStorage.setItem("lastExamScore", score);
     localStorage.setItem("lastExamDate", new Date().toISOString());
 
-    const passed = score >= 70;
+    // ✅ Mostrar resultado
     const msg = passed
       ? `✅ ¡Aprobado! Obtuviste ${correctAnswers}/${totalQuestions} (${score}%).`
       : `❌ Reprobado. Obtuviste ${correctAnswers}/${totalQuestions} (${score}%).`;
@@ -54,18 +60,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const snd = passed ? successSound : errorSound;
       snd.currentTime = 0;
       snd.play()
-        .then(() =>
-          console.log(`🧩 CFC_SYNC checkpoint: ${(passed ? "success" : "error")}.wav reproducido — QA-SYNC V9.2`)
-        )
+        .then(() => console.log(`🧩 CFC_SYNC checkpoint: ${(passed ? "success" : "error")}.wav reproducido — QA-SYNC V9.2`))
         .catch(err => console.warn("Audio playback bloqueado:", err));
     }, 300);
 
     /* ==========================================================
-       🧠 BLOQUE CFC SYNC GLOBAL CORREGIDO
+       🧠 BLOQUE CFC SYNC GLOBAL — Progreso y desbloqueos
        ========================================================== */
-    const moduleNumber = parseInt(
-      document.body.dataset.module || localStorage.getItem("currentModule") || 1
-    );
+    const moduleNumber = parseInt(document.body.dataset.module || localStorage.getItem("currentModule") || 1);
 
     const syncEvent = new CustomEvent("examCompleted", {
       detail: { moduleNumber, score, passed },
@@ -83,12 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("completedModules", JSON.stringify(modules));
       }
     }
-    /* ==========================================================
-       🧱 FIN BLOQUE CFC SYNC GLOBAL CORREGIDO
-       ========================================================== */
 
     /* ==========================================================
-       ✅ CFC_FUNC_3_2_20251103 — Guardado local del historial de exámenes
+       🧾 BLOQUE HISTORIAL DE EXÁMENES — Guardado local
        ========================================================== */
     try {
       const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
@@ -110,9 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ==========================================================
-   🧩 [CFC-SYNC INSERT BEGIN]
-   ✅ CFC_FUNC_2.1_INSERT_2025-11-08 — Emisor automático de evento examCompleted
-   🔒 CFC-SYNC V7.6 — Integración examen → progreso
+   🧩 [CFC-SYNC INSERT] — Emisor automático de evento examCompleted
    ========================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.querySelector("button[onclick='enviarExamen()']");
@@ -129,4 +126,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 500);
   });
 });
-// 🧩 [CFC-SYNC INSERT END]
