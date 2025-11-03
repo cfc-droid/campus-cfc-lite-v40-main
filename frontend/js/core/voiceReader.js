@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1C_20251105 — Narrador IA Integrado (Final Premium)
+✅ CFC_FUNC_10_1D_20251105 — Narrador IA Integrado (Final Dinámico)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (voiceBtn) voiceBtn.addEventListener("click", openVoicePanel);
 });
 
-let beep; // efecto sonoro
+let currentUtterance = null;
+let beep = new Audio("data:audio/wav;base64,UklGRhYAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQgAAA==");
 
 function openVoicePanel() {
   if (document.querySelector(".tts-panel")) return;
@@ -41,11 +42,8 @@ function openVoicePanel() {
     </div>
   `);
 
-  beep = new Audio("data:audio/wav;base64,UklGRhYAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQgAAA=="); // beep 50ms
-
   loadVoices();
 
-  // Controles
   const readBtn = document.getElementById("readAll");
   const pauseBtn = document.getElementById("pause");
   const resumeBtn = document.getElementById("resume");
@@ -57,17 +55,26 @@ function openVoicePanel() {
   let currentRate = 1;
   let currentVoice = null;
 
-  // Selección de velocidad
+  // 🟡 Ajustar velocidad dinámica durante lectura
   speedBtns.forEach(btn => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      if (currentUtterance && speechSynthesis.speaking) {
+        try {
+          speechSynthesis.pause();
+          currentUtterance.rate = currentRate;
+          speechSynthesis.resume();
+        } catch (e) {
+          console.warn("⚠️ No se puede cambiar la velocidad en tiempo real en este navegador.");
+        }
+      }
       beep.play();
     };
   });
 
-  // Lectura principal
+  // 🔊 Iniciar lectura
   readBtn.onclick = () => {
     const text = document.querySelector("main")?.innerText || document.body.innerText;
     const utter = new SpeechSynthesisUtterance(text);
@@ -76,6 +83,9 @@ function openVoicePanel() {
     const selectedVoice = voices.find(v => v.name === selectedName);
     utter.voice = selectedVoice || voices[0];
     utter.rate = currentRate;
+    utter.pitch = 1;
+    utter.lang = "es-ES";
+    currentUtterance = utter;
     speechSynthesis.cancel();
     speechSynthesis.speak(utter);
     beep.play();
@@ -84,11 +94,28 @@ function openVoicePanel() {
   pauseBtn.onclick = () => speechSynthesis.pause();
   resumeBtn.onclick = () => speechSynthesis.resume();
   stopBtn.onclick = () => speechSynthesis.cancel();
-  closeBtn.onclick = () => document.querySelector(".tts-panel").remove();
+  closeBtn.onclick = () => {
+    speechSynthesis.cancel();
+    document.querySelector(".tts-panel").remove();
+  };
 
-  // Cambio de voz
+  // 🎧 Cambio de voz (sin reiniciar)
   voiceSelect.addEventListener("change", () => {
     currentVoice = voiceSelect.value;
+    if (currentUtterance && speechSynthesis.speaking) {
+      try {
+        const pos = window.getSelection().anchorOffset || 0;
+        const text = document.querySelector("main")?.innerText || document.body.innerText;
+        const newText = text.substring(pos);
+        const utter = new SpeechSynthesisUtterance(newText);
+        utter.voice = speechSynthesis.getVoices().find(v => v.name === currentVoice);
+        utter.rate = currentRate;
+        utter.lang = "es-ES";
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utter);
+        currentUtterance = utter;
+      } catch {}
+    }
     beep.play();
   });
 }
@@ -96,29 +123,17 @@ function openVoicePanel() {
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
   select.innerHTML = "";
+
   const allVoices = speechSynthesis.getVoices();
+  const spanishVoices = allVoices.filter(v => v.lang.startsWith("es"));
 
-  // Filtrar solo voces en español (es-ES, es-MX, es-419, es-AR)
-  const spanishVoices = allVoices.filter(v =>
-    v.lang.startsWith("es")
-  );
+  // 🔸 Selección garantizada: 2 femeninas + 2 masculinas
+  const femaleNames = ["Helena", "Laura", "Elena", "Sofía"];
+  const maleNames = ["Pablo", "Enrique", "Alberto", "Jorge"];
 
-  // Seleccionar solo 4 voces (2 femeninas + 2 masculinas)
-  const female = spanishVoices.filter(v =>
-    v.name.toLowerCase().includes("female") ||
-    v.name.toLowerCase().includes("mujer") ||
-    v.name.toLowerCase().includes("helena") ||
-    v.name.toLowerCase().includes("laura")
-  ).slice(0, 2);
-
-  const male = spanishVoices.filter(v =>
-    v.name.toLowerCase().includes("male") ||
-    v.name.toLowerCase().includes("hombre") ||
-    v.name.toLowerCase().includes("pablo") ||
-    v.name.toLowerCase().includes("enrique")
-  ).slice(0, 2);
-
-  const finalVoices = [...female, ...male].slice(0, 4);
+  const females = spanishVoices.filter(v => femaleNames.some(n => v.name.includes(n))).slice(0, 2);
+  const males = spanishVoices.filter(v => maleNames.some(n => v.name.includes(n))).slice(0, 2);
+  const finalVoices = [...females, ...males];
 
   finalVoices.forEach(v => {
     const opt = document.createElement("option");
@@ -126,11 +141,21 @@ function loadVoices() {
     opt.textContent = `${v.name} (${v.lang})`;
     select.appendChild(opt);
   });
+
+  // 🔸 Si por alguna razón hay menos de 4, completamos con las primeras 4 en español
+  if (finalVoices.length < 4) {
+    spanishVoices.slice(0, 4 - finalVoices.length).forEach(v => {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = `${v.name} (${v.lang})`;
+      select.appendChild(opt);
+    });
+  }
 }
 
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* 🔒 CFC-SYNC
-# ✅ CFC_FUNC_10_1C_20251105 — CFC-VOICE READER V1.3 Final Premium
-echo "🧩 CFC_SYNC checkpoint: Voces filtradas + velocidad funcional + beep activo"
+# ✅ CFC_FUNC_10_1D_20251105 — CFC-VOICE READER V1.4 Dinámico + Beep + Voces filtradas
+echo "🧩 CFC_SYNC checkpoint: velocidad en tiempo real + voces forzadas = OK"
 ========================================================== */
