@@ -160,15 +160,21 @@
 ========================================================== */
 
 /* ==========================================================
-✅ CFC_FUNC_10_1N_20251107 — Overlay no destructivo Highlight-Ghost
+✅ CFC_FUNC_10_1O_20251107 — Overlay no destructivo Highlight-Ghost (SafeLayer Fix)
 ========================================================== */
 
-.tts-overlay-light, .tts-overlay-dark {
+.tts-overlay-light,
+.tts-overlay-dark {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: none;
-  z-index: 9998;
+  pointer-events: none;     /* No bloquea clics */
+  z-index: 9000;            /* 🔥 menor que el panel */
+}
+
+.tts-panel {
+  position: fixed;
+  z-index: 10000 !important; /* 🔒 prioridad absoluta */
 }
 
 .tts-highlight-frag {
