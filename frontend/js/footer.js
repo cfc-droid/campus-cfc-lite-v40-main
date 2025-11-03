@@ -1,6 +1,6 @@
 /* =====================================================
-   🔒 CFC-SYNC V7.5 — Subpaso 3-4 (Footer Global FIX FINAL)
-   ✅ CFC_FUNC_1_3_20251103_FINAL — Footer funcional 100 % Cloudflare
+   🔒 CFC-SYNC V7.6 — Subpaso 3-4 + Integración CFC-ACTIVITY
+   ✅ CFC_FUNC_1_3_20251105_FINAL — Footer global + Tracker activo
    Autor: ChatGPT + CFC
    ===================================================== */
 
@@ -23,5 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
     </footer>
   `;
 
-  console.log("🧩 CFC_SYNC checkpoint:", "footer.js | FIX_FINAL rutas absolutas", new Date().toLocaleString());
+  // ✅ CFC_FUNC_8_2_LINK_20251105 — Vincular tracker de actividad
+  const trackerScript = document.createElement("script");
+  trackerScript.src = "../js/activity_tracker.js?v=20251105";
+  document.body.appendChild(trackerScript);
+
+  console.log(
+    "🧩 CFC_SYNC checkpoint:",
+    "footer.js | FIX_FINAL + tracker activo",
+    new Date().toLocaleString()
+  );
 });
