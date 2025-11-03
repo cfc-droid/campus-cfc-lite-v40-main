@@ -174,3 +174,29 @@
   border-radius: 6px;
   transition: background 0.3s ease;
 }
+
+/* ==========================================================
+✅ CFC_FUNC_10_1N_20251107 — Overlay no destructivo Highlight-Ghost
+========================================================== */
+
+.tts-overlay-light, .tts-overlay-dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.tts-highlight-frag {
+  position: absolute;
+  border-radius: 6px;
+  transition: background 0.25s ease;
+}
+
+.tts-overlay-light .tts-highlight-frag {
+  background: rgba(255, 215, 0, 0.25);
+}
+
+.tts-overlay-dark .tts-highlight-frag {
+  background: rgba(255, 255, 255, 0.15);
+}
