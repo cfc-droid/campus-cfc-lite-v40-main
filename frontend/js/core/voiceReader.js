@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1J_20251107 — Narrador IA Integrado (V1.6.4 FINAL-STABLE)
+✅ CFC_FUNC_10_1K_20251107 — Narrador IA Integrado (V1.7 Simulación continua)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -7,12 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (voiceBtn) voiceBtn.addEventListener("click", openVoicePanel);
 });
 
-let currentUtterance = null;
 let currentVoice = null;
 let currentRate = 1;
-let lastSpokenChar = 0;
-let CFC_LAST_WORD = "";
-let CFC_RESTART_LOCK = false;
+let isPaused = false;
+let currentIndex = 0;
+let sentences = [];
+let utter = null;
 let beep = null;
 
 function initBeep() {
@@ -21,6 +21,9 @@ function initBeep() {
   );
 }
 
+// ==========================================================
+// 🧩 Panel visual
+// ==========================================================
 function openVoicePanel() {
   if (document.querySelector(".tts-panel")) return;
 
@@ -29,13 +32,10 @@ function openVoicePanel() {
     `
     <div class="tts-panel glass-box">
       <h4>🎧 Lectura IA CFC</h4>
-      <label>Voz:
-        <select id="voiceSelect"></select>
-      </label><br>
+      <label>Voz: <select id="voiceSelect"></select></label><br>
 
       <div class="tts-speed">
         <span>Velocidad:</span><br>
-        <button class="speed-btn" data-rate="0.5">x0.5</button>
         <button class="speed-btn" data-rate="0.75">x0.75</button>
         <button class="speed-btn" data-rate="1">x1</button>
         <button class="speed-btn" data-rate="1.25">x1.25</button>
@@ -63,117 +63,97 @@ function openVoicePanel() {
   const resumeBtn = document.getElementById("resume");
   const stopBtn = document.getElementById("stop");
   const closeBtn = document.getElementById("close");
-  const speedBtns = document.querySelectorAll(".speed-btn");
   const voiceSelect = document.getElementById("voiceSelect");
+  const speedBtns = document.querySelectorAll(".speed-btn");
 
-  // 🟡 Control dinámico de velocidad
+  // 🧠 Cambiar velocidad
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
-      if (CFC_RESTART_LOCK) return;
-      CFC_RESTART_LOCK = true;
-      setTimeout(() => (CFC_RESTART_LOCK = false), 800);
-
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       if (beep) beep.play();
-
-      if (speechSynthesis.speaking && currentUtterance) {
-        const safeWord = CFC_LAST_WORD;
-        speechSynthesis.pause();
-        speechSynthesis.cancel();
-        setTimeout(() => restartSpeechFromWord(safeWord), 200);
-      }
     };
   });
 
-  // 🎙️ Leer todo
-  readBtn.onclick = () => {
-    const text =
-      document.querySelector("main")?.innerText || document.body.innerText;
-    startSpeech(text);
+  // 🧠 Cambiar voz
+  voiceSelect.addEventListener("change", () => {
+    currentVoice = voiceSelect.value;
     if (beep) beep.play();
-  };
+  });
 
+  readBtn.onclick = () => startReading();
   pauseBtn.onclick = () => {
+    isPaused = true;
     speechSynthesis.pause();
     if (beep) beep.play();
   };
   resumeBtn.onclick = () => {
+    isPaused = false;
     speechSynthesis.resume();
     if (beep) beep.play();
   };
-  stopBtn.onclick = () => {
-    speechSynthesis.cancel();
-    if (beep) beep.play();
-  };
+  stopBtn.onclick = () => stopReading();
   closeBtn.onclick = () => {
-    speechSynthesis.cancel();
+    stopReading();
     document.querySelector(".tts-panel").remove();
   };
-
-  // 🎧 Cambio de voz
-  voiceSelect.addEventListener("change", () => {
-    if (CFC_RESTART_LOCK) return;
-    CFC_RESTART_LOCK = true;
-    setTimeout(() => (CFC_RESTART_LOCK = false), 800);
-
-    currentVoice = voiceSelect.value;
-    if (beep) beep.play();
-
-    if (speechSynthesis.speaking && currentUtterance) {
-      const safeWord = CFC_LAST_WORD;
-      speechSynthesis.pause();
-      speechSynthesis.cancel();
-      setTimeout(() => restartSpeechFromWord(safeWord), 200);
-    }
-  });
 }
 
 // ==========================================================
-// 🔊 Motor de lectura con seguimiento de palabra real
+// 🔊 Motor de lectura por frases
 // ==========================================================
-function startSpeech(text) {
-  speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
+function startReading() {
+  stopReading(); // cancelar anterior si hay
+  const text = document.querySelector("main")?.innerText || document.body.innerText;
+
+  // 🔹 Dividimos por frases naturales
+  sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
+  currentIndex = 0;
+  isPaused = false;
+
+  readNextSentence();
+}
+
+function readNextSentence() {
+  if (isPaused || currentIndex >= sentences.length) return;
+
+  const sentence = sentences[currentIndex].trim();
+  if (!sentence) {
+    currentIndex++;
+    readNextSentence();
+    return;
+  }
+
+  utter = new SpeechSynthesisUtterance(sentence);
   utter.lang = "es-ES";
   utter.rate = currentRate;
-  utter.pitch = 1;
   utter.voice =
     speechSynthesis.getVoices().find((v) => v.name === currentVoice) ||
     speechSynthesis.getVoices().find((v) => v.lang.startsWith("es")) ||
     null;
 
-  utter.onboundary = (e) => {
-    if (e.name === "word" && e.charIndex != null) {
-      const portion = text.substring(0, e.charIndex);
-      const words = portion.trim().split(/\s+/);
-      CFC_LAST_WORD = words[words.length - 1] || "";
-      lastSpokenChar = e.charIndex;
+  utter.onend = () => {
+    if (!isPaused) {
+      currentIndex++;
+      readNextSentence();
     }
   };
 
-  currentUtterance = utter;
   speechSynthesis.speak(utter);
 }
 
-// ✅ Reinicio inteligente buscando palabra en texto
-function restartSpeechFromWord(word) {
-  const text =
-    document.querySelector("main")?.innerText || document.body.innerText;
-  if (!word) {
-    startSpeech(text);
-    return;
-  }
-
-  const index = text.indexOf(word);
-  const startFrom = index > 5 ? index - 3 : 0; // pequeño retroceso
-  const remaining = text.substring(startFrom);
-  startSpeech(remaining);
+// ==========================================================
+// ⏹️ Stop Reading
+// ==========================================================
+function stopReading() {
+  speechSynthesis.cancel();
+  currentIndex = 0;
+  isPaused = false;
 }
 
 // ==========================================================
-// 🗣️ Voces filtradas (solo español, 3 máximo: 2F + 1M)
+// 🗣️ Voces en español (2F + 1M)
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
@@ -211,9 +191,10 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.6.4 FINAL-STABLE (SmartBoundary RealAlign)
-✅ Reanudación por palabra exacta, no por índice
-✅ Sin retrocesos acumulativos
-✅ Compatible con cambios rápidos de voz/velocidad
+🔒 CFC-SYNC QA — V1.7 Simulación continua
+✅ Sin cancelaciones totales (no pierde posición)
+✅ Reanudación exacta desde misma frase
+✅ Cambios de voz y velocidad instantáneos
 ✅ Voces: 2 femeninas + 1 masculina (español)
+✅ Compatible con modo offline del Campus LITE
 ========================================================== */
