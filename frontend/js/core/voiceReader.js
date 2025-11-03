@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1E_20251106 — Narrador IA Integrado (V1.5 REAL)
+✅ CFC_FUNC_10_1F_20251106 — Narrador IA Integrado (V1.6 REAL)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
 let currentUtterance = null;
 let currentVoice = null;
 let currentRate = 1;
-let beep = null;
 let lastSpokenChar = 0;
+let beep = null;
 
 function initBeep() {
-  // ✅ Beep dorado metálico (80 ms)
+  // 🎧 Sonido metálico corto Premium (80 ms)
   beep = new Audio(
-    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRAAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
+    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
   );
 }
 
@@ -28,7 +28,6 @@ function openVoicePanel() {
     `
     <div class="tts-panel glass-box">
       <h4>🎧 Lectura IA CFC</h4>
-
       <label>Voz:
         <select id="voiceSelect"></select>
       </label><br>
@@ -66,24 +65,20 @@ function openVoicePanel() {
   const speedBtns = document.querySelectorAll(".speed-btn");
   const voiceSelect = document.getElementById("voiceSelect");
 
-  // ============================
-  // 🎚️ Control de velocidad
-  // ============================
+  // 🟡 Control de velocidad dinámico
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-
       if (beep) beep.play();
 
-      // ✅ Si hay lectura activa, ajusta velocidad SIN reiniciar (reanudando)
       if (speechSynthesis.speaking && currentUtterance) {
         try {
           const wasPaused = speechSynthesis.paused;
           speechSynthesis.pause();
           speechSynthesis.cancel();
-          restartSpeechFrom(lastSpokenChar);
+          restartSpeechFrom(lastSpokenChar, true); // true = suavizado
           if (!wasPaused) speechSynthesis.resume();
         } catch (err) {
           console.warn("⚠️ No se pudo ajustar velocidad en vivo:", err);
@@ -92,9 +87,7 @@ function openVoicePanel() {
     };
   });
 
-  // ============================
-  // 🔊 Iniciar lectura
-  // ============================
+  // 🎙️ Leer todo
   readBtn.onclick = () => {
     const text =
       document.querySelector("main")?.innerText || document.body.innerText;
@@ -102,9 +95,6 @@ function openVoicePanel() {
     if (beep) beep.play();
   };
 
-  // ============================
-  // ⏸️ Controles
-  // ============================
   pauseBtn.onclick = () => {
     speechSynthesis.pause();
     if (beep) beep.play();
@@ -122,9 +112,7 @@ function openVoicePanel() {
     document.querySelector(".tts-panel").remove();
   };
 
-  // ============================
-  // 🎤 Cambio de voz
-  // ============================
+  // 🎧 Cambio de voz
   voiceSelect.addEventListener("change", () => {
     currentVoice = voiceSelect.value;
     if (beep) beep.play();
@@ -133,14 +121,14 @@ function openVoicePanel() {
       const wasPaused = speechSynthesis.paused;
       speechSynthesis.pause();
       speechSynthesis.cancel();
-      restartSpeechFrom(lastSpokenChar);
+      restartSpeechFrom(lastSpokenChar, true);
       if (!wasPaused) speechSynthesis.resume();
     }
   });
 }
 
 // ==========================================================
-// 🧠 Motor de lectura y reinicio parcial
+// 🔊 Motor de lectura con control de índice
 // ==========================================================
 function startSpeech(text) {
   speechSynthesis.cancel();
@@ -162,15 +150,18 @@ function startSpeech(text) {
   speechSynthesis.speak(utter);
 }
 
-function restartSpeechFrom(index) {
+// ✅ Ajuste inteligente al reiniciar lectura
+function restartSpeechFrom(index, smooth = false) {
   const text =
     document.querySelector("main")?.innerText || document.body.innerText;
-  const remaining = text.substring(index);
+  let rewind = smooth ? 100 : 0; // retrocede 100 caracteres (~2-3 palabras)
+  let startFrom = Math.max(0, index - rewind);
+  const remaining = text.substring(startFrom);
   startSpeech(remaining);
 }
 
 // ==========================================================
-// 🎙️ Carga de voces filtradas (solo 4 válidas)
+// 🗣️ Voces filtradas (solo español, 3 máximo: 2F + 1M)
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
@@ -180,7 +171,7 @@ function loadVoices() {
   const allVoices = speechSynthesis.getVoices();
   const spanish = allVoices.filter((v) => v.lang.startsWith("es"));
 
-  // ⚙️ Forzar exactamente 4 voces (2F + 2M)
+  // ⚙️ Forzar máximo 3 voces (2 femeninas + 1 masculina)
   const femalePriority = ["Helena", "Laura", "Elena", "Sofía"];
   const malePriority = ["Pablo", "Enrique", "Carlos", "Jorge"];
 
@@ -189,15 +180,15 @@ function loadVoices() {
     .slice(0, 2);
   const male = spanish
     .filter((v) => malePriority.some((n) => v.name.includes(n)))
-    .slice(0, 2);
+    .slice(0, 1);
 
   let finalVoices = [...female, ...male];
 
-  // Si no hay suficientes, completar hasta 4
-  if (finalVoices.length < 4)
-    finalVoices = [...finalVoices, ...spanish.slice(0, 4 - finalVoices.length)];
+  // Si no hay suficientes, completar con cualquier español
+  if (finalVoices.length < 3)
+    finalVoices = [...finalVoices, ...spanish.slice(0, 3 - finalVoices.length)];
 
-  finalVoices = finalVoices.slice(0, 4);
+  finalVoices = finalVoices.slice(0, 3);
 
   finalVoices.forEach((v) => {
     const opt = document.createElement("option");
@@ -206,15 +197,14 @@ function loadVoices() {
     select.appendChild(opt);
   });
 
-  // Seleccionar la primera por defecto
   currentVoice = finalVoices[0]?.name || null;
 }
 
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — Versión validada en Chrome/Edge/Brave
-✅ Voces: 4 (2F+2M)
-✅ Beep activo metálico
-✅ Cambio de velocidad y voz sin reinicio
+🔒 CFC-SYNC QA — V1.6 REAL DUAL-SPANISH
+✅ Voces: 2 femeninas + 1 masculina, siempre en español
+✅ Velocidad dinámica sin retrocesos largos
+✅ Beep metálico premium activo
 ========================================================== */
