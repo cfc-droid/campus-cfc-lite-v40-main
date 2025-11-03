@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1F_20251106 — Narrador IA Integrado (V1.6 REAL)
+✅ CFC_FUNC_10_1G_20251106 — Narrador IA Integrado (V1.6.1 Ajuste fino retroceso 20)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -150,11 +150,11 @@ function startSpeech(text) {
   speechSynthesis.speak(utter);
 }
 
-// ✅ Ajuste inteligente al reiniciar lectura
+// ✅ Ajuste inteligente al reiniciar lectura (retroceso corto)
 function restartSpeechFrom(index, smooth = false) {
   const text =
     document.querySelector("main")?.innerText || document.body.innerText;
-  let rewind = smooth ? 100 : 0; // retrocede 100 caracteres (~2-3 palabras)
+  let rewind = smooth ? 20 : 0; // 🔥 retrocede solo 20 caracteres (~1 palabra)
   let startFrom = Math.max(0, index - rewind);
   const remaining = text.substring(startFrom);
   startSpeech(remaining);
@@ -203,8 +203,8 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.6 REAL DUAL-SPANISH
-✅ Voces: 2 femeninas + 1 masculina, siempre en español
-✅ Velocidad dinámica sin retrocesos largos
+🔒 CFC-SYNC QA — V1.6.1 Ajuste fino
+✅ Retroceso reducido: 20 caracteres (~1 palabra)
+✅ Voces: 2 femeninas + 1 masculina
 ✅ Beep metálico premium activo
 ========================================================== */
