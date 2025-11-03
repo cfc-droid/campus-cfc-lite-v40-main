@@ -159,34 +159,42 @@
 🔒 CFC-SYNC — Archivo QA verificado
 ========================================================== */
 
-/* ==========================================================
-✅ CFC_FUNC_10_1O_20251107 — Overlay no destructivo Highlight-Ghost (SafeLayer Fix)
-========================================================== */
+// ==========================================================
+// ✨ Overlay fantasma para resaltado no destructivo (Viewport Fix)
+// ==========================================================
+function drawOverlay(sentence) {
+  removeOverlay();
+  const range = findRange(sentence);
+  if (!range) return;
 
-.tts-overlay-light,
-.tts-overlay-dark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;     /* No bloquea clics */
-  z-index: 9000;            /* 🔥 menor que el panel */
-}
+  const rects = range.getClientRects();
+  if (!rects.length) return;
 
-.tts-panel {
-  position: fixed;
-  z-index: 10000 !important; /* 🔒 prioridad absoluta */
-}
+  const isDark = getLuminance(window.getComputedStyle(document.body).backgroundColor) < 128;
 
-.tts-highlight-frag {
-  position: absolute;
-  border-radius: 6px;
-  transition: background 0.25s ease;
-}
+  overlayEl = document.createElement("div");
+  overlayEl.className = isDark ? "tts-overlay-dark" : "tts-overlay-light";
 
-.tts-overlay-light .tts-highlight-frag {
-  background: rgba(255, 215, 0, 0.25);
-}
+  // ✅ Ajuste: obtener offset real del contenedor visible
+  const scrollContainer =
+    document.querySelector("main") || document.querySelector(".chapter-content") || document.body;
+  const containerRect = scrollContainer.getBoundingClientRect();
 
-.tts-overlay-dark .tts-highlight-frag {
-  background: rgba(255, 255, 255, 0.15);
+  for (const rect of rects) {
+    const frag = document.createElement("div");
+    frag.className = "tts-highlight-frag";
+    frag.style.position = "absolute";
+
+    // ✅ Coordenadas relativas al contenedor visible
+    frag.style.top = `${rect.top - containerRect.top + scrollContainer.scrollTop}px`;
+    frag.style.left = `${rect.left - containerRect.left + scrollContainer.scrollLeft}px`;
+    frag.style.width = `${rect.width}px`;
+    frag.style.height = `${rect.height}px`;
+
+    overlayEl.appendChild(frag);
+  }
+
+  // Se monta el overlay DENTRO del contenedor principal
+  scrollContainer.style.position = "relative";
+  scrollContainer.appendChild(overlayEl);
 }
