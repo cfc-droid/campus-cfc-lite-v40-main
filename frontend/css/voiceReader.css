@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1P_20251107 — Estilos Narrador IA (V2.0 Glow Edition Fix)
+✅ CFC_FUNC_10_1_20251105 — Estilos Narrador IA Integrado (posición inferior izquierda)
 ========================================================== */
 
 /* Botón fijo inferior izquierdo */
@@ -25,7 +25,7 @@
 }
 
 /* ==========================================================
-✅ Panel flotante IA
+✅ CFC_FUNC_10_1A_20251105 — Panel flotante IA (diseño base)
 ========================================================== */
 
 .tts-panel {
@@ -50,6 +50,7 @@
   text-align: center;
 }
 .tts-panel select,
+.tts-panel input,
 .tts-panel button {
   margin: 4px;
   padding: 5px 8px;
@@ -57,11 +58,11 @@
   border: none;
 }
 .tts-panel button {
-  background: linear-gradient(90deg,#FFD700,#B8860B);
-  color:#111;
-  font-weight:600;
-  cursor:pointer;
-  transition:all 0.2s ease;
+  background: linear-gradient(90deg, #FFD700, #B8860B);
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 .tts-panel button:hover {
   filter: brightness(1.2);
@@ -72,8 +73,9 @@
 }
 
 /* ==========================================================
-✅ Velocidad y botones activos
+✅ CFC_FUNC_10_1B_20251105 — Mejora visual de velocidad y botones activos
 ========================================================== */
+
 .tts-speed {
   margin-top: 6px;
   text-align: left;
@@ -109,8 +111,10 @@
 }
 
 /* ==========================================================
-✅ Controles finales
+✅ CFC_FUNC_10_1C_20251105 — Panel final optimizado (CFC-Premium V1.3)
 ========================================================== */
+
+/* Contenedor general */
 .tts-controls {
   display: flex;
   justify-content: space-between;
@@ -130,6 +134,8 @@
   background: #FFD700;
   filter: brightness(1.2);
 }
+
+/* Efecto visual del select */
 #voiceSelect {
   width: 100%;
   padding: 5px;
@@ -143,35 +149,28 @@
   background: #333;
 }
 
-/* ==========================================================
-✅ Overlay Glow adaptativo
-========================================================== */
-.tts-overlay-light,
-.tts-overlay-dark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9000;
-}
-.tts-highlight-frag {
-  position: absolute;
-  border-radius: 6px;
-  animation: glow 1.2s ease-in-out infinite alternate;
-}
-.tts-overlay-light .tts-highlight-frag {
-  background: rgba(255, 215, 0, 0.25);
-  box-shadow: 0 0 14px rgba(255,215,0,0.5);
-}
-.tts-overlay-dark .tts-highlight-frag {
-  background: rgba(255,255,255,0.15);
-  box-shadow: 0 0 14px rgba(255,255,255,0.35);
-}
-@keyframes glow {
-  from { opacity: 0.8; }
-  to { opacity: 0.4; }
+/* Animaciones de entrada y salida */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================
-🔒 QA-SYNC — Versión Final Estable V2.0 Glow Edition Fix
+🔒 CFC-SYNC — Archivo QA verificado
 ========================================================== */
+
+/* ==========================================================
+✅ CFC_FUNC_10_1L_20251107 — Estilos de resaltado adaptativo
+========================================================== */
+
+.tts-sentence.tts-active-light {
+  background: rgba(255, 215, 0, 0.25);
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.tts-sentence.tts-active-dark {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
