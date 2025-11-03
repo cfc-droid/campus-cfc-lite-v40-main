@@ -60,21 +60,23 @@ Sistema persistente localStorage + minutos activos visibles
 
   setInterval(updateVisualTime, 1000);
 
-  // 🔄 Guardado temporal cada 10 segundos
+   // 🔄 Guardado temporal cada 30 segundos
   setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000;
     localStorage.setItem("CFC_time_temp", totalSeconds + elapsed);
-  }, 10000);
+  }, 30000);
 
-  // 🧠 Sincronización automática cada 60 s
+  // 🧠 Sincronización automática cada 60 s (total persistente)
   setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000;
     const newTotal = totalSeconds + elapsed;
+    totalSeconds = newTotal; // 🔥 sincroniza variable base
     localStorage.setItem("CFC_time", newTotal);
-    console.log(`💾 AutoSync — ${((newTotal / 3600) * 60).toFixed(1)} min`);
+    localStorage.removeItem("CFC_time_temp");
+    console.log(`💾 AutoSync — Tiempo total ${(newTotal / 60).toFixed(1)} min`);
   }, 60000);
 
-  // 🕐 Al cerrar o recargar, guardar tiempo total persistente
+  // 🕐 Guardado al cerrar o recargar
   window.addEventListener("beforeunload", () => {
     const elapsedSeconds = (Date.now() - startTime) / 1000;
     const newTotal = totalSeconds + elapsedSeconds;
