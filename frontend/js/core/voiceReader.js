@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1L_20251107 — Narrador IA Integrado (V1.8 Smart-Rate + Adaptive-Highlight)
+✅ CFC_FUNC_10_1M_20251107 — Narrador IA Integrado (V1.9 Smart-Highlight-Preserve)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,6 +14,7 @@ let currentIndex = 0;
 let sentences = [];
 let utter = null;
 let beep = null;
+let highlightEl = null;
 
 // 🎧 Sonido metálico corto Premium
 function initBeep() {
@@ -67,7 +68,7 @@ function openVoicePanel() {
   const voiceSelect = document.getElementById("voiceSelect");
   const speedBtns = document.querySelectorAll(".speed-btn");
 
-  // 🧠 Cambiar velocidad (afecta lectura actual)
+  // 🧠 Cambiar velocidad en vivo
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
@@ -75,7 +76,7 @@ function openVoicePanel() {
       btn.classList.add("active");
       if (beep) beep.play();
 
-      // Si está leyendo, reanuda con nueva velocidad
+      // Reanudar con nueva velocidad sin perder posición
       if (utter && speechSynthesis.speaking) {
         speechSynthesis.pause();
         const resumeIndex = currentIndex;
@@ -113,42 +114,29 @@ function openVoicePanel() {
 }
 
 // ==========================================================
-// 🔊 Motor de lectura por frases con resaltado adaptativo
+// 🔊 Motor de lectura por frases (no destruye HTML original)
 // ==========================================================
 function startReading() {
   stopReading();
-  const textContainer = document.querySelector("main") || document.body;
-  const text = textContainer.innerText;
-
-  // Dividimos el texto en frases
+  const container = document.querySelector("main") || document.body;
+  const text = container.innerText;
   sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
   currentIndex = 0;
   isPaused = false;
-
-  // Insertamos spans para resaltado
-  const html = sentences
-    .map((s, i) => `<span class="tts-sentence" data-index="${i}">${s}</span>`)
-    .join(" ");
-  textContainer.innerHTML = html;
-
   readNextSentence();
 }
 
 function readNextSentence() {
   if (isPaused || currentIndex >= sentences.length) return;
+  const sentence = sentences[currentIndex].trim();
+  if (!sentence) {
+    currentIndex++;
+    readNextSentence();
+    return;
+  }
 
-  const sentenceEls = document.querySelectorAll(".tts-sentence");
-  sentenceEls.forEach((el) => el.classList.remove("tts-active"));
-
-  const currentEl = sentenceEls[currentIndex];
-  if (!currentEl) return;
-
-  // Detectar fondo (claro u oscuro)
-  const bgColor = window.getComputedStyle(document.body).backgroundColor;
-  const isDark = getLuminance(bgColor) < 128;
-  currentEl.classList.add(isDark ? "tts-active-dark" : "tts-active-light");
-
-  utter = new SpeechSynthesisUtterance(currentEl.innerText.trim());
+  highlightSentence(sentence);
+  utter = new SpeechSynthesisUtterance(sentence);
   utter.lang = "es-ES";
   utter.rate = currentRate;
   utter.voice =
@@ -157,6 +145,7 @@ function readNextSentence() {
     null;
 
   utter.onend = () => {
+    clearHighlight();
     if (!isPaused) {
       currentIndex++;
       readNextSentence();
@@ -166,7 +155,55 @@ function readNextSentence() {
   speechSynthesis.speak(utter);
 }
 
-// Utilidad para calcular luminancia
+// ==========================================================
+// 🖍️ Resaltado dinámico no destructivo
+// ==========================================================
+function highlightSentence(text) {
+  clearHighlight();
+  const range = document.createRange();
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+
+  const node = findTextNode(document.body, text);
+  if (!node) return;
+
+  const start = node.data.indexOf(text);
+  if (start === -1) return;
+
+  range.setStart(node, start);
+  range.setEnd(node, start + text.length);
+  const span = document.createElement("span");
+  span.className = getHighlightClass();
+  range.surroundContents(span);
+  highlightEl = span;
+}
+
+function clearHighlight() {
+  if (highlightEl) {
+    const parent = highlightEl.parentNode;
+    while (highlightEl.firstChild) parent.insertBefore(highlightEl.firstChild, highlightEl);
+    parent.removeChild(highlightEl);
+    highlightEl = null;
+  }
+}
+
+// Busca el nodo de texto donde aparece la frase actual
+function findTextNode(root, text) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+  let node;
+  while ((node = walker.nextNode())) {
+    if (node.data.includes(text)) return node;
+  }
+  return null;
+}
+
+// Detecta modo oscuro o claro
+function getHighlightClass() {
+  const bgColor = window.getComputedStyle(document.body).backgroundColor;
+  const isDark = getLuminance(bgColor) < 128;
+  return isDark ? "tts-active-dark" : "tts-active-light";
+}
+
 function getLuminance(rgb) {
   const nums = rgb.match(/\d+/g);
   if (!nums) return 255;
@@ -179,17 +216,13 @@ function getLuminance(rgb) {
 // ==========================================================
 function stopReading() {
   speechSynthesis.cancel();
+  clearHighlight();
   currentIndex = 0;
   isPaused = false;
-
-  // Limpiar resaltado
-  document.querySelectorAll(".tts-sentence").forEach((el) =>
-    el.classList.remove("tts-active", "tts-active-dark", "tts-active-light")
-  );
 }
 
 // ==========================================================
-// 🗣️ Voces en español (2F + 1M)
+// 🗣️ Voces (2F + 1M)
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
@@ -227,9 +260,9 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.8 Smart-Rate + Adaptive-Highlight
-✅ Cambio de velocidad instantáneo (sin reinicio)
-✅ Cambio de voz estable (1–2 s)
-✅ Resaltado adaptativo según fondo claro/oscuro
-✅ Voces: 2 F + 1 M en español
+🔒 CFC-SYNC QA — V1.9 Smart-Highlight-Preserve
+✅ Mantiene layout y estilos del Campus
+✅ No altera el HTML original
+✅ Cambio de voz y velocidad estables
+✅ Resaltado adaptativo real
 ========================================================== */
