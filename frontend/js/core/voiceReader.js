@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1L_20251107 — Narrador IA Integrado (V1.8 Smart-Rate + Adaptive-Highlight)
+✅ CFC_FUNC_10_1M_20251107 — Narrador IA Integrado (V1.9.4 Ghost Highlight SafeDOM)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,6 +14,7 @@ let currentIndex = 0;
 let sentences = [];
 let utter = null;
 let beep = null;
+let overlayEl = null;
 
 // 🎧 Sonido metálico corto Premium
 function initBeep() {
@@ -75,7 +76,6 @@ function openVoicePanel() {
       btn.classList.add("active");
       if (beep) beep.play();
 
-      // Si está leyendo, reanuda con nueva velocidad
       if (utter && speechSynthesis.speaking) {
         speechSynthesis.pause();
         const resumeIndex = currentIndex;
@@ -113,23 +113,16 @@ function openVoicePanel() {
 }
 
 // ==========================================================
-// 🔊 Motor de lectura por frases con resaltado adaptativo
+// 🔊 Motor de lectura no destructivo (sin innerHTML)
 // ==========================================================
 function startReading() {
   stopReading();
-  const textContainer = document.querySelector("main") || document.body;
-  const text = textContainer.innerText;
 
-  // Dividimos el texto en frases
+  const container = document.querySelector("main") || document.body;
+  const text = container.innerText;
   sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
   currentIndex = 0;
   isPaused = false;
-
-  // Insertamos spans para resaltado
-  const html = sentences
-    .map((s, i) => `<span class="tts-sentence" data-index="${i}">${s}</span>`)
-    .join(" ");
-  textContainer.innerHTML = html;
 
   readNextSentence();
 }
@@ -137,18 +130,16 @@ function startReading() {
 function readNextSentence() {
   if (isPaused || currentIndex >= sentences.length) return;
 
-  const sentenceEls = document.querySelectorAll(".tts-sentence");
-  sentenceEls.forEach((el) => el.classList.remove("tts-active"));
+  const sentence = sentences[currentIndex].trim();
+  if (!sentence) {
+    currentIndex++;
+    readNextSentence();
+    return;
+  }
 
-  const currentEl = sentenceEls[currentIndex];
-  if (!currentEl) return;
+  drawOverlay(sentence);
 
-  // Detectar fondo (claro u oscuro)
-  const bgColor = window.getComputedStyle(document.body).backgroundColor;
-  const isDark = getLuminance(bgColor) < 128;
-  currentEl.classList.add(isDark ? "tts-active-dark" : "tts-active-light");
-
-  utter = new SpeechSynthesisUtterance(currentEl.innerText.trim());
+  utter = new SpeechSynthesisUtterance(sentence);
   utter.lang = "es-ES";
   utter.rate = currentRate;
   utter.voice =
@@ -157,6 +148,7 @@ function readNextSentence() {
     null;
 
   utter.onend = () => {
+    removeOverlay();
     if (!isPaused) {
       currentIndex++;
       readNextSentence();
@@ -166,7 +158,60 @@ function readNextSentence() {
   speechSynthesis.speak(utter);
 }
 
-// Utilidad para calcular luminancia
+// ==========================================================
+// ✨ Overlay fantasma (resalta sin alterar el texto real)
+// ==========================================================
+function drawOverlay(sentence) {
+  removeOverlay();
+
+  const range = findRange(sentence);
+  if (!range) return;
+
+  const rects = range.getClientRects();
+  if (!rects.length) return;
+
+  const isDark = getLuminance(window.getComputedStyle(document.body).backgroundColor) < 128;
+  overlayEl = document.createElement("div");
+  overlayEl.className = isDark ? "tts-overlay-dark" : "tts-overlay-light";
+
+  rects.forEach((rect) => {
+    const frag = document.createElement("div");
+    frag.className = "tts-highlight-frag";
+    frag.style.top = `${rect.top + window.scrollY}px`;
+    frag.style.left = `${rect.left + window.scrollX}px`;
+    frag.style.width = `${rect.width}px`;
+    frag.style.height = `${rect.height}px`;
+    overlayEl.appendChild(frag);
+  });
+
+  document.body.appendChild(overlayEl);
+}
+
+function removeOverlay() {
+  if (overlayEl) {
+    overlayEl.remove();
+    overlayEl = null;
+  }
+}
+
+function findRange(sentence) {
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+  let node;
+  while ((node = walker.nextNode())) {
+    const idx = node.data.indexOf(sentence);
+    if (idx !== -1) {
+      const range = document.createRange();
+      range.setStart(node, idx);
+      range.setEnd(node, idx + sentence.length);
+      return range;
+    }
+  }
+  return null;
+}
+
+// ==========================================================
+// ⚙️ Utilidades
+// ==========================================================
 function getLuminance(rgb) {
   const nums = rgb.match(/\d+/g);
   if (!nums) return 255;
@@ -174,22 +219,15 @@ function getLuminance(rgb) {
   return 0.299 * r + 0.587 * g + 0.114 * b;
 }
 
-// ==========================================================
-// ⏹️ Stop Reading
-// ==========================================================
 function stopReading() {
   speechSynthesis.cancel();
+  removeOverlay();
   currentIndex = 0;
   isPaused = false;
-
-  // Limpiar resaltado
-  document.querySelectorAll(".tts-sentence").forEach((el) =>
-    el.classList.remove("tts-active", "tts-active-dark", "tts-active-light")
-  );
 }
 
 // ==========================================================
-// 🗣️ Voces en español (2F + 1M)
+// 🗣️ Voces (2F + 1M español)
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
@@ -202,12 +240,8 @@ function loadVoices() {
   const femalePriority = ["Helena", "Laura", "Elena", "Sofía"];
   const malePriority = ["Pablo", "Enrique", "Carlos", "Jorge"];
 
-  const female = spanish
-    .filter((v) => femalePriority.some((n) => v.name.includes(n)))
-    .slice(0, 2);
-  const male = spanish
-    .filter((v) => malePriority.some((n) => v.name.includes(n)))
-    .slice(0, 1);
+  const female = spanish.filter((v) => femalePriority.some((n) => v.name.includes(n))).slice(0, 2);
+  const male = spanish.filter((v) => malePriority.some((n) => v.name.includes(n))).slice(0, 1);
 
   let finalVoices = [...female, ...male];
   if (finalVoices.length < 3)
@@ -227,9 +261,9 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.8 Smart-Rate + Adaptive-Highlight
-✅ Cambio de velocidad instantáneo (sin reinicio)
-✅ Cambio de voz estable (1–2 s)
-✅ Resaltado adaptativo según fondo claro/oscuro
-✅ Voces: 2 F + 1 M en español
+🔒 CFC-SYNC QA — V1.9.4 Ghost Highlight SafeDOM
+✅ Texto original sin alterarse
+✅ Resaltado suave no destructivo (overlay fantasma)
+✅ Cambio de voz y velocidad estable
+✅ Compatible con CSS Premium V1.3
 ========================================================== */
