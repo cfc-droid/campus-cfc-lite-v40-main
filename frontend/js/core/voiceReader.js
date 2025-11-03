@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1I_20251107 — Narrador IA Integrado (V1.6.3 REAL-LOCK)
+✅ CFC_FUNC_10_1J_20251107 — Narrador IA Integrado (V1.6.4 FINAL-STABLE)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,7 +11,7 @@ let currentUtterance = null;
 let currentVoice = null;
 let currentRate = 1;
 let lastSpokenChar = 0;
-let CFC_LAST_INDEX_REAL = 0;
+let CFC_LAST_WORD = "";
 let CFC_RESTART_LOCK = false;
 let beep = null;
 
@@ -66,12 +66,12 @@ function openVoicePanel() {
   const speedBtns = document.querySelectorAll(".speed-btn");
   const voiceSelect = document.getElementById("voiceSelect");
 
-  // 🟡 Control de velocidad dinámica
+  // 🟡 Control dinámico de velocidad
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
-      if (CFC_RESTART_LOCK) return; // ⛔ bloqueo activo
+      if (CFC_RESTART_LOCK) return;
       CFC_RESTART_LOCK = true;
-      setTimeout(() => (CFC_RESTART_LOCK = false), 1000);
+      setTimeout(() => (CFC_RESTART_LOCK = false), 800);
 
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach((b) => b.classList.remove("active"));
@@ -79,10 +79,10 @@ function openVoicePanel() {
       if (beep) beep.play();
 
       if (speechSynthesis.speaking && currentUtterance) {
-        const safeIndex = CFC_LAST_INDEX_REAL || lastSpokenChar;
+        const safeWord = CFC_LAST_WORD;
         speechSynthesis.pause();
         speechSynthesis.cancel();
-        setTimeout(() => restartSpeechFrom(safeIndex, true), 150);
+        setTimeout(() => restartSpeechFromWord(safeWord), 200);
       }
     };
   });
@@ -116,22 +116,22 @@ function openVoicePanel() {
   voiceSelect.addEventListener("change", () => {
     if (CFC_RESTART_LOCK) return;
     CFC_RESTART_LOCK = true;
-    setTimeout(() => (CFC_RESTART_LOCK = false), 1000);
+    setTimeout(() => (CFC_RESTART_LOCK = false), 800);
 
     currentVoice = voiceSelect.value;
     if (beep) beep.play();
 
     if (speechSynthesis.speaking && currentUtterance) {
-      const safeIndex = CFC_LAST_INDEX_REAL || lastSpokenChar;
+      const safeWord = CFC_LAST_WORD;
       speechSynthesis.pause();
       speechSynthesis.cancel();
-      setTimeout(() => restartSpeechFrom(safeIndex, true), 150);
+      setTimeout(() => restartSpeechFromWord(safeWord), 200);
     }
   });
 }
 
 // ==========================================================
-// 🔊 Motor de lectura con control de índice y bloqueo seguro
+// 🔊 Motor de lectura con seguimiento de palabra real
 // ==========================================================
 function startSpeech(text) {
   speechSynthesis.cancel();
@@ -145,9 +145,11 @@ function startSpeech(text) {
     null;
 
   utter.onboundary = (e) => {
-    if (e.charIndex > lastSpokenChar) {
+    if (e.name === "word" && e.charIndex != null) {
+      const portion = text.substring(0, e.charIndex);
+      const words = portion.trim().split(/\s+/);
+      CFC_LAST_WORD = words[words.length - 1] || "";
       lastSpokenChar = e.charIndex;
-      CFC_LAST_INDEX_REAL = e.charIndex; // checkpoint real persistente
     }
   };
 
@@ -155,12 +157,17 @@ function startSpeech(text) {
   speechSynthesis.speak(utter);
 }
 
-// ✅ Reinicio controlado con micro-retroceso fijo
-function restartSpeechFrom(index, smooth = false) {
+// ✅ Reinicio inteligente buscando palabra en texto
+function restartSpeechFromWord(word) {
   const text =
     document.querySelector("main")?.innerText || document.body.innerText;
-  const rewind = smooth ? 5 : 0; // 🔥 retrocede siempre 5 caracteres
-  const startFrom = Math.max(0, index - rewind);
+  if (!word) {
+    startSpeech(text);
+    return;
+  }
+
+  const index = text.indexOf(word);
+  const startFrom = index > 5 ? index - 3 : 0; // pequeño retroceso
   const remaining = text.substring(startFrom);
   startSpeech(remaining);
 }
@@ -204,10 +211,9 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.6.3 REAL-LOCK
-✅ Retroceso fijo: 5 caracteres (~micro)
-✅ Checkpoint persistente CFC_LAST_INDEX_REAL
-✅ Bloqueo temporal 1 s anti-acumulación
-✅ Voces: 2 femeninas + 1 masculina
-✅ Beep metálico premium activo
+🔒 CFC-SYNC QA — V1.6.4 FINAL-STABLE (SmartBoundary RealAlign)
+✅ Reanudación por palabra exacta, no por índice
+✅ Sin retrocesos acumulativos
+✅ Compatible con cambios rápidos de voz/velocidad
+✅ Voces: 2 femeninas + 1 masculina (español)
 ========================================================== */
