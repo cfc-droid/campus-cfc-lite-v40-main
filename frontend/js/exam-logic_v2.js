@@ -1,11 +1,11 @@
 /* ==========================================================
-   CFC — EXAM LOGIC V2 (SYNC FIX v6.3 + AUDIO V9.2 FINAL + HISTORIAL LIVE)
+   CFC — EXAM LOGIC V2 (SYNC FIX v6.4 FINAL + AUDIO + HISTORIAL FUNCIONAL)
    ========================================================== */
-// ✅ CFC_FUNC_3_2_EXAM_SOUND_V9.2 — Audio examen + historial en vivo — QA-SYNC 2025-11-03
+// ✅ CFC_FUNC_3_2_EXAM_SOUND_V9.3 — QA-SYNC 2025-11-03
 
 document.addEventListener("DOMContentLoaded", () => {
-  const examForm = document.querySelector("#exam-form");
-  if (!examForm) return;
+  const examBtn = document.querySelector("button[onclick='enviarExamen()']");
+  if (!examBtn) return;
 
   // 🎧 Sonidos
   const successSound = new Audio("../../sounds/success.wav");
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", () => {
     successSound.play().then(() => {
       successSound.pause(); successSound.currentTime = 0;
-      console.log("🧩 CFC_SYNC checkpoint: AudioContext habilitado — QA-SYNC V9.2");
+      console.log("🧩 AudioContext habilitado — QA-SYNC V9.3");
     }).catch(()=>{});
     errorSound.play().then(() => {
       errorSound.pause(); errorSound.currentTime = 0;
@@ -24,12 +24,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { once:true });
 
   /* ==========================================================
-     📘 EVENTO PRINCIPAL — Al enviar examen
+     📘 EVENTO PRINCIPAL — Al hacer clic en ENVIAR EXAMEN
      ========================================================== */
-  examForm.addEventListener("submit", (e) => {
+  examBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
-    const formData = new FormData(examForm);
+    const form = document.querySelector("#exam-form");
+    if (!form) return;
+
+    const formData = new FormData(form);
     let totalQuestions = 0;
     let correctAnswers = 0;
 
@@ -42,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const score = Math.round((correctAnswers / totalQuestions) * 100);
     const passed = score >= 70;
 
+    // 💾 Guardar datos inmediatos del examen
     localStorage.setItem("lastExamScore", score);
     localStorage.setItem("lastExamDate", new Date().toISOString());
 
@@ -59,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
 
     /* ==========================================================
-       🧠 BLOQUE CFC SYNC GLOBAL — Progreso
+       🧠 BLOQUE CFC SYNC GLOBAL — Progreso y desbloqueos
        ========================================================== */
     const moduleNumber = parseInt(document.body.dataset.module || localStorage.getItem("currentModule") || 1);
 
@@ -81,14 +85,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ==========================================================
-       🧾 BLOQUE HISTORIAL DE EXÁMENES — Guardado + Sincronización Live
+       🧾 BLOQUE HISTORIAL DE EXÁMENES — Guardado correcto
        ========================================================== */
     try {
       const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
       const moduleName = `Módulo ${moduleNumber}`;
       const date = new Date().toLocaleDateString("es-AR");
 
-      // Evitar duplicados: eliminar entradas anteriores del mismo módulo
+      // Evitar duplicados
       const filtered = examResults.filter(r => r.module !== moduleName);
 
       filtered.push({
@@ -99,46 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       localStorage.setItem("examResults", JSON.stringify(filtered));
-      console.log("🧩 CFC_SYNC checkpoint: historial actualizado — QA-SYNC P3.3 OK", filtered);
-
-      // 🔁 Actualización directa si está abierta results.html
-      if (window.location.pathname.includes("results")) {
-        const table = document.getElementById("examHistory");
-        if (table) {
-          const last = filtered[filtered.length - 1];
-          const row = `
-            <tr>
-              <td>${last.module}</td>
-              <td>${last.date}</td>
-              <td>${last.score}%</td>
-              <td>${last.status}</td>
-            </tr>`;
-          table.insertAdjacentHTML("beforeend", row);
-          console.log("🧩 CFC_SYNC checkpoint: fila añadida en vivo al historial");
-        }
-      }
+      console.log("🧩 Historial actualizado — QA-SYNC v6.4", filtered);
 
     } catch (err) {
       console.error("❌ Error guardando historial:", err);
     }
-  });
-});
-
-/* ==========================================================
-   🧩 [CFC-SYNC INSERT] — Emisor automático de evento examCompleted
-   ========================================================== */
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector("button[onclick='enviarExamen()']");
-  if (!btn) return;
-  btn.addEventListener("click", () => {
-    setTimeout(() => {
-      const aprobado = (localStorage.getItem("lastExamScore") || 0) >= 70;
-      const modulo = document.body.dataset.module || 1;
-      const evento = new CustomEvent("examCompleted", {
-        detail: { moduleNumber: modulo, passed: aprobado }
-      });
-      window.dispatchEvent(evento);
-      console.log("🧩 CFC_SYNC checkpoint: examCompleted emitido — QA-SYNC V7.6", new Date().toLocaleString());
-    }, 500);
   });
 });
