@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1N_20251107 — Estilos Narrador IA (V1.9.6 Ghost Highlight Fix)
+✅ CFC_FUNC_10_1P_20251107 — Estilos Narrador IA (V2.0 Glow Edition Fix)
 ========================================================== */
 
 /* Botón fijo inferior izquierdo */
@@ -25,7 +25,7 @@
 }
 
 /* ==========================================================
-✅ CFC_FUNC_10_1A_20251105 — Panel flotante IA (base)
+✅ Panel flotante IA
 ========================================================== */
 
 .tts-panel {
@@ -72,9 +72,8 @@
 }
 
 /* ==========================================================
-✅ CFC_FUNC_10_1B_20251105 — Velocidad y botones activos
+✅ Velocidad y botones activos
 ========================================================== */
-
 .tts-speed {
   margin-top: 6px;
   text-align: left;
@@ -110,9 +109,8 @@
 }
 
 /* ==========================================================
-✅ CFC_FUNC_10_1C_20251105 — Controles finales
+✅ Controles finales
 ========================================================== */
-
 .tts-controls {
   display: flex;
   justify-content: space-between;
@@ -132,8 +130,6 @@
   background: #FFD700;
   filter: brightness(1.2);
 }
-
-/* Select visual */
 #voiceSelect {
   width: 100%;
   padding: 5px;
@@ -148,36 +144,34 @@
 }
 
 /* ==========================================================
-✅ CFC_FUNC_10_1O_20251107 — Overlay fantasma (resaltado)
+✅ Overlay Glow adaptativo
 ========================================================== */
-
 .tts-overlay-light,
 .tts-overlay-dark {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   pointer-events: none;
   z-index: 9000;
 }
-
 .tts-highlight-frag {
   position: absolute;
   border-radius: 6px;
-  transition: background 0.25s ease;
+  animation: glow 1.2s ease-in-out infinite alternate;
 }
-
 .tts-overlay-light .tts-highlight-frag {
   background: rgba(255, 215, 0, 0.25);
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 0 14px rgba(255,215,0,0.5);
 }
-
 .tts-overlay-dark .tts-highlight-frag {
-  background: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 14px rgba(255,255,255,0.35);
+}
+@keyframes glow {
+  from { opacity: 0.8; }
+  to { opacity: 0.4; }
 }
 
 /* ==========================================================
-🔒 CFC-SYNC QA — Versión estable V1.9.6 (Highlight Fix)
+🔒 QA-SYNC — Versión Final Estable V2.0 Glow Edition Fix
 ========================================================== */
