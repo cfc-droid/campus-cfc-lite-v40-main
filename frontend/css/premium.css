@@ -602,3 +602,36 @@ main, section, footer, header {
 # ✅ CFC_FUNC_8_1_20251105 — CSS verificado QA-V41 dorado premium
 echo "🧩 CFC_SYNC checkpoint: modal animado y compatible con modo claro/oscuro"
 ========================================================== */
+
+/* ==========================================================
+✅ CFC_FUNC_9_1_20251105 — Estilo botón Contenido Adicional Premium (CFC-PACK PLUS V1)
+========================================================== */
+.btn-premium {
+  background: linear-gradient(90deg, #FFD700, #B8860B);
+  color: #000;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 12px;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 0 12px rgba(255,215,0,0.3);
+  transition: all 0.3s ease-in-out;
+  margin-top: 10px;
+}
+.btn-premium:hover {
+  filter: brightness(1.15);
+  transform: scale(1.05);
+  box-shadow: 0 0 18px rgba(255,215,0,0.6);
+}
+[data-theme="light"] .btn-premium {
+  background: linear-gradient(90deg, #FFE15A, #FFD700);
+  color: #111;
+}
+[data-theme="light"] .btn-premium:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+/* 🔒 CFC-SYNC
+# ✅ CFC_FUNC_9_1_20251105 — CFC-PACK PLUS V1 integrado
+echo "🧩 CFC_SYNC checkpoint: Contenido adicional descargable — P8 actualizado"
+========================================================== */
