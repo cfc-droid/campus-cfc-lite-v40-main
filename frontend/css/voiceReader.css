@@ -14,14 +14,14 @@
   padding: 10px 12px;
   border-radius: 50%;
   border: none;
-  box-shadow: 0 0 10px rgba(255,215,0,0.4);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
   cursor: pointer;
   z-index: 9999;
   transition: transform 0.2s, box-shadow 0.3s;
 }
 .tts-btn-fixed:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(255,215,0,0.6);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
 }
 
 /* ==========================================================
@@ -32,11 +32,11 @@
   position: fixed;
   bottom: 80px;
   left: 20px;
-  background: rgba(15,15,15,0.95);
+  background: rgba(15, 15, 15, 0.95);
   color: #FFD700;
   padding: 16px;
   border-radius: 14px;
-  box-shadow: 0 0 15px rgba(255,215,0,0.4);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
   z-index: 99999;
   width: 260px;
   font-family: "Poppins", sans-serif;
@@ -68,8 +68,14 @@
   filter: brightness(1.2);
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==========================================================
@@ -106,7 +112,7 @@
 .tts-speed button.active {
   background: #FFD700;
   color: #111;
-  box-shadow: 0 0 10px rgba(255,215,0,0.6);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
   transform: scale(1.1);
 }
 
@@ -151,50 +157,48 @@
 
 /* Animaciones de entrada y salida */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==========================================================
 🔒 CFC-SYNC — Archivo QA verificado
 ========================================================== */
 
-// ==========================================================
-// ✨ Overlay fantasma para resaltado no destructivo (Viewport Fix)
-// ==========================================================
-function drawOverlay(sentence) {
-  removeOverlay();
-  const range = findRange(sentence);
-  if (!range) return;
+/* ==========================================================
+✅ CFC_FUNC_10_1O_20251107 — Overlay no destructivo Highlight-Ghost (SafeLayer + Viewport Fix)
+========================================================== */
 
-  const rects = range.getClientRects();
-  if (!rects.length) return;
+.tts-overlay-light,
+.tts-overlay-dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* No bloquea clics */
+  z-index: 9000; /* 🔥 menor que el panel */
+}
 
-  const isDark = getLuminance(window.getComputedStyle(document.body).backgroundColor) < 128;
+.tts-panel {
+  position: fixed;
+  z-index: 10000 !important; /* 🔒 prioridad absoluta */
+}
 
-  overlayEl = document.createElement("div");
-  overlayEl.className = isDark ? "tts-overlay-dark" : "tts-overlay-light";
+.tts-highlight-frag {
+  position: absolute;
+  border-radius: 6px;
+  transition: background 0.25s ease;
+}
 
-  // ✅ Ajuste: obtener offset real del contenedor visible
-  const scrollContainer =
-    document.querySelector("main") || document.querySelector(".chapter-content") || document.body;
-  const containerRect = scrollContainer.getBoundingClientRect();
+.tts-overlay-light .tts-highlight-frag {
+  background: rgba(255, 215, 0, 0.25);
+}
 
-  for (const rect of rects) {
-    const frag = document.createElement("div");
-    frag.className = "tts-highlight-frag";
-    frag.style.position = "absolute";
-
-    // ✅ Coordenadas relativas al contenedor visible
-    frag.style.top = `${rect.top - containerRect.top + scrollContainer.scrollTop}px`;
-    frag.style.left = `${rect.left - containerRect.left + scrollContainer.scrollLeft}px`;
-    frag.style.width = `${rect.width}px`;
-    frag.style.height = `${rect.height}px`;
-
-    overlayEl.appendChild(frag);
-  }
-
-  // Se monta el overlay DENTRO del contenedor principal
-  scrollContainer.style.position = "relative";
-  scrollContainer.appendChild(overlayEl);
+.tts-overlay-dark .tts-highlight-frag {
+  background: rgba(255, 255, 255, 0.15);
 }
