@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       snd.currentTime = 0;
       snd.play()
         .then(() =>
-          console.log(`🧩 CFC_SYNC checkpoint: ${(passed?"success":"error")}.wav reproducido — QA-SYNC V9.2`)
+          console.log(`🧩 CFC_SYNC checkpoint: ${(passed ? "success" : "error")}.wav reproducido — QA-SYNC V9.2`)
         )
         .catch(err => console.warn("Audio playback bloqueado:", err));
     }, 300);
@@ -86,6 +86,26 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ==========================================================
        🧱 FIN BLOQUE CFC SYNC GLOBAL CORREGIDO
        ========================================================== */
+
+    /* ==========================================================
+       ✅ CFC_FUNC_3_2_20251103 — Guardado local del historial de exámenes
+       ========================================================== */
+    try {
+      const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
+      const moduleName = `Módulo ${moduleNumber}`;
+      const date = new Date().toLocaleDateString("es-AR");
+
+      examResults.push({
+        module: moduleName,
+        date,
+        score,
+      });
+
+      localStorage.setItem("examResults", JSON.stringify(examResults));
+      console.log("🧩 CFC_SYNC checkpoint: historial actualizado — QA-SYNC P3.2 OK", examResults);
+    } catch (err) {
+      console.error("❌ Error guardando historial:", err);
+    }
   });
 });
 
@@ -109,23 +129,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 500);
   });
 });
-
-/* ==========================================================
-✅ CFC_FUNC_3_2_20251103 — Guardado local del historial de exámenes
-========================================================== */
-try {
-  const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
-  const moduleName = `Módulo ${moduleNumber}`;
-  const date = new Date().toLocaleDateString("es-AR");
-
-  examResults.push({
-    module: moduleName,
-    date,
-    score,
-  });
-
-  localStorage.setItem("examResults", JSON.stringify(examResults));
-  console.log("🧩 CFC_SYNC checkpoint: historial actualizado — QA-SYNC P3.2 OK", examResults);
-} catch (err) {
-  console.error("❌ Error guardando historial:", err);
-}
+// 🧩 [CFC-SYNC INSERT END]
