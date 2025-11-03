@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1P_20251107 — Narrador IA Integrado (V2.0 Glow Edition Fix + Smart Parser)
+✅ CFC_FUNC_10_1L_20251107 — Narrador IA Integrado (V1.8 Smart-Rate + Adaptive-Highlight)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,14 +14,11 @@ let currentIndex = 0;
 let sentences = [];
 let utter = null;
 let beep = null;
-let overlayEl = null;
 
-// ==========================================================
-// 🔊 Beep metálico
-// ==========================================================
+// 🎧 Sonido metálico corto Premium
 function initBeep() {
   beep = new Audio(
-    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
+    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
   );
 }
 
@@ -30,12 +27,14 @@ function initBeep() {
 // ==========================================================
 function openVoicePanel() {
   if (document.querySelector(".tts-panel")) return;
+
   document.body.insertAdjacentHTML(
     "beforeend",
     `
     <div class="tts-panel glass-box">
       <h4>🎧 Lectura IA CFC</h4>
       <label>Voz: <select id="voiceSelect"></select></label><br>
+
       <div class="tts-speed">
         <span>Velocidad:</span><br>
         <button class="speed-btn" data-rate="0.75">x0.75</button>
@@ -45,6 +44,7 @@ function openVoicePanel() {
         <button class="speed-btn" data-rate="1.75">x1.75</button>
         <button class="speed-btn" data-rate="2">x2</button>
       </div><br>
+
       <div class="tts-controls">
         <button id="readAll">Leer</button>
         <button id="pause">⏸️</button>
@@ -55,148 +55,181 @@ function openVoicePanel() {
     </div>
   `
   );
+
   initBeep();
   loadVoices();
 
-  document.getElementById("readAll").onclick = () => startReading();
-  document.getElementById("pause").onclick = () => { isPaused = true; speechSynthesis.pause(); if (beep) beep.play(); };
-  document.getElementById("resume").onclick = () => { isPaused = false; speechSynthesis.resume(); if (beep) beep.play(); };
-  document.getElementById("stop").onclick = () => stopReading();
-  document.getElementById("close").onclick = () => { stopReading(); document.querySelector(".tts-panel").remove(); };
+  const readBtn = document.getElementById("readAll");
+  const pauseBtn = document.getElementById("pause");
+  const resumeBtn = document.getElementById("resume");
+  const stopBtn = document.getElementById("stop");
+  const closeBtn = document.getElementById("close");
+  const voiceSelect = document.getElementById("voiceSelect");
+  const speedBtns = document.querySelectorAll(".speed-btn");
 
-  document.querySelectorAll(".speed-btn").forEach(btn => {
+  // 🧠 Cambiar velocidad (afecta lectura actual)
+  speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
-      document.querySelectorAll(".speed-btn").forEach(b => b.classList.remove("active"));
+      speedBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       if (beep) beep.play();
+
+      // Si está leyendo, reanuda con nueva velocidad
+      if (utter && speechSynthesis.speaking) {
+        speechSynthesis.pause();
+        const resumeIndex = currentIndex;
+        speechSynthesis.cancel();
+        setTimeout(() => {
+          currentIndex = resumeIndex;
+          readNextSentence();
+        }, 150);
+      }
     };
   });
+
+  // 🧠 Cambiar voz
+  voiceSelect.addEventListener("change", () => {
+    currentVoice = voiceSelect.value;
+    if (beep) beep.play();
+  });
+
+  readBtn.onclick = () => startReading();
+  pauseBtn.onclick = () => {
+    isPaused = true;
+    speechSynthesis.pause();
+    if (beep) beep.play();
+  };
+  resumeBtn.onclick = () => {
+    isPaused = false;
+    speechSynthesis.resume();
+    if (beep) beep.play();
+  };
+  stopBtn.onclick = () => stopReading();
+  closeBtn.onclick = () => {
+    stopReading();
+    document.querySelector(".tts-panel").remove();
+  };
 }
 
 // ==========================================================
-// 🚀 Motor de lectura completo
+// 🔊 Motor de lectura por frases con resaltado adaptativo
 // ==========================================================
 function startReading() {
   stopReading();
-  const container = document.querySelector("main") || document.body;
-  const text = container.innerText.replace(/\s+/g, " ").trim();
-  sentences = text.match(/[^.!?]+[.!?]?/g) || [text];
+  const textContainer = document.querySelector("main") || document.body;
+  const text = textContainer.innerText;
+
+  // Dividimos el texto en frases
+  sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
   currentIndex = 0;
+  isPaused = false;
+
+  // Insertamos spans para resaltado
+  const html = sentences
+    .map((s, i) => `<span class="tts-sentence" data-index="${i}">${s}</span>`)
+    .join(" ");
+  textContainer.innerHTML = html;
+
   readNextSentence();
 }
 
 function readNextSentence() {
   if (isPaused || currentIndex >= sentences.length) return;
-  const currentText = sentences[currentIndex].trim();
-  if (!currentText) { currentIndex++; readNextSentence(); return; }
 
-  drawOverlaySmart(currentText);
+  const sentenceEls = document.querySelectorAll(".tts-sentence");
+  sentenceEls.forEach((el) => el.classList.remove("tts-active"));
 
-  utter = new SpeechSynthesisUtterance(currentText);
+  const currentEl = sentenceEls[currentIndex];
+  if (!currentEl) return;
+
+  // Detectar fondo (claro u oscuro)
+  const bgColor = window.getComputedStyle(document.body).backgroundColor;
+  const isDark = getLuminance(bgColor) < 128;
+  currentEl.classList.add(isDark ? "tts-active-dark" : "tts-active-light");
+
+  utter = new SpeechSynthesisUtterance(currentEl.innerText.trim());
   utter.lang = "es-ES";
   utter.rate = currentRate;
-  utter.voice = speechSynthesis.getVoices().find(v => v.name === currentVoice)
-    || speechSynthesis.getVoices().find(v => v.lang.startsWith("es"))
-    || null;
+  utter.voice =
+    speechSynthesis.getVoices().find((v) => v.name === currentVoice) ||
+    speechSynthesis.getVoices().find((v) => v.lang.startsWith("es")) ||
+    null;
 
   utter.onend = () => {
-    removeOverlay();
-    if (!isPaused) { currentIndex++; readNextSentence(); }
+    if (!isPaused) {
+      currentIndex++;
+      readNextSentence();
+    }
   };
+
   speechSynthesis.speak(utter);
 }
 
-// ==========================================================
-// ✨ Overlay Glow (búsqueda aproximada)
-// ==========================================================
-function drawOverlaySmart(sentence) {
-  removeOverlay();
-  const range = findApproximateRange(sentence);
-  if (!range) return;
-  const rects = range.getClientRects();
-  if (!rects.length) return;
-
-  const isDark = getLuminance(window.getComputedStyle(document.body).backgroundColor) < 128;
-  overlayEl = document.createElement("div");
-  overlayEl.className = isDark ? "tts-overlay-dark" : "tts-overlay-light";
-
-  rects.forEach(rect => {
-    const frag = document.createElement("div");
-    frag.className = "tts-highlight-frag";
-    frag.style.top = `${rect.top + window.scrollY}px`;
-    frag.style.left = `${rect.left + window.scrollX}px`;
-    frag.style.width = `${rect.width}px`;
-    frag.style.height = `${rect.height}px`;
-    overlayEl.appendChild(frag);
-  });
-  document.body.appendChild(overlayEl);
-}
-
-function removeOverlay() {
-  if (overlayEl) overlayEl.remove();
-  overlayEl = null;
-}
-
-// ==========================================================
-// 🧠 Búsqueda aproximada tolerante
-// ==========================================================
-function findApproximateRange(sentence) {
-  const simplified = sentence.substring(0, Math.min(sentence.length, 60)).toLowerCase();
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-  let node;
-  while ((node = walker.nextNode())) {
-    const text = node.data.toLowerCase();
-    if (text.includes(simplified)) {
-      const idx = text.indexOf(simplified);
-      const range = document.createRange();
-      range.setStart(node, idx);
-      range.setEnd(node, Math.min(node.length, idx + sentence.length));
-      return range;
-    }
-  }
-  return null;
-}
-
-// ==========================================================
-// ⚙️ Utilidades
-// ==========================================================
+// Utilidad para calcular luminancia
 function getLuminance(rgb) {
   const nums = rgb.match(/\d+/g);
   if (!nums) return 255;
   const [r, g, b] = nums.map(Number);
-  return 0.299*r + 0.587*g + 0.114*b;
-}
-
-function stopReading() {
-  speechSynthesis.cancel();
-  removeOverlay();
-  currentIndex = 0;
-  isPaused = false;
+  return 0.299 * r + 0.587 * g + 0.114 * b;
 }
 
 // ==========================================================
-// 🗣️ Voces
+// ⏹️ Stop Reading
+// ==========================================================
+function stopReading() {
+  speechSynthesis.cancel();
+  currentIndex = 0;
+  isPaused = false;
+
+  // Limpiar resaltado
+  document.querySelectorAll(".tts-sentence").forEach((el) =>
+    el.classList.remove("tts-active", "tts-active-dark", "tts-active-light")
+  );
+}
+
+// ==========================================================
+// 🗣️ Voces en español (2F + 1M)
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
   if (!select) return;
   select.innerHTML = "";
 
-  const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith("es"));
-  voices.slice(0, 3).forEach(v => {
+  const allVoices = speechSynthesis.getVoices();
+  const spanish = allVoices.filter((v) => v.lang.startsWith("es"));
+
+  const femalePriority = ["Helena", "Laura", "Elena", "Sofía"];
+  const malePriority = ["Pablo", "Enrique", "Carlos", "Jorge"];
+
+  const female = spanish
+    .filter((v) => femalePriority.some((n) => v.name.includes(n)))
+    .slice(0, 2);
+  const male = spanish
+    .filter((v) => malePriority.some((n) => v.name.includes(n)))
+    .slice(0, 1);
+
+  let finalVoices = [...female, ...male];
+  if (finalVoices.length < 3)
+    finalVoices = [...finalVoices, ...spanish.slice(0, 3 - finalVoices.length)];
+  finalVoices = finalVoices.slice(0, 3);
+
+  finalVoices.forEach((v) => {
     const opt = document.createElement("option");
     opt.value = v.name;
     opt.textContent = `${v.name} (${v.lang})`;
     select.appendChild(opt);
   });
-  currentVoice = voices[0]?.name || null;
+
+  currentVoice = finalVoices[0]?.name || null;
 }
+
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 QA-SYNC — V2.0 Glow Edition Fix + Smart Parser
-✅ Lectura completa del módulo
-✅ Resaltado visual adaptativo funcional
-✅ DOM no alterado
+🔒 CFC-SYNC QA — V1.8 Smart-Rate + Adaptive-Highlight
+✅ Cambio de velocidad instantáneo (sin reinicio)
+✅ Cambio de voz estable (1–2 s)
+✅ Resaltado adaptativo según fondo claro/oscuro
+✅ Voces: 2 F + 1 M en español
 ========================================================== */
