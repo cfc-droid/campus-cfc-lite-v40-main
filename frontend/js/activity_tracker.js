@@ -1,102 +1,95 @@
 /* ==========================================================
-✅ CFC_FUNC_8_4_FIX_20251105 — Tracker de actividad + Indicador visual
-Sistema persistente localStorage + minutos activos visibles en tiempo real
+✅ CFC_FUNC_8_3_FIX_V1.3_20251105 — Tracker de actividad avanzado + autosync
+Sistema persistente localStorage + minutos activos visibles
 ========================================================== */
 
 (function () {
   const startTime = Date.now();
   const today = new Date().toISOString().split("T")[0];
 
-  // 🧩 Lectura previa de datos persistentes
+  // 🧩 Cargar valores previos o inicializar
   let totalSeconds = parseFloat(localStorage.getItem("CFC_time") || 0);
   let lastDate = localStorage.getItem("CFC_lastDate") || today;
   let consecutiveDays = parseInt(localStorage.getItem("CFC_days") || 1);
   let totalDays = parseInt(localStorage.getItem("CFC_totalDays") || 0);
 
-  // 🕓 Inicialización del primer día
+  // 📆 Si es el primer acceso o el primer día registrado
   if (!localStorage.getItem("CFC_lastDate")) {
     localStorage.setItem("CFC_lastDate", today);
     totalDays = 1;
   }
 
-  // 📅 Verificación de cambio de fecha
+  // 📅 Verificación de cambio de día
   if (today !== lastDate) {
     const diffDays =
       (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
-
-    if (diffDays === 1) consecutiveDays += 1;
-    else consecutiveDays = 1;
-
+    consecutiveDays = diffDays === 1 ? consecutiveDays + 1 : 1;
     totalDays += 1;
     localStorage.setItem("CFC_lastDate", today);
   }
 
-  // 💾 Guardar datos de días actualizados
+  // 💾 Guardar los valores actualizados de días
   localStorage.setItem("CFC_days", consecutiveDays);
   localStorage.setItem("CFC_totalDays", totalDays);
 
-  /* ==========================================================
-     🟡 Indicador visual de sesión activa (SUBPASO 3/3)
-  ========================================================== */
-
-  // Crear y mostrar el indicador
+  // 🕓 Indicador visual de sesión activa
   const indicator = document.createElement("div");
-  indicator.id = "cfc-session-indicator";
-  indicator.innerHTML = "⏱ Sesión activa: 0 min 00 s";
-  Object.assign(indicator.style, {
-    position: "fixed",
-    bottom: "20px",
-    right: "25px",
-    background: "rgba(255, 215, 0, 0.15)",
-    border: "1px solid rgba(255, 215, 0, 0.4)",
-    padding: "6px 14px",
-    borderRadius: "12px",
-    color: "#FFD700",
-    fontFamily: "Poppins, sans-serif",
-    fontSize: "0.9rem",
-    letterSpacing: "0.5px",
-    zIndex: "9999",
-    boxShadow: "0 0 8px rgba(255, 215, 0, 0.2)",
-    backdropFilter: "blur(4px)",
-  });
+  indicator.id = "sessionIndicator";
+  indicator.style.position = "fixed";
+  indicator.style.bottom = "10px";
+  indicator.style.right = "20px";
+  indicator.style.background = "rgba(255,215,0,0.15)";
+  indicator.style.color = "#FFD700";
+  indicator.style.padding = "6px 14px";
+  indicator.style.border = "1px solid #FFD700";
+  indicator.style.borderRadius = "12px";
+  indicator.style.fontSize = "0.9rem";
+  indicator.style.fontFamily = "Poppins, sans-serif";
+  indicator.style.zIndex = "9999";
+  indicator.style.backdropFilter = "blur(6px)";
   document.body.appendChild(indicator);
 
-  // ⏱ Actualizador visual en tiempo real
-  const liveInterval = setInterval(() => {
-    const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-    const minutes = Math.floor(elapsedSeconds / 60);
-    const seconds = elapsedSeconds % 60;
-    indicator.innerHTML = `⏱ Sesión activa: ${minutes} min ${seconds
+  function updateVisualTime() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = Math.floor(elapsed % 60);
+    indicator.textContent = `🕒 Sesión activa: ${minutes} min ${seconds
       .toString()
       .padStart(2, "0")} s`;
-  }, 1000);
+  }
+
+  setInterval(updateVisualTime, 1000);
 
   // 🔄 Guardado temporal cada 10 segundos
-  const tempInterval = setInterval(() => {
+  setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000;
-    const currentTotal = totalSeconds + elapsed;
-    localStorage.setItem("CFC_time_temp", currentTotal);
+    localStorage.setItem("CFC_time_temp", totalSeconds + elapsed);
   }, 10000);
 
-  // 🕐 Al cerrar la pestaña, guardar el tiempo final
+  // 🧠 Sincronización automática cada 60 s
+  setInterval(() => {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const newTotal = totalSeconds + elapsed;
+    localStorage.setItem("CFC_time", newTotal);
+    console.log(`💾 AutoSync — ${((newTotal / 3600) * 60).toFixed(1)} min`);
+  }, 60000);
+
+  // 🕐 Al cerrar o recargar, guardar tiempo total persistente
   window.addEventListener("beforeunload", () => {
     const elapsedSeconds = (Date.now() - startTime) / 1000;
     const newTotal = totalSeconds + elapsedSeconds;
     localStorage.setItem("CFC_time", newTotal);
     localStorage.removeItem("CFC_time_temp");
-
     console.log(
       `🕒 CFC-ACTIVITY — Sesión guardada (${(elapsedSeconds / 60).toFixed(
         1
       )} min) | Total ${(newTotal / 3600).toFixed(2)} h`
     );
-    clearInterval(liveInterval);
-    clearInterval(tempInterval);
   });
 
-  // 🧠 Log de control inicial
+  // 🧩 Log de control
   console.log(
-    `✅ CFC-ACTIVITY FIX — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Tiempo acumulado:${(
+    `✅ CFC-ACTIVITY FIX V1.3 — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Tiempo acumulado:${(
       totalSeconds / 3600
     ).toFixed(2)} h`
   );
@@ -104,6 +97,6 @@ Sistema persistente localStorage + minutos activos visibles en tiempo real
 
 /* ==========================================================
 🔒 CFC-SYNC
-# ✅ CFC_FUNC_8_4_FIX_20251105 — Indicador de sesión activa (V1 REAL)
-echo "🧩 CFC_SYNC checkpoint: CFC-ACTIVITY V1.2 + Visual en tiempo real OK"
+# ✅ CFC_FUNC_8_3_FIX_V1.3_20251105 — Tracker avanzado (autosync 60s + visual)
+echo "🧩 CFC_SYNC checkpoint: CFC-ACTIVITY V1.3 REAL QA-SYNC OK"
 ========================================================== */
