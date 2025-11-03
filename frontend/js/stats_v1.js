@@ -1,5 +1,6 @@
 /* ==========================================================
-✅ CFC_FUNC_8_1_FIX_20251105b — Analítica interna (con minutos activos)
+✅ CFC_FUNC_8_1_FIX_20251106b — Analítica interna con porcentaje visible
+Incluye minutos activos + porcentaje de módulos completados
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -49,13 +50,16 @@ function openStatsModal() {
   // 🧼 Eliminar modal previo
   document.querySelector(".stats-modal")?.remove();
 
+  // 📊 Calcular porcentaje
+  const percentage = Math.round((modules / 20) * 100);
+
   // 🪶 Crear modal
   document.body.insertAdjacentHTML(
     "beforeend",
     `
     <div class="stats-modal">
       <h3>📊 Tu progreso</h3>
-      <p>Módulos completados: <b>${modules}/20</b></p>
+      <p>Módulos completados: <b>${modules}/20</b> (<b>${percentage}%</b>)</p>
       <p>Horas activas: <b>${hours.toFixed(1)} h</b> (<b>${minutes.toFixed(0)} min</b>)</p>
       <p>Días consecutivos de estudio: <b>${days}</b></p>
       <p>Días totales de estudio: <b>${totalDays}</b></p>
@@ -66,12 +70,12 @@ function openStatsModal() {
   console.log(
     `CFC-STATS FIX — Módulos:${modules}, Exámenes:${exams}, Horas:${hours.toFixed(
       1
-    )}, Min:${minutes.toFixed(0)}, Consecutivos:${days}, Totales:${totalDays}`
+    )}, Min:${minutes.toFixed(0)}, Consecutivos:${days}, Totales:${totalDays}, Porcentaje:${percentage}%`
   );
 }
 
 /* ==========================================================
 🔒 CFC-SYNC
-# ✅ CFC_FUNC_8_1_FIX_20251105b — Incluye minutos activos y días totales reales
-echo "🧩 CFC_SYNC checkpoint: CFC-STATS FIX V1.1 con minutos visibles"
+# ✅ CFC_FUNC_8_1_FIX_20251106b — Porcentaje + minutos activos visibles
+echo "🧩 CFC_SYNC checkpoint: CFC-STATS FIX V1.2 (porcentaje y minutos activos)"
 ========================================================== */
