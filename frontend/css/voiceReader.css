@@ -1,8 +1,8 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1_20251105 — Estilos Narrador IA Integrado (posición inferior izquierda)
+✅ CFC_FUNC_10_1P_20251107 — Estilos Narrador IA Integrado (Restore Mode)
 ========================================================== */
 
-/* Botón fijo inferior izquierdo */
+/* Botón fijo */
 .tts-btn-fixed {
   position: fixed;
   bottom: 20px;
@@ -24,10 +24,7 @@
   box-shadow: 0 0 15px rgba(255,215,0,0.6);
 }
 
-/* ==========================================================
-✅ CFC_FUNC_10_1A_20251105 — Panel flotante IA (diseño base)
-========================================================== */
-
+/* Panel */
 .tts-panel {
   position: fixed;
   bottom: 80px;
@@ -44,133 +41,67 @@
   backdrop-filter: blur(8px);
 }
 .tts-panel h4 {
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
   font-size: 1.1rem;
   text-align: center;
-}
-.tts-panel select,
-.tts-panel input,
-.tts-panel button {
-  margin: 4px;
-  padding: 5px 8px;
-  border-radius: 6px;
-  border: none;
 }
 .tts-panel button {
   background: linear-gradient(90deg, #FFD700, #B8860B);
   color: #111;
+  border: none;
   font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .tts-panel button:hover {
   filter: brightness(1.2);
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
-/* ==========================================================
-✅ CFC_FUNC_10_1B_20251105 — Mejora visual de velocidad y botones activos
-========================================================== */
-
-.tts-speed {
-  margin-top: 6px;
-  text-align: left;
-}
-.tts-speed span {
-  display: inline-block;
-  margin-bottom: 4px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #FFD700;
-}
+/* Velocidades */
 .tts-speed button {
-  margin: 3px;
-  padding: 4px 6px;
-  font-size: 13px;
   background: #333;
   color: #FFD700;
   border: 1px solid #FFD700;
+  padding: 4px 6px;
   border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.tts-speed button:hover {
-  background: #FFD700;
-  color: #111;
-  transform: scale(1.05);
+  margin: 3px;
+  font-size: 13px;
 }
 .tts-speed button.active {
   background: #FFD700;
   color: #111;
   box-shadow: 0 0 10px rgba(255,215,0,0.6);
-  transform: scale(1.1);
 }
 
-/* ==========================================================
-✅ CFC_FUNC_10_1C_20251105 — Panel final optimizado (CFC-Premium V1.3)
-========================================================== */
-
-/* Contenedor general */
-.tts-controls {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 4px;
+/* Botón de cierre especial */
+.tts-close {
+  background: linear-gradient(90deg, #ff4040, #ff0000);
+  color: white;
 }
-.tts-controls button {
-  flex: 1 1 45%;
-  padding: 6px 0;
-  border-radius: 8px;
-  font-weight: 600;
-  background: linear-gradient(90deg, #FFD700, #C5A200);
-  color: #111;
-  border: none;
-}
-.tts-controls button:hover {
-  background: #FFD700;
-  filter: brightness(1.2);
+.tts-close:hover {
+  filter: brightness(1.3);
 }
 
-/* Efecto visual del select */
-#voiceSelect {
-  width: 100%;
-  padding: 5px;
-  background: #222;
-  color: #FFD700;
-  border: 1px solid #FFD700;
-  border-radius: 8px;
-  outline: none;
+/* Resaltado */
+.tts-sentence.tts-active-light {
+  background: rgba(255, 215, 0, 0.25);
+  border-radius: 6px;
+  transition: background 0.3s ease;
 }
-#voiceSelect:hover {
-  background: #333;
+.tts-sentence.tts-active-dark {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  transition: background 0.3s ease;
 }
 
-/* Animaciones de entrada y salida */
+/* Animación */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================
-🔒 CFC-SYNC — Archivo QA verificado
+🔒 CFC-SYNC QA — V2.0 Restore Mode CSS
+✅ Botón rojo restaura DOM original intacto
 ========================================================== */
-
-/* ==========================================================
-✅ CFC_FUNC_10_1L_20251107 — Estilos de resaltado adaptativo
-========================================================== */
-
-.tts-sentence.tts-active-light {
-  background: rgba(255, 215, 0, 0.25);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-}
-
-.tts-sentence.tts-active-dark {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-}
