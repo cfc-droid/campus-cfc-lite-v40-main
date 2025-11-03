@@ -1,44 +1,42 @@
 /* ==========================================================
-✅ CFC_FUNC_3_3_20251103 — results.js (QA-SYNC V10.3 FINAL)
-Renderizado dinámico del historial de exámenes
+✅ CFC_FUNC_3_3_FIX_V10.4 — Renderizado robusto del historial
 ========================================================== */
-console.log("🧩 CFC_SYNC checkpoint: results.js — QA-SYNC V10.3 iniciado", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint:", "results.js — QA-SYNC V10.4 iniciado", new Date().toLocaleString());
 
-window.addEventListener("DOMContentLoaded", () => {
-  const tableBody = document.getElementById("examHistoryBody") || document.getElementById("examHistory");
-  if (!tableBody) {
-    console.warn("⚠️ Tabla de historial no encontrada (QA-SYNC V10.3)");
+document.addEventListener("DOMContentLoaded", () => {
+  const table = document.getElementById("examHistory");
+  if (!table) {
+    console.warn("⚠️ Tabla no encontrada — QA-SYNC V10.4");
     return;
   }
 
   let examResults = [];
   try {
     examResults = JSON.parse(localStorage.getItem("examResults")) || [];
-  } catch {
-    console.error("❌ Error al leer localStorage.examResults");
+  } catch (e) {
+    console.error("❌ Error leyendo examResults:", e);
+    examResults = [];
   }
 
-  tableBody.innerHTML = ""; // limpiar el placeholder
+  console.log(`🧩 CFC_SYNC checkpoint: ${examResults.length} registros cargados — QA-SYNC V10.4`);
 
   if (examResults.length === 0) {
-    tableBody.insertAdjacentHTML(
+    table.insertAdjacentHTML(
       "beforeend",
-      `<tr><td colspan="4" style="text-align:center;opacity:0.6;">🕓 Aún no realizaste ningún examen.</td></tr>`
+      `<tr><td colspan="4" style="opacity:0.7;">🕓 Aún no realizaste ningún examen.</td></tr>`
     );
-    console.log("🧩 Historial vacío (QA-SYNC V10.3)");
     return;
   }
 
   examResults.forEach((r) => {
+    const status = r.status || (r.score >= 70 ? "✅ Aprobado" : "❌ Reprobado");
     const row = `
       <tr>
-        <td>${r.module || "—"}</td>
-        <td>${r.date || "—"}</td>
-        <td>${r.score}%</td>
-        <td>${r.status || (r.score >= 70 ? "✅ Aprobado" : "❌ Reprobado")}</td>
+        <td>${r.module || "-"}</td>
+        <td>${r.date || "-"}</td>
+        <td>${r.score ?? "-"}%</td>
+        <td>${status}</td>
       </tr>`;
-    tableBody.insertAdjacentHTML("beforeend", row);
+    table.insertAdjacentHTML("beforeend", row);
   });
-
-  console.log(`🧩 CFC_SYNC checkpoint: ${examResults.length} registros cargados — QA-SYNC V10.3`, examResults);
 });
