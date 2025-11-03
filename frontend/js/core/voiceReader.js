@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1M_20251107 — Narrador IA Integrado (V1.9 Smart-Highlight-Preserve)
+✅ CFC_FUNC_10_1N_20251107 — Narrador IA Integrado (V1.9.2 Highlight-Ghost)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,9 +14,11 @@ let currentIndex = 0;
 let sentences = [];
 let utter = null;
 let beep = null;
-let highlightEl = null;
+let overlayEl = null;
 
+// ==========================================================
 // 🎧 Sonido metálico corto Premium
+// ==========================================================
 function initBeep() {
   beep = new Audio(
     "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
@@ -68,7 +70,7 @@ function openVoicePanel() {
   const voiceSelect = document.getElementById("voiceSelect");
   const speedBtns = document.querySelectorAll(".speed-btn");
 
-  // 🧠 Cambiar velocidad en vivo
+  // 🔸 Cambiar velocidad
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
@@ -76,7 +78,6 @@ function openVoicePanel() {
       btn.classList.add("active");
       if (beep) beep.play();
 
-      // Reanudar con nueva velocidad sin perder posición
       if (utter && speechSynthesis.speaking) {
         speechSynthesis.pause();
         const resumeIndex = currentIndex;
@@ -89,7 +90,7 @@ function openVoicePanel() {
     };
   });
 
-  // 🧠 Cambiar voz
+  // 🔸 Cambiar voz
   voiceSelect.addEventListener("change", () => {
     currentVoice = voiceSelect.value;
     if (beep) beep.play();
@@ -114,12 +115,11 @@ function openVoicePanel() {
 }
 
 // ==========================================================
-// 🔊 Motor de lectura por frases (no destruye HTML original)
+// 🔊 Lector por frases con overlay fantasma
 // ==========================================================
 function startReading() {
   stopReading();
-  const container = document.querySelector("main") || document.body;
-  const text = container.innerText;
+  const text = (document.querySelector("main") || document.body).innerText;
   sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
   currentIndex = 0;
   isPaused = false;
@@ -128,6 +128,7 @@ function startReading() {
 
 function readNextSentence() {
   if (isPaused || currentIndex >= sentences.length) return;
+
   const sentence = sentences[currentIndex].trim();
   if (!sentence) {
     currentIndex++;
@@ -135,7 +136,8 @@ function readNextSentence() {
     return;
   }
 
-  highlightSentence(sentence);
+  drawOverlay(sentence);
+
   utter = new SpeechSynthesisUtterance(sentence);
   utter.lang = "es-ES";
   utter.rate = currentRate;
@@ -145,7 +147,7 @@ function readNextSentence() {
     null;
 
   utter.onend = () => {
-    clearHighlight();
+    removeOverlay();
     if (!isPaused) {
       currentIndex++;
       readNextSentence();
@@ -156,52 +158,53 @@ function readNextSentence() {
 }
 
 // ==========================================================
-// 🖍️ Resaltado dinámico no destructivo
+// ✨ Overlay fantasma para resaltado no destructivo
 // ==========================================================
-function highlightSentence(text) {
-  clearHighlight();
-  const range = document.createRange();
-  const selection = window.getSelection();
-  selection.removeAllRanges();
+function drawOverlay(sentence) {
+  removeOverlay();
+  const range = findRange(sentence);
+  if (!range) return;
 
-  const node = findTextNode(document.body, text);
-  if (!node) return;
+  const rects = range.getClientRects();
+  const isDark = getLuminance(window.getComputedStyle(document.body).backgroundColor) < 128;
 
-  const start = node.data.indexOf(text);
-  if (start === -1) return;
+  overlayEl = document.createElement("div");
+  overlayEl.className = isDark ? "tts-overlay-dark" : "tts-overlay-light";
 
-  range.setStart(node, start);
-  range.setEnd(node, start + text.length);
-  const span = document.createElement("span");
-  span.className = getHighlightClass();
-  range.surroundContents(span);
-  highlightEl = span;
+  // Multiples rects = párrafos largos
+  for (const rect of rects) {
+    const span = document.createElement("div");
+    span.className = "tts-highlight-frag";
+    span.style.top = `${rect.top + window.scrollY}px`;
+    span.style.left = `${rect.left + window.scrollX}px`;
+    span.style.width = `${rect.width}px`;
+    span.style.height = `${rect.height}px`;
+    overlayEl.appendChild(span);
+  }
+
+  document.body.appendChild(overlayEl);
 }
 
-function clearHighlight() {
-  if (highlightEl) {
-    const parent = highlightEl.parentNode;
-    while (highlightEl.firstChild) parent.insertBefore(highlightEl.firstChild, highlightEl);
-    parent.removeChild(highlightEl);
-    highlightEl = null;
+function removeOverlay() {
+  if (overlayEl) {
+    overlayEl.remove();
+    overlayEl = null;
   }
 }
 
-// Busca el nodo de texto donde aparece la frase actual
-function findTextNode(root, text) {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+function findRange(sentence) {
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
   let node;
   while ((node = walker.nextNode())) {
-    if (node.data.includes(text)) return node;
+    const idx = node.data.indexOf(sentence);
+    if (idx !== -1) {
+      const range = document.createRange();
+      range.setStart(node, idx);
+      range.setEnd(node, idx + sentence.length);
+      return range;
+    }
   }
   return null;
-}
-
-// Detecta modo oscuro o claro
-function getHighlightClass() {
-  const bgColor = window.getComputedStyle(document.body).backgroundColor;
-  const isDark = getLuminance(bgColor) < 128;
-  return isDark ? "tts-active-dark" : "tts-active-light";
 }
 
 function getLuminance(rgb) {
@@ -216,7 +219,7 @@ function getLuminance(rgb) {
 // ==========================================================
 function stopReading() {
   speechSynthesis.cancel();
-  clearHighlight();
+  removeOverlay();
   currentIndex = 0;
   isPaused = false;
 }
@@ -248,21 +251,4 @@ function loadVoices() {
   finalVoices = finalVoices.slice(0, 3);
 
   finalVoices.forEach((v) => {
-    const opt = document.createElement("option");
-    opt.value = v.name;
-    opt.textContent = `${v.name} (${v.lang})`;
-    select.appendChild(opt);
-  });
-
-  currentVoice = finalVoices[0]?.name || null;
-}
-
-speechSynthesis.onvoiceschanged = loadVoices;
-
-/* ==========================================================
-🔒 CFC-SYNC QA — V1.9 Smart-Highlight-Preserve
-✅ Mantiene layout y estilos del Campus
-✅ No altera el HTML original
-✅ Cambio de voz y velocidad estables
-✅ Resaltado adaptativo real
-========================================================== */
+    const opt = document
