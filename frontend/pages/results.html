@@ -1,5 +1,5 @@
 <!-- ==========================================================
-✅ CFC_FUNC_3_1_FIX_V10.4 — results.html seguro (sin dependencias rotas)
+✅ CFC_FUNC_3_1_FIX_V10.7A — results.html con rutas absolutas y fallback
 ========================================================== -->
 <!DOCTYPE html>
 <html lang="es">
@@ -7,14 +7,48 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📘 Historial de Exámenes — Campus CFC LITE</title>
-  <link rel="stylesheet" href="../css/premium.css?v=20251103" />
+
+  <!-- 🔒 Rutas seguras absolutas -->
+  <link rel="stylesheet" href="/frontend/css/premium.css?v=20251107" />
+
   <style>
-    body { background:#000; color:#ffd700; font-family:'Poppins',sans-serif; text-align:center; margin:0; }
-    table { width:90%; margin:40px auto; border-collapse:collapse; background:rgba(30,30,30,0.8); border-radius:8px; overflow:hidden; }
-    th,td { padding:12px; border-bottom:1px solid rgba(255,255,255,0.15); }
-    th { background:rgba(255,215,0,0.15); color:#ffd700; text-transform:uppercase; }
-    tr:hover td { background:rgba(255,215,0,0.08); }
-    button { background:#ffd700; color:#000; border:none; padding:10px 25px; border-radius:6px; cursor:pointer; font-weight:600; }
+    body {
+      background:#000;
+      color:#ffd700;
+      font-family:'Poppins',sans-serif;
+      text-align:center;
+      margin:0;
+    }
+    table {
+      width:90%;
+      margin:40px auto;
+      border-collapse:collapse;
+      background:rgba(30,30,30,0.8);
+      border-radius:8px;
+      overflow:hidden;
+    }
+    th,td {
+      padding:12px;
+      border-bottom:1px solid rgba(255,255,255,0.15);
+    }
+    th {
+      background:rgba(255,215,0,0.15);
+      color:#ffd700;
+      text-transform:uppercase;
+    }
+    tr:hover td {
+      background:rgba(255,215,0,0.08);
+    }
+    button {
+      background:#ffd700;
+      color:#000;
+      border:none;
+      padding:10px 25px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:600;
+      margin-bottom:40px;
+    }
     button:hover { background:#ffcc00; }
   </style>
 </head>
@@ -30,9 +64,21 @@
     </tr>
   </table>
 
-  <button onclick="window.location.href='../frontend.html'">🏠 Volver al inicio</button>
+  <button onclick="window.location.href='/frontend/index.html'">🏠 Volver al inicio</button>
 
-  <!-- Solo este script -->
-  <script src="../js/results.js?v=20251104" defer></script>
+  <!-- ✅ Ruta fija + fallback -->
+  <script>
+    const script = document.createElement("script");
+    script.src = "/frontend/js/results.js?v=20251107";
+    script.defer = true;
+    script.onerror = () => {
+      console.warn("⚠️ results.js no cargó desde ruta absoluta, probando fallback...");
+      const alt = document.createElement("script");
+      alt.src = "../../js/results.js?v=20251107";
+      alt.defer = true;
+      document.head.appendChild(alt);
+    };
+    document.head.appendChild(script);
+  </script>
 </body>
 </html>
