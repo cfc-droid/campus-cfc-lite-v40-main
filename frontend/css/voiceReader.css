@@ -105,3 +105,50 @@
 🔒 CFC-SYNC QA — V2.0 Restore Mode CSS
 ✅ Botón rojo restaura DOM original intacto
 ========================================================== */
+
+/* ==========================================================
+✅ CFC_FUNC_10_1Q_20251107 — Mejora visual del selector de voz (3 opciones)
+========================================================== */
+
+/* Selector de voz dorado premium */
+#voiceSelect {
+  width: 100%;
+  padding: 6px 10px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid #FFD700;
+  background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+  color: #FFD700;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255,215,0,0.2);
+  transition: all 0.25s ease;
+}
+
+/* Flecha personalizada (sin depender del navegador) */
+#voiceSelect::-ms-expand {
+  display: none;
+}
+
+/* Hover: brillo dorado */
+#voiceSelect:hover {
+  background: linear-gradient(180deg, #222 0%, #151515 100%);
+  box-shadow: 0 0 15px rgba(255,215,0,0.4);
+  border-color: #FFE55C;
+}
+
+/* Opción interna */
+#voiceSelect option {
+  background: #111;
+  color: #FFD700;
+  font-weight: 500;
+}
+
+/* Modo activo: resaltado sutil */
+#voiceSelect:focus {
+  border-color: #FFD700;
+  box-shadow: 0 0 8px rgba(255,215,0,0.5);
+}
