@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1_20251105 — Estilos Narrador IA Integrado (posición inferior izquierda)
+✅ CFC_FUNC_10_1N_20251107 — Estilos Narrador IA (V1.9.6 Ghost Highlight Fix)
 ========================================================== */
 
 /* Botón fijo inferior izquierdo */
@@ -25,7 +25,7 @@
 }
 
 /* ==========================================================
-✅ CFC_FUNC_10_1A_20251105 — Panel flotante IA (diseño base)
+✅ CFC_FUNC_10_1A_20251105 — Panel flotante IA (base)
 ========================================================== */
 
 .tts-panel {
@@ -50,7 +50,6 @@
   text-align: center;
 }
 .tts-panel select,
-.tts-panel input,
 .tts-panel button {
   margin: 4px;
   padding: 5px 8px;
@@ -58,11 +57,11 @@
   border: none;
 }
 .tts-panel button {
-  background: linear-gradient(90deg, #FFD700, #B8860B);
-  color: #111;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  background: linear-gradient(90deg,#FFD700,#B8860B);
+  color:#111;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s ease;
 }
 .tts-panel button:hover {
   filter: brightness(1.2);
@@ -73,7 +72,7 @@
 }
 
 /* ==========================================================
-✅ CFC_FUNC_10_1B_20251105 — Mejora visual de velocidad y botones activos
+✅ CFC_FUNC_10_1B_20251105 — Velocidad y botones activos
 ========================================================== */
 
 .tts-speed {
@@ -111,10 +110,9 @@
 }
 
 /* ==========================================================
-✅ CFC_FUNC_10_1C_20251105 — Panel final optimizado (CFC-Premium V1.3)
+✅ CFC_FUNC_10_1C_20251105 — Controles finales
 ========================================================== */
 
-/* Contenedor general */
 .tts-controls {
   display: flex;
   justify-content: space-between;
@@ -135,7 +133,7 @@
   filter: brightness(1.2);
 }
 
-/* Efecto visual del select */
+/* Select visual */
 #voiceSelect {
   width: 100%;
   padding: 5px;
@@ -149,28 +147,37 @@
   background: #333;
 }
 
-/* Animaciones de entrada y salida */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ==========================================================
+✅ CFC_FUNC_10_1O_20251107 — Overlay fantasma (resaltado)
+========================================================== */
+
+.tts-overlay-light,
+.tts-overlay-dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9000;
 }
 
-/* ==========================================================
-🔒 CFC-SYNC — Archivo QA verificado
-========================================================== */
+.tts-highlight-frag {
+  position: absolute;
+  border-radius: 6px;
+  transition: background 0.25s ease;
+}
 
-/* ==========================================================
-✅ CFC_FUNC_10_1L_20251107 — Estilos de resaltado adaptativo
-========================================================== */
-
-.tts-sentence.tts-active-light {
+.tts-overlay-light .tts-highlight-frag {
   background: rgba(255, 215, 0, 0.25);
-  border-radius: 6px;
-  transition: background 0.3s ease;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
 }
 
-.tts-sentence.tts-active-dark {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  transition: background 0.3s ease;
+.tts-overlay-dark .tts-highlight-frag {
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
 }
+
+/* ==========================================================
+🔒 CFC-SYNC QA — Versión estable V1.9.6 (Highlight Fix)
+========================================================== */
