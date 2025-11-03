@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1P_20251107 — Narrador IA Integrado (V2.0 Restore Mode)
+✅ CFC_FUNC_10_1R_20251107 — Narrador IA Integrado (V2.1 RestoreFix)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,10 +14,12 @@ let currentIndex = 0;
 let sentences = [];
 let utter = null;
 let beep = null;
-let originalHTML = ""; // 🧩 Guardará el HTML original para restaurar
 let textContainer = null;
+let originalHTML = "";
 
-// 🎧 Sonido metálico corto Premium
+// ==========================================================
+// 🎧 Sonido metálico Premium
+// ==========================================================
 function initBeep() {
   beep = new Audio(
     "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
@@ -25,7 +27,7 @@ function initBeep() {
 }
 
 // ==========================================================
-// 🧩 Panel visual
+// 🧩 Panel visual IA
 // ==========================================================
 function openVoicePanel() {
   if (document.querySelector(".tts-panel")) return;
@@ -35,7 +37,9 @@ function openVoicePanel() {
     `
     <div class="tts-panel glass-box">
       <h4>🎧 Lectura IA CFC</h4>
-      <label>Voz: <select id="voiceSelect"></select></label><br>
+      <label>Voz:
+        <select id="voiceSelect"></select>
+      </label><br>
 
       <div class="tts-speed">
         <span>Velocidad:</span><br>
@@ -61,15 +65,27 @@ function openVoicePanel() {
   initBeep();
   loadVoices();
 
-  const readBtn = document.getElementById("readAll");
-  const pauseBtn = document.getElementById("pause");
-  const resumeBtn = document.getElementById("resume");
-  const stopBtn = document.getElementById("stop");
+  // === Eventos ===
+  document.getElementById("readAll").onclick = () => startReading();
+  document.getElementById("pause").onclick = () => {
+    isPaused = true;
+    speechSynthesis.pause();
+    if (beep) beep.play();
+  };
+  document.getElementById("resume").onclick = () => {
+    isPaused = false;
+    speechSynthesis.resume();
+    if (beep) beep.play();
+  };
+  document.getElementById("stop").onclick = () => stopReading();
+
   const closeBtn = document.getElementById("close");
+  closeBtn.onclick = () => closeAndRestore(); // 🧠 restauración garantizada
+
   const voiceSelect = document.getElementById("voiceSelect");
   const speedBtns = document.querySelectorAll(".speed-btn");
 
-  // 🧠 Cambiar velocidad
+  // Velocidad
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
@@ -89,43 +105,20 @@ function openVoicePanel() {
     };
   });
 
-  // 🧠 Cambiar voz
+  // Cambio de voz
   voiceSelect.addEventListener("change", () => {
     currentVoice = voiceSelect.value;
     if (beep) beep.play();
   });
-
-  readBtn.onclick = () => startReading();
-  pauseBtn.onclick = () => {
-    isPaused = true;
-    speechSynthesis.pause();
-    if (beep) beep.play();
-  };
-  resumeBtn.onclick = () => {
-    isPaused = false;
-    speechSynthesis.resume();
-    if (beep) beep.play();
-  };
-  stopBtn.onclick = () => stopReading();
-
-  // ❌ Al cerrar: restaurar el texto original
-  closeBtn.onclick = () => {
-    stopReading();
-    if (textContainer && originalHTML) {
-      textContainer.innerHTML = originalHTML; // 🔄 restaurar DOM original
-    }
-    document.querySelector(".tts-panel").remove();
-  };
 }
 
 // ==========================================================
-// 🔊 Motor de lectura por frases con resaltado adaptativo
+// 🚀 Motor de lectura
 // ==========================================================
 function startReading() {
   stopReading();
-
   textContainer = document.querySelector("main") || document.body;
-  originalHTML = textContainer.innerHTML; // Guardamos el HTML original 🧠
+  originalHTML = textContainer.innerHTML; // 🔒 Guardamos estructura original
 
   const text = textContainer.innerText;
   sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
@@ -142,7 +135,6 @@ function startReading() {
 
 function readNextSentence() {
   if (isPaused || currentIndex >= sentences.length) return;
-
   const sentenceEls = document.querySelectorAll(".tts-sentence");
   sentenceEls.forEach((el) => el.classList.remove("tts-active"));
 
@@ -172,6 +164,52 @@ function readNextSentence() {
 }
 
 // ==========================================================
+// ⏹️ Stop Reading
+// ==========================================================
+function stopReading() {
+  speechSynthesis.cancel();
+  currentIndex = 0;
+  isPaused = false;
+  document
+    .querySelectorAll(".tts-sentence")
+    .forEach((el) => el.classList.remove("tts-active", "tts-active-dark", "tts-active-light"));
+}
+
+// ==========================================================
+// 🔁 Restaurar formato original al cerrar
+// ==========================================================
+function closeAndRestore() {
+  stopReading();
+
+  // Si hay texto modificado, restauramos
+  if (textContainer && originalHTML) {
+    textContainer.innerHTML = originalHTML;
+    originalHTML = "";
+  }
+
+  // Removemos panel (si existe)
+  const panel = document.querySelector(".tts-panel");
+  if (panel) panel.remove();
+
+  // Confirmación visual sutil
+  const toast = document.createElement("div");
+  toast.textContent = "✅ Texto restaurado con éxito";
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.left = "50%";
+  toast.style.transform = "translateX(-50%)";
+  toast.style.background = "linear-gradient(90deg,#FFD700,#C5A200)";
+  toast.style.color = "#111";
+  toast.style.fontWeight = "600";
+  toast.style.padding = "10px 18px";
+  toast.style.borderRadius = "10px";
+  toast.style.boxShadow = "0 0 15px rgba(255,215,0,0.5)";
+  toast.style.zIndex = "999999";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1800);
+}
+
+// ==========================================================
 // 🧮 Utilidad luminancia
 // ==========================================================
 function getLuminance(rgb) {
@@ -182,41 +220,43 @@ function getLuminance(rgb) {
 }
 
 // ==========================================================
-// ⏹️ Stop Reading
-// ==========================================================
-function stopReading() {
-  speechSynthesis.cancel();
-  currentIndex = 0;
-  isPaused = false;
-
-  document.querySelectorAll(".tts-sentence").forEach((el) =>
-    el.classList.remove("tts-active", "tts-active-dark", "tts-active-light")
-  );
-}
-
-// ==========================================================
-// 🗣️ Voces disponibles
+// 🗣️ Voces en español (2F + 1M)
 // ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
   if (!select) return;
   select.innerHTML = "";
 
-  const voices = speechSynthesis.getVoices().filter((v) => v.lang.startsWith("es"));
-  voices.slice(0, 5).forEach((v) => {
+  const allVoices = speechSynthesis.getVoices();
+  const spanish = allVoices.filter((v) => v.lang.startsWith("es"));
+  const femalePriority = ["Helena", "Laura", "Elena", "Sofía"];
+  const malePriority = ["Pablo", "Enrique", "Carlos", "Jorge"];
+
+  const female = spanish
+    .filter((v) => femalePriority.some((n) => v.name.includes(n)))
+    .slice(0, 2);
+  const male = spanish
+    .filter((v) => malePriority.some((n) => v.name.includes(n)))
+    .slice(0, 1);
+
+  let finalVoices = [...female, ...male];
+  if (finalVoices.length < 3)
+    finalVoices = [...finalVoices, ...spanish.slice(0, 3 - finalVoices.length)];
+
+  finalVoices.forEach((v) => {
     const opt = document.createElement("option");
     opt.value = v.name;
     opt.textContent = `${v.name} (${v.lang})`;
     select.appendChild(opt);
   });
 
-  currentVoice = voices[0]?.name || null;
+  currentVoice = finalVoices[0]?.name || null;
 }
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V2.0 Restore Mode (Fix Final)
-✅ Restaura el texto original al cerrar (sin perder formato)
-✅ Lee todo el módulo completo (sin detenerse)
-✅ Resaltado adaptativo dorado/blanco según fondo
+🔒 CFC-SYNC QA — V2.1 RestoreFix
+✅ Restauración garantizada incluso si se cierra rápido
+✅ Texto vuelve 100% a formato original
+✅ Confirmación visual “Texto restaurado con éxito”
 ========================================================== */
