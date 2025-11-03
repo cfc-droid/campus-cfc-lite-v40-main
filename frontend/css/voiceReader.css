@@ -1,28 +1,26 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1_20251105 — Estilos Narrador IA Integrado (posición inferior izquierda)
+✅ CFC_FUNC_10_1Q_20251107 — Narrador IA Integrado (Fix: Panel Invisible + Safe Listener)
 ========================================================== */
 
-/* Botón fijo inferior izquierdo */
-.tts-btn-fixed {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: linear-gradient(90deg, #FFD700, #E0A821);
-  color: #111;
-  font-weight: 600;
-  font-size: 18px;
-  padding: 10px 12px;
-  border-radius: 50%;
-  border: none;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-  cursor: pointer;
-  z-index: 9999;
-  transition: transform 0.2s, box-shadow 0.3s;
-}
-.tts-btn-fixed:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-}
+document.addEventListener("DOMContentLoaded", () => {
+  // Listener global (funciona aunque el botón se cargue dinámicamente)
+  document.body.addEventListener("click", (e) => {
+    if (e.target.classList.contains("tts-btn-fixed")) {
+      e.preventDefault();
+      openVoicePanel();
+    }
+  });
+});
+
+let currentVoice = null;
+let currentRate = 1;
+let isPaused = false;
+let currentIndex = 0;
+let sentences = [];
+let utter = null;
+let beep = null;
+let overlayEl = null;
+
 
 /* ==========================================================
 ✅ CFC_FUNC_10_1A_20251105 — Panel flotante IA (diseño base)
