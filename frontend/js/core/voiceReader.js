@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1H_20251107 — Narrador IA Integrado (V1.6.2 REAL-STABLE)
+✅ CFC_FUNC_10_1I_20251107 — Narrador IA Integrado (V1.6.3 REAL-LOCK)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,11 +11,11 @@ let currentUtterance = null;
 let currentVoice = null;
 let currentRate = 1;
 let lastSpokenChar = 0;
-let lastBoundaryTime = 0;
+let CFC_LAST_INDEX_REAL = 0;
+let CFC_RESTART_LOCK = false;
 let beep = null;
 
 function initBeep() {
-  // 🎧 Sonido metálico corto Premium (80 ms)
   beep = new Audio(
     "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
   );
@@ -66,25 +66,23 @@ function openVoicePanel() {
   const speedBtns = document.querySelectorAll(".speed-btn");
   const voiceSelect = document.getElementById("voiceSelect");
 
-  // 🟡 Control de velocidad dinámico
+  // 🟡 Control de velocidad dinámica
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
+      if (CFC_RESTART_LOCK) return; // ⛔ bloqueo activo
+      CFC_RESTART_LOCK = true;
+      setTimeout(() => (CFC_RESTART_LOCK = false), 1000);
+
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       if (beep) beep.play();
 
       if (speechSynthesis.speaking && currentUtterance) {
-        try {
-          const wasPaused = speechSynthesis.paused;
-          const safeIndex = lastSpokenChar; // backup del punto real
-          speechSynthesis.pause();
-          speechSynthesis.cancel();
-          restartSpeechFrom(safeIndex, true); // true = suavizado
-          if (!wasPaused) speechSynthesis.resume();
-        } catch (err) {
-          console.warn("⚠️ No se pudo ajustar velocidad en vivo:", err);
-        }
+        const safeIndex = CFC_LAST_INDEX_REAL || lastSpokenChar;
+        speechSynthesis.pause();
+        speechSynthesis.cancel();
+        setTimeout(() => restartSpeechFrom(safeIndex, true), 150);
       }
     };
   });
@@ -116,22 +114,24 @@ function openVoicePanel() {
 
   // 🎧 Cambio de voz
   voiceSelect.addEventListener("change", () => {
+    if (CFC_RESTART_LOCK) return;
+    CFC_RESTART_LOCK = true;
+    setTimeout(() => (CFC_RESTART_LOCK = false), 1000);
+
     currentVoice = voiceSelect.value;
     if (beep) beep.play();
 
     if (speechSynthesis.speaking && currentUtterance) {
-      const wasPaused = speechSynthesis.paused;
-      const safeIndex = lastSpokenChar;
+      const safeIndex = CFC_LAST_INDEX_REAL || lastSpokenChar;
       speechSynthesis.pause();
       speechSynthesis.cancel();
-      restartSpeechFrom(safeIndex, true);
-      if (!wasPaused) speechSynthesis.resume();
+      setTimeout(() => restartSpeechFrom(safeIndex, true), 150);
     }
   });
 }
 
 // ==========================================================
-// 🔊 Motor de lectura con control de índice
+// 🔊 Motor de lectura con control de índice y bloqueo seguro
 // ==========================================================
 function startSpeech(text) {
   speechSynthesis.cancel();
@@ -144,13 +144,10 @@ function startSpeech(text) {
     speechSynthesis.getVoices().find((v) => v.lang.startsWith("es")) ||
     null;
 
-  // 🧠 Captura precisa del progreso real de lectura
   utter.onboundary = (e) => {
-    const now = Date.now();
-    // Evitar múltiples updates del mismo punto
-    if (now - lastBoundaryTime > 500) {
-      lastBoundaryTime = now;
-      if (e.charIndex > lastSpokenChar) lastSpokenChar = e.charIndex;
+    if (e.charIndex > lastSpokenChar) {
+      lastSpokenChar = e.charIndex;
+      CFC_LAST_INDEX_REAL = e.charIndex; // checkpoint real persistente
     }
   };
 
@@ -158,11 +155,11 @@ function startSpeech(text) {
   speechSynthesis.speak(utter);
 }
 
-// ✅ Ajuste inteligente al reiniciar lectura (retroceso micro)
+// ✅ Reinicio controlado con micro-retroceso fijo
 function restartSpeechFrom(index, smooth = false) {
   const text =
     document.querySelector("main")?.innerText || document.body.innerText;
-  const rewind = smooth ? 8 : 0; // 🔥 retrocede solo 8 caracteres (~media palabra)
+  const rewind = smooth ? 5 : 0; // 🔥 retrocede siempre 5 caracteres
   const startFrom = Math.max(0, index - rewind);
   const remaining = text.substring(startFrom);
   startSpeech(remaining);
@@ -179,7 +176,6 @@ function loadVoices() {
   const allVoices = speechSynthesis.getVoices();
   const spanish = allVoices.filter((v) => v.lang.startsWith("es"));
 
-  // ⚙️ Forzar máximo 3 voces (2 femeninas + 1 masculina)
   const femalePriority = ["Helena", "Laura", "Elena", "Sofía"];
   const malePriority = ["Pablo", "Enrique", "Carlos", "Jorge"];
 
@@ -191,11 +187,8 @@ function loadVoices() {
     .slice(0, 1);
 
   let finalVoices = [...female, ...male];
-
-  // Si no hay suficientes, completar con cualquier español
   if (finalVoices.length < 3)
     finalVoices = [...finalVoices, ...spanish.slice(0, 3 - finalVoices.length)];
-
   finalVoices = finalVoices.slice(0, 3);
 
   finalVoices.forEach((v) => {
@@ -211,9 +204,10 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.6.2 REAL-STABLE
-✅ Retroceso fijo: 8 caracteres (~media palabra)
-✅ Anti-acumulación de retrocesos múltiples
+🔒 CFC-SYNC QA — V1.6.3 REAL-LOCK
+✅ Retroceso fijo: 5 caracteres (~micro)
+✅ Checkpoint persistente CFC_LAST_INDEX_REAL
+✅ Bloqueo temporal 1 s anti-acumulación
 ✅ Voces: 2 femeninas + 1 masculina
 ✅ Beep metálico premium activo
 ========================================================== */
