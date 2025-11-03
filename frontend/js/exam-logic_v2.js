@@ -1,41 +1,46 @@
 /* ==========================================================
-   CFC — EXAM LOGIC V2 (SYNC FIX v10.0 FINAL + AUDIO V9.2 + HISTORIAL OK)
-   ========================================================== */
-// ✅ CFC_FUNC_3_2_EXAM_SOUND_V9.2 — Audio examen + historial en vivo — QA-SYNC 2025-11-03
-
+✅ CFC_FUNC_3_2_EXAM_V10.6_FINAL — Fix global + guardado + compatibilidad exam1
+📄 Archivo: /frontend/js/exam-logic_v2.js
+========================================================== */
 document.addEventListener("DOMContentLoaded", () => {
-  // 🔍 Soporta cualquier ID válido de formulario (exam1, exam2, exam3, etc.)
+  // 🔍 Localizar formulario (exam1, exam2, etc.)
   const examForm =
     document.querySelector("#exam-form") ||
     document.querySelector("form[id^='exam']");
 
   if (!examForm) {
-    console.warn("⚠️ No se encontró el formulario del examen — QA-SYNC V10.0");
+    console.warn("⚠️ No se encontró el formulario del examen — QA-SYNC V10.6");
     return;
   }
 
   // 🎧 Sonidos
   const successSound = new Audio("../../sounds/success.wav");
-  const errorSound   = new Audio("../../sounds/error.wav");
+  const errorSound = new Audio("../../sounds/error.wav");
   successSound.volume = 0.6;
-  errorSound.volume   = 0.6;
+  errorSound.volume = 0.6;
 
-  // 🔊 Desbloquear contexto de audio
-  document.body.addEventListener("click", () => {
-    [successSound, errorSound].forEach(snd => {
-      snd.play().then(() => {
-        snd.pause(); snd.currentTime = 0;
-      }).catch(()=>{});
-    });
-    console.log("🧩 CFC_SYNC checkpoint: AudioContext habilitado — QA-SYNC V10.0");
-  }, { once:true });
+  // 🔊 Desbloqueo de audio
+  document.body.addEventListener(
+    "click",
+    () => {
+      [successSound, errorSound].forEach((snd) => {
+        snd.play().then(() => {
+          snd.pause();
+          snd.currentTime = 0;
+        }).catch(()=>{});
+      });
+      console.log("🧩 AudioContext habilitado — QA-SYNC V10.6");
+    },
+    { once: true }
+  );
 
   /* ==========================================================
-     📘 EVENTO PRINCIPAL — Envío del examen
+     📘 FUNCIÓN PRINCIPAL — envío de examen
      ========================================================== */
-  const sendExam = () => {
+  function sendExam() {
     const formData = new FormData(examForm);
-    let total = 0, correctas = 0;
+    let total = 0,
+      correctas = 0;
 
     formData.forEach((value, key) => {
       total++;
@@ -53,20 +58,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     alert(msg);
 
-    // 🎵 Audio
+    // 🎵 Sonido
     setTimeout(() => {
       const snd = passed ? successSound : errorSound;
       snd.currentTime = 0;
       snd.play().catch(()=>{});
     }, 300);
 
-    /* ==========================================================
-       🧠 CFC SYNC — Progreso global
-       ========================================================== */
+    // 🧠 CFC SYNC — progreso global
     const moduleNumber = parseInt(
       document.body.dataset.module ||
-      localStorage.getItem("currentModule") ||
-      1
+        localStorage.getItem("currentModule") ||
+        1
     );
 
     window.dispatchEvent(
@@ -77,10 +80,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (typeof showMotivationModal === "function") showMotivationModal(passed);
 
-    localStorage.setItem(`module${moduleNumber}_passed`, passed ? "true" : "false");
+    localStorage.setItem(
+      `module${moduleNumber}_passed`,
+      passed ? "true" : "false"
+    );
+
     if (passed) {
       localStorage.setItem(`mod${moduleNumber + 1}_unlocked`, "true");
-      const modules = JSON.parse(localStorage.getItem("completedModules") || "[]");
+      const modules = JSON.parse(
+        localStorage.getItem("completedModules") || "[]"
+      );
       if (!modules.includes(moduleNumber)) {
         modules.push(moduleNumber);
         localStorage.setItem("completedModules", JSON.stringify(modules));
@@ -96,48 +105,37 @@ document.addEventListener("DOMContentLoaded", () => {
       const date = new Date().toLocaleDateString("es-AR");
 
       // Eliminar duplicados
-      const filtered = examResults.filter(r => r.module !== moduleName);
+      const filtered = examResults.filter((r) => r.module !== moduleName);
 
       filtered.push({
         module: moduleName,
         date,
         score,
-        status: passed ? "✅ Aprobado" : "❌ Reprobado"
+        status: passed ? "✅ Aprobado" : "❌ Reprobado",
       });
 
       localStorage.setItem("examResults", JSON.stringify(filtered));
-      console.log("🧩 CFC_SYNC checkpoint: historial actualizado — QA-SYNC V10.0", filtered);
-
-      // 🔁 Si results.html está abierto, actualizar en vivo
-      if (window.location.pathname.includes("results")) {
-        const table = document.getElementById("examHistory");
-        if (table) {
-          const last = filtered[filtered.length - 1];
-          const row = `
-            <tr>
-              <td>${last.module}</td>
-              <td>${last.date}</td>
-              <td>${last.score}%</td>
-              <td>${last.status}</td>
-            </tr>`;
-          table.insertAdjacentHTML("beforeend", row);
-          console.log("🧩 Fila añadida en vivo al historial — QA-SYNC V10.0");
-        }
-      }
+      console.log(
+        "🧩 CFC_SYNC checkpoint: historial actualizado — QA-SYNC V10.6",
+        filtered
+      );
     } catch (err) {
       console.error("❌ Error guardando historial:", err);
     }
-  };
+  }
 
-  // 🧩 Vincular a botón “Enviar respuestas”
-  const btn = document.querySelector("button[onclick='enviarExamen()']");
+  /* ==========================================================
+     🔗 ENLACE DEL BOTÓN — compatibilidad total
+     ========================================================== */
+  const btn =
+    document.querySelector("button[onclick='enviarExamen()']") ||
+    document.querySelector("button[onclick='sendExam()']");
+
   if (btn) {
     btn.addEventListener("click", sendExam);
-  } else {
-    // fallback por seguridad
-    examForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      sendExam();
-    });
+    console.log("🧩 CFC_SYNC checkpoint: botón vinculado — QA-SYNC V10.6");
   }
+
+  // 🔄 Exportar función al ámbito global (para onclick directo)
+  window.enviarExamen = sendExam;
 });
