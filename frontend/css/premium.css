@@ -546,3 +546,53 @@ main, section, footer, header {
 [data-theme="dark"] .btn-main {
   color: #000 !important;
 }
+
+/* ==========================================================
+✅ CFC_FUNC_8_1_20251105 — Estilo visual del panel de progreso
+========================================================== */
+.stats-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 10, 10, 0.95);
+  color: #ffd700;
+  padding: 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
+  z-index: 9999;
+  text-align: center;
+  width: 90%;
+  max-width: 420px;
+  font-family: "Poppins", sans-serif;
+}
+.stats-modal h3 {
+  font-size: 1.4rem;
+  color: #ffd700;
+  margin-bottom: 12px;
+}
+.stats-modal p {
+  margin: 6px 0;
+  font-size: 1rem;
+  color: #fff;
+}
+.stats-modal button {
+  margin-top: 16px;
+  background: linear-gradient(90deg, #ffd700, #f0c03d);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 700;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.stats-modal button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+}
+/* ==========================================================
+🔒 CFC-SYNC
+# ✅ CFC_FUNC_8_1_20251105 — CSS del modal integrado
+echo "🧩 CFC_SYNC checkpoint: estilo dorado premium aplicado"
+========================================================== */
