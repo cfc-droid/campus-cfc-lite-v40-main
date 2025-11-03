@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1G_20251106 — Narrador IA Integrado (V1.6.1 Ajuste fino retroceso 20)
+✅ CFC_FUNC_10_1H_20251107 — Narrador IA Integrado (V1.6.2 REAL-STABLE)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,6 +11,7 @@ let currentUtterance = null;
 let currentVoice = null;
 let currentRate = 1;
 let lastSpokenChar = 0;
+let lastBoundaryTime = 0;
 let beep = null;
 
 function initBeep() {
@@ -76,9 +77,10 @@ function openVoicePanel() {
       if (speechSynthesis.speaking && currentUtterance) {
         try {
           const wasPaused = speechSynthesis.paused;
+          const safeIndex = lastSpokenChar; // backup del punto real
           speechSynthesis.pause();
           speechSynthesis.cancel();
-          restartSpeechFrom(lastSpokenChar, true); // true = suavizado
+          restartSpeechFrom(safeIndex, true); // true = suavizado
           if (!wasPaused) speechSynthesis.resume();
         } catch (err) {
           console.warn("⚠️ No se pudo ajustar velocidad en vivo:", err);
@@ -119,9 +121,10 @@ function openVoicePanel() {
 
     if (speechSynthesis.speaking && currentUtterance) {
       const wasPaused = speechSynthesis.paused;
+      const safeIndex = lastSpokenChar;
       speechSynthesis.pause();
       speechSynthesis.cancel();
-      restartSpeechFrom(lastSpokenChar, true);
+      restartSpeechFrom(safeIndex, true);
       if (!wasPaused) speechSynthesis.resume();
     }
   });
@@ -141,21 +144,26 @@ function startSpeech(text) {
     speechSynthesis.getVoices().find((v) => v.lang.startsWith("es")) ||
     null;
 
+  // 🧠 Captura precisa del progreso real de lectura
   utter.onboundary = (e) => {
-    if (e.name === "word" || e.name === "sentence" || e.charIndex)
-      lastSpokenChar = e.charIndex;
+    const now = Date.now();
+    // Evitar múltiples updates del mismo punto
+    if (now - lastBoundaryTime > 500) {
+      lastBoundaryTime = now;
+      if (e.charIndex > lastSpokenChar) lastSpokenChar = e.charIndex;
+    }
   };
 
   currentUtterance = utter;
   speechSynthesis.speak(utter);
 }
 
-// ✅ Ajuste inteligente al reiniciar lectura (retroceso corto)
+// ✅ Ajuste inteligente al reiniciar lectura (retroceso micro)
 function restartSpeechFrom(index, smooth = false) {
   const text =
     document.querySelector("main")?.innerText || document.body.innerText;
-  let rewind = smooth ? 20 : 0; // 🔥 retrocede solo 20 caracteres (~1 palabra)
-  let startFrom = Math.max(0, index - rewind);
+  const rewind = smooth ? 8 : 0; // 🔥 retrocede solo 8 caracteres (~media palabra)
+  const startFrom = Math.max(0, index - rewind);
   const remaining = text.substring(startFrom);
   startSpeech(remaining);
 }
@@ -203,8 +211,9 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.6.1 Ajuste fino
-✅ Retroceso reducido: 20 caracteres (~1 palabra)
+🔒 CFC-SYNC QA — V1.6.2 REAL-STABLE
+✅ Retroceso fijo: 8 caracteres (~media palabra)
+✅ Anti-acumulación de retrocesos múltiples
 ✅ Voces: 2 femeninas + 1 masculina
 ✅ Beep metálico premium activo
 ========================================================== */
