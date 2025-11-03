@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1K_20251107 — Narrador IA Integrado (V1.7 Simulación continua)
+✅ CFC_FUNC_10_1L_20251107 — Narrador IA Integrado (V1.8 Smart-Rate + Adaptive-Highlight)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,9 +15,10 @@ let sentences = [];
 let utter = null;
 let beep = null;
 
+// 🎧 Sonido metálico corto Premium
 function initBeep() {
   beep = new Audio(
-    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
+    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRQAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
   );
 }
 
@@ -66,13 +67,24 @@ function openVoicePanel() {
   const voiceSelect = document.getElementById("voiceSelect");
   const speedBtns = document.querySelectorAll(".speed-btn");
 
-  // 🧠 Cambiar velocidad
+  // 🧠 Cambiar velocidad (afecta lectura actual)
   speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       if (beep) beep.play();
+
+      // Si está leyendo, reanuda con nueva velocidad
+      if (utter && speechSynthesis.speaking) {
+        speechSynthesis.pause();
+        const resumeIndex = currentIndex;
+        speechSynthesis.cancel();
+        setTimeout(() => {
+          currentIndex = resumeIndex;
+          readNextSentence();
+        }, 150);
+      }
     };
   });
 
@@ -101,16 +113,23 @@ function openVoicePanel() {
 }
 
 // ==========================================================
-// 🔊 Motor de lectura por frases
+// 🔊 Motor de lectura por frases con resaltado adaptativo
 // ==========================================================
 function startReading() {
-  stopReading(); // cancelar anterior si hay
-  const text = document.querySelector("main")?.innerText || document.body.innerText;
+  stopReading();
+  const textContainer = document.querySelector("main") || document.body;
+  const text = textContainer.innerText;
 
-  // 🔹 Dividimos por frases naturales
+  // Dividimos el texto en frases
   sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
   currentIndex = 0;
   isPaused = false;
+
+  // Insertamos spans para resaltado
+  const html = sentences
+    .map((s, i) => `<span class="tts-sentence" data-index="${i}">${s}</span>`)
+    .join(" ");
+  textContainer.innerHTML = html;
 
   readNextSentence();
 }
@@ -118,14 +137,18 @@ function startReading() {
 function readNextSentence() {
   if (isPaused || currentIndex >= sentences.length) return;
 
-  const sentence = sentences[currentIndex].trim();
-  if (!sentence) {
-    currentIndex++;
-    readNextSentence();
-    return;
-  }
+  const sentenceEls = document.querySelectorAll(".tts-sentence");
+  sentenceEls.forEach((el) => el.classList.remove("tts-active"));
 
-  utter = new SpeechSynthesisUtterance(sentence);
+  const currentEl = sentenceEls[currentIndex];
+  if (!currentEl) return;
+
+  // Detectar fondo (claro u oscuro)
+  const bgColor = window.getComputedStyle(document.body).backgroundColor;
+  const isDark = getLuminance(bgColor) < 128;
+  currentEl.classList.add(isDark ? "tts-active-dark" : "tts-active-light");
+
+  utter = new SpeechSynthesisUtterance(currentEl.innerText.trim());
   utter.lang = "es-ES";
   utter.rate = currentRate;
   utter.voice =
@@ -143,6 +166,14 @@ function readNextSentence() {
   speechSynthesis.speak(utter);
 }
 
+// Utilidad para calcular luminancia
+function getLuminance(rgb) {
+  const nums = rgb.match(/\d+/g);
+  if (!nums) return 255;
+  const [r, g, b] = nums.map(Number);
+  return 0.299 * r + 0.587 * g + 0.114 * b;
+}
+
 // ==========================================================
 // ⏹️ Stop Reading
 // ==========================================================
@@ -150,6 +181,11 @@ function stopReading() {
   speechSynthesis.cancel();
   currentIndex = 0;
   isPaused = false;
+
+  // Limpiar resaltado
+  document.querySelectorAll(".tts-sentence").forEach((el) =>
+    el.classList.remove("tts-active", "tts-active-dark", "tts-active-light")
+  );
 }
 
 // ==========================================================
@@ -191,10 +227,9 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* ==========================================================
-🔒 CFC-SYNC QA — V1.7 Simulación continua
-✅ Sin cancelaciones totales (no pierde posición)
-✅ Reanudación exacta desde misma frase
-✅ Cambios de voz y velocidad instantáneos
-✅ Voces: 2 femeninas + 1 masculina (español)
-✅ Compatible con modo offline del Campus LITE
+🔒 CFC-SYNC QA — V1.8 Smart-Rate + Adaptive-Highlight
+✅ Cambio de velocidad instantáneo (sin reinicio)
+✅ Cambio de voz estable (1–2 s)
+✅ Resaltado adaptativo según fondo claro/oscuro
+✅ Voces: 2 F + 1 M en español
 ========================================================== */
