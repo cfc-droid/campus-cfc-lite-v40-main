@@ -1,11 +1,13 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1B_20251105 — Narrador IA Integrado (Optimizado)
+✅ CFC_FUNC_10_1C_20251105 — Narrador IA Integrado (Final Premium)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
   const voiceBtn = document.querySelector(".tts-btn-fixed");
   if (voiceBtn) voiceBtn.addEventListener("click", openVoicePanel);
 });
+
+let beep; // efecto sonoro
 
 function openVoicePanel() {
   if (document.querySelector(".tts-panel")) return;
@@ -39,60 +41,84 @@ function openVoicePanel() {
     </div>
   `);
 
+  beep = new Audio("data:audio/wav;base64,UklGRhYAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQgAAA=="); // beep 50ms
+
   loadVoices();
 
-  // Botones
+  // Controles
   const readBtn = document.getElementById("readAll");
   const pauseBtn = document.getElementById("pause");
   const resumeBtn = document.getElementById("resume");
   const stopBtn = document.getElementById("stop");
   const closeBtn = document.getElementById("close");
   const speedBtns = document.querySelectorAll(".speed-btn");
+  const voiceSelect = document.getElementById("voiceSelect");
 
   let currentRate = 1;
+  let currentVoice = null;
+
+  // Selección de velocidad
   speedBtns.forEach(btn => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
       speedBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      beep.play();
     };
   });
 
+  // Lectura principal
   readBtn.onclick = () => {
     const text = document.querySelector("main")?.innerText || document.body.innerText;
     const utter = new SpeechSynthesisUtterance(text);
-    const selectedVoice = speechSynthesis.getVoices()
-      .find(v => v.name === document.getElementById("voiceSelect").value);
-    utter.voice = selectedVoice;
+    const voices = speechSynthesis.getVoices();
+    const selectedName = voiceSelect.value;
+    const selectedVoice = voices.find(v => v.name === selectedName);
+    utter.voice = selectedVoice || voices[0];
     utter.rate = currentRate;
     speechSynthesis.cancel();
     speechSynthesis.speak(utter);
+    beep.play();
   };
 
   pauseBtn.onclick = () => speechSynthesis.pause();
   resumeBtn.onclick = () => speechSynthesis.resume();
   stopBtn.onclick = () => speechSynthesis.cancel();
   closeBtn.onclick = () => document.querySelector(".tts-panel").remove();
+
+  // Cambio de voz
+  voiceSelect.addEventListener("change", () => {
+    currentVoice = voiceSelect.value;
+    beep.play();
+  });
 }
 
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
   select.innerHTML = "";
-  const allowedVoices = ["es-ES", "es-419", "es-MX", "es-AR"]; // solo español
-  const allVoices = speechSynthesis.getVoices()
-    .filter(v => allowedVoices.includes(v.lang));
+  const allVoices = speechSynthesis.getVoices();
 
-  // Mantener solo 2 masculinas y 2 femeninas
-  const unique = [];
-  for (const v of allVoices) {
-    if (!unique.some(u => u.gender === v.gender)) {
-      unique.push(v);
-      if (unique.length >= 4) break;
-    }
-  }
+  // Filtrar solo voces en español (es-ES, es-MX, es-419, es-AR)
+  const spanishVoices = allVoices.filter(v =>
+    v.lang.startsWith("es")
+  );
 
-  // Si no hay suficientes, mostrar las primeras 4 españolas
-  const finalVoices = unique.length ? unique : allVoices.slice(0, 4);
+  // Seleccionar solo 4 voces (2 femeninas + 2 masculinas)
+  const female = spanishVoices.filter(v =>
+    v.name.toLowerCase().includes("female") ||
+    v.name.toLowerCase().includes("mujer") ||
+    v.name.toLowerCase().includes("helena") ||
+    v.name.toLowerCase().includes("laura")
+  ).slice(0, 2);
+
+  const male = spanishVoices.filter(v =>
+    v.name.toLowerCase().includes("male") ||
+    v.name.toLowerCase().includes("hombre") ||
+    v.name.toLowerCase().includes("pablo") ||
+    v.name.toLowerCase().includes("enrique")
+  ).slice(0, 2);
+
+  const finalVoices = [...female, ...male].slice(0, 4);
 
   finalVoices.forEach(v => {
     const opt = document.createElement("option");
@@ -105,6 +131,6 @@ function loadVoices() {
 speechSynthesis.onvoiceschanged = loadVoices;
 
 /* 🔒 CFC-SYNC
-# ✅ CFC_FUNC_10_1B_20251105 — Voice Reader optimizado
-echo "🧩 CFC_SYNC checkpoint: Voces filtradas y control de velocidad mejorado"
+# ✅ CFC_FUNC_10_1C_20251105 — CFC-VOICE READER V1.3 Final Premium
+echo "🧩 CFC_SYNC checkpoint: Voces filtradas + velocidad funcional + beep activo"
 ========================================================== */
