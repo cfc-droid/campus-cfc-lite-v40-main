@@ -160,22 +160,6 @@
 ========================================================== */
 
 /* ==========================================================
-✅ CFC_FUNC_10_1L_20251107 — Estilos de resaltado adaptativo
-========================================================== */
-
-.tts-sentence.tts-active-light {
-  background: rgba(255, 215, 0, 0.25);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-}
-
-.tts-sentence.tts-active-dark {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-}
-
-/* ==========================================================
 ✅ CFC_FUNC_10_1N_20251107 — Overlay no destructivo Highlight-Ghost
 ========================================================== */
 
