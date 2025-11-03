@@ -1,6 +1,6 @@
 <!-- ==========================================================
-✅ CFC_FUNC_3_1_20251103 — results.html (ubicado en /frontend/pages/)
-Historial de exámenes con estilo dorado premium
+✅ CFC_FUNC_3_1_20251103 — results.html (QA-SYNC V10.3 FINAL)
+Historial de exámenes con integración total CFC-PLUS
 ========================================================== -->
 <!DOCTYPE html>
 <html lang="es">
@@ -9,7 +9,10 @@ Historial de exámenes con estilo dorado premium
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📘 Historial de Exámenes — Campus CFC LITE</title>
   <link rel="stylesheet" href="../css/premium.css?v=20251103" />
+  <script src="../js/auto_injector.js?v=20251103" defer></script>
+  <script src="../js/results.js?v=20251103" defer></script>
 </head>
+
 <body class="bg-dark text-light">
   <header class="header glassmorphism center">
     <h2 class="gold-text glow">📘 Historial de Exámenes</h2>
@@ -17,12 +20,17 @@ Historial de exámenes con estilo dorado premium
 
   <main class="main-content center fade-in">
     <table id="examHistory" class="history-table glassmorphism">
-      <tr>
-        <th>Módulo</th>
-        <th>Fecha</th>
-        <th>Nota</th>
-        <th>Estado</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>Módulo</th>
+          <th>Fecha</th>
+          <th>Nota</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="examHistoryBody">
+        <tr><td colspan="4" style="text-align:center;opacity:0.6;">🕓 Cargando historial...</td></tr>
+      </tbody>
     </table>
 
     <div class="center" style="margin-top:2rem;">
@@ -30,10 +38,8 @@ Historial de exámenes con estilo dorado premium
     </div>
   </main>
 
-  <footer class="footer small-text" style="margin-top:3rem; text-align:center;">
+  <footer class="footer small-text" style="margin-top:3rem;text-align:center;">
     <p>© 2025 Campus CFC LITE — Historial de Exámenes</p>
   </footer>
-
-  <script src="../js/results.js?v=20251103"></script>
 </body>
 </html>
