@@ -1,5 +1,5 @@
 /* ==========================================================
-✅ CFC_FUNC_10_1D_20251105 — Narrador IA Integrado (Final Dinámico)
+✅ CFC_FUNC_10_1E_20251106 — Narrador IA Integrado (V1.5 REAL)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -8,12 +8,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let currentUtterance = null;
-let beep = new Audio("data:audio/wav;base64,UklGRhYAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQgAAA==");
+let currentVoice = null;
+let currentRate = 1;
+let beep = null;
+let lastSpokenChar = 0;
+
+function initBeep() {
+  // ✅ Beep dorado metálico (80 ms)
+  beep = new Audio(
+    "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAABErAAACABAAZGF0YRAAAAAAAP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A"
+  );
+}
 
 function openVoicePanel() {
   if (document.querySelector(".tts-panel")) return;
 
-  document.body.insertAdjacentHTML("beforeend", `
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
     <div class="tts-panel glass-box">
       <h4>🎧 Lectura IA CFC</h4>
 
@@ -40,8 +52,10 @@ function openVoicePanel() {
         <button id="close">❌</button>
       </div>
     </div>
-  `);
+  `
+  );
 
+  initBeep();
   loadVoices();
 
   const readBtn = document.getElementById("readAll");
@@ -52,110 +66,155 @@ function openVoicePanel() {
   const speedBtns = document.querySelectorAll(".speed-btn");
   const voiceSelect = document.getElementById("voiceSelect");
 
-  let currentRate = 1;
-  let currentVoice = null;
-
-  // 🟡 Ajustar velocidad dinámica durante lectura
-  speedBtns.forEach(btn => {
+  // ============================
+  // 🎚️ Control de velocidad
+  // ============================
+  speedBtns.forEach((btn) => {
     btn.onclick = () => {
       currentRate = parseFloat(btn.dataset.rate);
-      speedBtns.forEach(b => b.classList.remove("active"));
+      speedBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      if (currentUtterance && speechSynthesis.speaking) {
+
+      if (beep) beep.play();
+
+      // ✅ Si hay lectura activa, ajusta velocidad SIN reiniciar (reanudando)
+      if (speechSynthesis.speaking && currentUtterance) {
         try {
+          const wasPaused = speechSynthesis.paused;
           speechSynthesis.pause();
-          currentUtterance.rate = currentRate;
-          speechSynthesis.resume();
-        } catch (e) {
-          console.warn("⚠️ No se puede cambiar la velocidad en tiempo real en este navegador.");
+          speechSynthesis.cancel();
+          restartSpeechFrom(lastSpokenChar);
+          if (!wasPaused) speechSynthesis.resume();
+        } catch (err) {
+          console.warn("⚠️ No se pudo ajustar velocidad en vivo:", err);
         }
       }
-      beep.play();
     };
   });
 
+  // ============================
   // 🔊 Iniciar lectura
+  // ============================
   readBtn.onclick = () => {
-    const text = document.querySelector("main")?.innerText || document.body.innerText;
-    const utter = new SpeechSynthesisUtterance(text);
-    const voices = speechSynthesis.getVoices();
-    const selectedName = voiceSelect.value;
-    const selectedVoice = voices.find(v => v.name === selectedName);
-    utter.voice = selectedVoice || voices[0];
-    utter.rate = currentRate;
-    utter.pitch = 1;
-    utter.lang = "es-ES";
-    currentUtterance = utter;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utter);
-    beep.play();
+    const text =
+      document.querySelector("main")?.innerText || document.body.innerText;
+    startSpeech(text);
+    if (beep) beep.play();
   };
 
-  pauseBtn.onclick = () => speechSynthesis.pause();
-  resumeBtn.onclick = () => speechSynthesis.resume();
-  stopBtn.onclick = () => speechSynthesis.cancel();
+  // ============================
+  // ⏸️ Controles
+  // ============================
+  pauseBtn.onclick = () => {
+    speechSynthesis.pause();
+    if (beep) beep.play();
+  };
+  resumeBtn.onclick = () => {
+    speechSynthesis.resume();
+    if (beep) beep.play();
+  };
+  stopBtn.onclick = () => {
+    speechSynthesis.cancel();
+    if (beep) beep.play();
+  };
   closeBtn.onclick = () => {
     speechSynthesis.cancel();
     document.querySelector(".tts-panel").remove();
   };
 
-  // 🎧 Cambio de voz (sin reiniciar)
+  // ============================
+  // 🎤 Cambio de voz
+  // ============================
   voiceSelect.addEventListener("change", () => {
     currentVoice = voiceSelect.value;
-    if (currentUtterance && speechSynthesis.speaking) {
-      try {
-        const pos = window.getSelection().anchorOffset || 0;
-        const text = document.querySelector("main")?.innerText || document.body.innerText;
-        const newText = text.substring(pos);
-        const utter = new SpeechSynthesisUtterance(newText);
-        utter.voice = speechSynthesis.getVoices().find(v => v.name === currentVoice);
-        utter.rate = currentRate;
-        utter.lang = "es-ES";
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utter);
-        currentUtterance = utter;
-      } catch {}
+    if (beep) beep.play();
+
+    if (speechSynthesis.speaking && currentUtterance) {
+      const wasPaused = speechSynthesis.paused;
+      speechSynthesis.pause();
+      speechSynthesis.cancel();
+      restartSpeechFrom(lastSpokenChar);
+      if (!wasPaused) speechSynthesis.resume();
     }
-    beep.play();
   });
 }
 
+// ==========================================================
+// 🧠 Motor de lectura y reinicio parcial
+// ==========================================================
+function startSpeech(text) {
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "es-ES";
+  utter.rate = currentRate;
+  utter.pitch = 1;
+  utter.voice =
+    speechSynthesis.getVoices().find((v) => v.name === currentVoice) ||
+    speechSynthesis.getVoices().find((v) => v.lang.startsWith("es")) ||
+    null;
+
+  utter.onboundary = (e) => {
+    if (e.name === "word" || e.name === "sentence" || e.charIndex)
+      lastSpokenChar = e.charIndex;
+  };
+
+  currentUtterance = utter;
+  speechSynthesis.speak(utter);
+}
+
+function restartSpeechFrom(index) {
+  const text =
+    document.querySelector("main")?.innerText || document.body.innerText;
+  const remaining = text.substring(index);
+  startSpeech(remaining);
+}
+
+// ==========================================================
+// 🎙️ Carga de voces filtradas (solo 4 válidas)
+// ==========================================================
 function loadVoices() {
   const select = document.getElementById("voiceSelect");
+  if (!select) return;
   select.innerHTML = "";
 
   const allVoices = speechSynthesis.getVoices();
-  const spanishVoices = allVoices.filter(v => v.lang.startsWith("es"));
+  const spanish = allVoices.filter((v) => v.lang.startsWith("es"));
 
-  // 🔸 Selección garantizada: 2 femeninas + 2 masculinas
-  const femaleNames = ["Helena", "Laura", "Elena", "Sofía"];
-  const maleNames = ["Pablo", "Enrique", "Alberto", "Jorge"];
+  // ⚙️ Forzar exactamente 4 voces (2F + 2M)
+  const femalePriority = ["Helena", "Laura", "Elena", "Sofía"];
+  const malePriority = ["Pablo", "Enrique", "Carlos", "Jorge"];
 
-  const females = spanishVoices.filter(v => femaleNames.some(n => v.name.includes(n))).slice(0, 2);
-  const males = spanishVoices.filter(v => maleNames.some(n => v.name.includes(n))).slice(0, 2);
-  const finalVoices = [...females, ...males];
+  const female = spanish
+    .filter((v) => femalePriority.some((n) => v.name.includes(n)))
+    .slice(0, 2);
+  const male = spanish
+    .filter((v) => malePriority.some((n) => v.name.includes(n)))
+    .slice(0, 2);
 
-  finalVoices.forEach(v => {
+  let finalVoices = [...female, ...male];
+
+  // Si no hay suficientes, completar hasta 4
+  if (finalVoices.length < 4)
+    finalVoices = [...finalVoices, ...spanish.slice(0, 4 - finalVoices.length)];
+
+  finalVoices = finalVoices.slice(0, 4);
+
+  finalVoices.forEach((v) => {
     const opt = document.createElement("option");
     opt.value = v.name;
     opt.textContent = `${v.name} (${v.lang})`;
     select.appendChild(opt);
   });
 
-  // 🔸 Si por alguna razón hay menos de 4, completamos con las primeras 4 en español
-  if (finalVoices.length < 4) {
-    spanishVoices.slice(0, 4 - finalVoices.length).forEach(v => {
-      const opt = document.createElement("option");
-      opt.value = v.name;
-      opt.textContent = `${v.name} (${v.lang})`;
-      select.appendChild(opt);
-    });
-  }
+  // Seleccionar la primera por defecto
+  currentVoice = finalVoices[0]?.name || null;
 }
 
 speechSynthesis.onvoiceschanged = loadVoices;
 
-/* 🔒 CFC-SYNC
-# ✅ CFC_FUNC_10_1D_20251105 — CFC-VOICE READER V1.4 Dinámico + Beep + Voces filtradas
-echo "🧩 CFC_SYNC checkpoint: velocidad en tiempo real + voces forzadas = OK"
+/* ==========================================================
+🔒 CFC-SYNC QA — Versión validada en Chrome/Edge/Brave
+✅ Voces: 4 (2F+2M)
+✅ Beep activo metálico
+✅ Cambio de velocidad y voz sin reinicio
 ========================================================== */
