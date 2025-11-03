@@ -1,0 +1,56 @@
+/* ==========================================================
+✅ CFC_FUNC_10_1_20251105 — Estilos Narrador IA Integrado (posición inferior izquierda)
+========================================================== */
+
+/* Botón fijo inferior izquierdo */
+.tts-btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: linear-gradient(90deg, #FFD700, #E0A821);
+  color: #111;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 10px 12px;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 0 10px rgba(255,215,0,0.4);
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+.tts-btn-fixed:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255,215,0,0.6);
+}
+
+/* Panel flotante IA */
+.tts-panel {
+  position: fixed;
+  bottom: 80px;
+  left: 20px;
+  background: rgba(15,15,15,0.95);
+  color: #FFD700;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 0 15px rgba(255,215,0,0.4);
+  z-index: 99999;
+  width: 260px;
+  font-family: "Poppins", sans-serif;
+  animation: fadeIn 0.3s ease;
+}
+.tts-panel h4 { margin-top: 0; margin-bottom: 8px; font-size: 1.1rem; }
+.tts-panel select, .tts-panel input, .tts-panel button {
+  margin: 4px; padding: 5px 8px; border-radius: 6px; border: none;
+}
+.tts-panel button {
+  background: linear-gradient(90deg,#FFD700,#B8860B);
+  color:#111;font-weight:600;cursor:pointer;
+}
+.tts-panel button:hover {
+  filter: brightness(1.2);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
