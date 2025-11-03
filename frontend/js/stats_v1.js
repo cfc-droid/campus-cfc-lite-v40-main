@@ -1,21 +1,16 @@
 /* ==========================================================
-✅ CFC_FUNC_8_1_FIX_20251105 — Analítica interna de progreso (sincronizada con progress_v2.js + activity_tracker)
+✅ CFC_FUNC_8_1_FIX_20251105b — Analítica interna (con minutos activos)
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("btnStats");
   if (!btn) return;
-
   btn.addEventListener("click", openStatsModal);
 });
 
 function openStatsModal() {
-  // 🧩 Leer datos del objeto progressData
-  let modules = 0;
-  let exams = 0;
-  let time = 0;
-  let days = 1;
-  let totalDays = 1;
+  // 🧩 Leer progreso general
+  let modules = 0, exams = 0, hours = 0, minutes = 0, days = 1, totalDays = 1;
 
   try {
     const progressData = JSON.parse(localStorage.getItem("progressData") || "{}");
@@ -26,21 +21,21 @@ function openStatsModal() {
     console.warn("⚠️ CFC-STATS: No se pudo leer progressData:", err);
   }
 
-  // 🧩 Compatibilidad con claves antiguas
+  // 🧩 Variables locales
   const legacyModules = parseInt(localStorage.getItem("CFC_modulesCompleted") || 0);
   const legacyExams = parseInt(localStorage.getItem("CFC_examsPassed") || 0);
-  const legacyTime = parseFloat(localStorage.getItem("CFC_time") || 0);
+  const legacyTime = parseFloat(localStorage.getItem("CFC_time") || localStorage.getItem("CFC_time_temp") || 0);
   const legacyDays = parseInt(localStorage.getItem("CFC_days") || 1);
   const legacyTotalDays = parseInt(localStorage.getItem("CFC_totalDays") || 1);
 
-  // Combinar valores
   modules = Math.max(modules, legacyModules);
   exams = legacyExams;
-  time = legacyTime / 3600; // convertir a horas
+  hours = legacyTime / 3600;
+  minutes = legacyTime / 60;
   days = legacyDays;
   totalDays = legacyTotalDays;
 
-  // Si hay examResult pendiente, sincronizarlo también
+  // 🧩 Sincronización examen aprobado
   const examResult = localStorage.getItem("examResult");
   if (examResult) {
     try {
@@ -49,10 +44,10 @@ function openStatsModal() {
     } catch {}
   }
 
-  // 🧼 Eliminar si ya hay otro modal abierto
+  // 🧼 Eliminar modal previo
   document.querySelector(".stats-modal")?.remove();
 
-  // 🪶 Crear modal con datos actuales
+  // 🪶 Crear modal
   document.body.insertAdjacentHTML(
     "beforeend",
     `
@@ -60,23 +55,22 @@ function openStatsModal() {
       <h3>📊 Tu progreso</h3>
       <p>Módulos completados: <b>${modules}/20</b></p>
       <p>Exámenes aprobados: <b>${exams}/20</b></p>
-      <p>Horas activas: <b>${time.toFixed(1)} h</b></p>
+      <p>Horas activas: <b>${hours.toFixed(1)} h</b> (<b>${minutes.toFixed(0)} min</b>)</p>
       <p>Días consecutivos de estudio: <b>${days}</b></p>
       <p>Días totales de estudio: <b>${totalDays}</b></p>
       <button onclick="document.querySelector('.stats-modal').remove()">Cerrar</button>
     </div>`
   );
 
-  // 🔍 Log de control
   console.log(
-    `CFC-STATS V1 — Módulos:${modules}, Exámenes:${exams}, Horas:${time.toFixed(
+    `CFC-STATS FIX — Módulos:${modules}, Exámenes:${exams}, Horas:${hours.toFixed(
       1
-    )}, Consecutivos:${days}, Totales:${totalDays}`
+    )}, Min:${minutes.toFixed(0)}, Consecutivos:${days}, Totales:${totalDays}`
   );
 }
 
 /* ==========================================================
 🔒 CFC-SYNC
-# ✅ CFC_FUNC_8_1_FIX_20251105 — Lectura sincronizada con progressData y activity_tracker
-echo "🧩 CFC_SYNC checkpoint: CFC-STATS V1 con días totales activos"
+# ✅ CFC_FUNC_8_1_FIX_20251105b — Incluye minutos activos y días totales reales
+echo "🧩 CFC_SYNC checkpoint: CFC-STATS FIX V1.1 con minutos visibles"
 ========================================================== */
