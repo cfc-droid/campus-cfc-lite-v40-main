@@ -44,6 +44,8 @@ function enviarExamen() {
       errores,
       duracionSegundos,
       timestamp: new Date().toISOString(),
+      // ✅ Compatibilidad retro con progress_v2.js
+      passed: aprobado, // este campo es leído por progress_v2.js
     };
 
     localStorage.setItem("examResult", JSON.stringify(resultado));
