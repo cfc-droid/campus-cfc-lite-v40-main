@@ -1,132 +1,114 @@
-/* ==========================================================
-   ✅ CFC_FUNC_41_3_V41.3_REAL — Bitácora Mental PLUS
-   Funciones: guardado, edición, borrado, tono, ícono y exportación
-   ========================================================== */
-
-let selectedIcon = "";
-let selectedTone = "";
+// =====================================================
+// ✅ CFC_FUNC_4_4_20251105 — Bitácora Mental del Trader V41.3 PLUS FIX
+// =====================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderThoughts();
-  document.getElementById("saveBtn").addEventListener("click", saveThought);
-  document.getElementById("exportBtn").addEventListener("click", exportBitacora);
-  document.querySelectorAll(".icon-option").forEach(icon =>
-    icon.addEventListener("click", () => selectIcon(icon))
-  );
-  document.getElementById("toneSelect").addEventListener("change", e => {
-    selectedTone = e.target.value;
-  });
-});
 
-/* ==========================================================
-   Guardar pensamiento
-========================================================== */
-function saveThought() {
-  const entry = document.getElementById("thoughts").value.trim();
-  if (!entry) return alert("⚠️ Escribí algo antes de guardar.");
-
-  const data = JSON.parse(localStorage.getItem("bitacora")) || [];
-  data.push({
-    entry,
-    tone: selectedTone || "",
-    icon: selectedIcon || "",
-    date: new Date().toLocaleString("es-AR")
-  });
-
-  localStorage.setItem("bitacora", JSON.stringify(data));
-  document.getElementById("thoughts").value = "";
-  renderThoughts();
-  alert("💾 Pensamiento guardado en tu Bitácora Mental.");
-}
-
-/* ==========================================================
-   Renderizar pensamientos guardados
-========================================================== */
-function renderThoughts() {
-  const data = JSON.parse(localStorage.getItem("bitacora")) || [];
+  const textarea = document.getElementById("thoughts");
   const list = document.getElementById("list");
-  list.innerHTML = "";
+  const toneSelect = document.getElementById("toneSelect");
+  const icons = document.querySelectorAll(".icon-option");
+  let selectedIcon = "🧠";
+  let selectedTone = "";
 
-  data.forEach((d, i) => {
-    const li = document.createElement("li");
-    li.className = "thought-item";
-    li.innerHTML = `
-      <div class="thought-header">
-        <span class="thought-icon">${d.icon || "🧠"}</span>
-        <strong>${d.tone ? `[${d.tone}]` : ""}</strong>
-        <span class="thought-date">${d.date}</span>
-      </div>
-      <p contenteditable="false" class="thought-text">${d.entry}</p>
-      <div class="thought-actions">
-        <button onclick="editThought(${i})" class="edit-btn">✏️</button>
-        <button onclick="deleteThought(${i})" class="delete-btn">🗑️</button>
-      </div>
-    `;
-    list.appendChild(li);
-  });
-}
+  // =====================================================
+  // 1️⃣ Cargar Bitácora desde localStorage
+  // =====================================================
+  const loadBitacora = () => {
+    const data = JSON.parse(localStorage.getItem("bitacora")) || [];
+    renderBitacora(data);
+  };
 
-/* ==========================================================
-   Seleccionar ícono
-========================================================== */
-function selectIcon(icon) {
-  document.querySelectorAll(".icon-option").forEach(i => i.classList.remove("selected"));
-  icon.classList.add("selected");
-  selectedIcon = icon.textContent;
-}
+  // =====================================================
+  // 2️⃣ Guardar nueva reflexión
+  // =====================================================
+  window.saveThought = () => {
+    const entry = textarea.value.trim();
+    if (!entry) {
+      alert("⚠️ Escribí algo antes de guardar.");
+      return;
+    }
 
-/* ==========================================================
-   Editar pensamiento
-========================================================== */
-function editThought(index) {
-  const data = JSON.parse(localStorage.getItem("bitacora")) || [];
-  const list = document.querySelectorAll(".thought-text")[index];
-  const btn = document.querySelectorAll(".edit-btn")[index];
-
-  if (list.isContentEditable) {
-    list.contentEditable = "false";
-    data[index].entry = list.textContent.trim();
+    const data = JSON.parse(localStorage.getItem("bitacora")) || [];
+    const newEntry = {
+      icon: selectedIcon,
+      tone: selectedTone,
+      entry,
+      date: new Date().toLocaleString(),
+    };
+    data.push(newEntry);
     localStorage.setItem("bitacora", JSON.stringify(data));
-    btn.textContent = "✏️";
-    alert("✅ Entrada actualizada.");
-  } else {
-    list.contentEditable = "true";
-    list.focus();
-    btn.textContent = "💾";
-  }
-}
 
-/* ==========================================================
-   Eliminar pensamiento
-========================================================== */
-function deleteThought(index) {
-  if (!confirm("¿Eliminar esta entrada de tu bitácora?")) return;
-  const data = JSON.parse(localStorage.getItem("bitacora")) || [];
-  data.splice(index, 1);
-  localStorage.setItem("bitacora", JSON.stringify(data));
-  renderThoughts();
-}
+    textarea.value = "";
+    renderBitacora(data);
+    alert("💾 Pensamiento guardado en tu Bitácora Mental.");
+  };
 
-/* ==========================================================
-   Exportar bitácora a .txt
-========================================================== */
-function exportBitacora() {
-  const data = JSON.parse(localStorage.getItem("bitacora")) || [];
-  if (!data.length) return alert("No hay entradas para exportar.");
+  // =====================================================
+  // 3️⃣ Renderizado de entradas
+  // =====================================================
+  const renderBitacora = (data) => {
+    list.innerHTML = "";
+    data.forEach((d, i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <div style="font-size:0.9rem;color:#FFD700;">
+          ${d.icon || "🧠"} <strong>${d.date}</strong>
+        </div>
+        <div style="margin-top:6px;color:#fff;">${d.tone ? `<em>${d.tone}</em><br>` : ""}${d.entry}</div>
+        <div class="actions">
+          <button onclick="editEntry(${i})">✏️</button>
+          <button onclick="deleteEntry(${i})">🗑️</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+  };
 
-  let contenido = "🧠 BITÁCORA MENTAL DEL TRADER\n\n";
-  data.forEach(d => {
-    contenido += `${d.date} ${d.icon || ""} ${d.tone || ""}\n${d.entry}\n\n`;
+  // =====================================================
+  // 4️⃣ Editar y Eliminar
+  // =====================================================
+  window.editEntry = (index) => {
+    const data = JSON.parse(localStorage.getItem("bitacora")) || [];
+    const item = data[index];
+    if (!item) return;
+    textarea.value = item.entry;
+    selectedTone = item.tone;
+    toneSelect.value = item.tone;
+    selectedIcon = item.icon;
+    data.splice(index, 1);
+    localStorage.setItem("bitacora", JSON.stringify(data));
+    renderBitacora(data);
+  };
+
+  window.deleteEntry = (index) => {
+    if (!confirm("¿Eliminar esta reflexión?")) return;
+    const data = JSON.parse(localStorage.getItem("bitacora")) || [];
+    data.splice(index, 1);
+    localStorage.setItem("bitacora", JSON.stringify(data));
+    renderBitacora(data);
+  };
+
+  // =====================================================
+  // 5️⃣ Selección de ícono y tono
+  // =====================================================
+  icons.forEach((icon) => {
+    icon.addEventListener("click", () => {
+      icons.forEach(i => i.style.opacity = "0.6");
+      icon.style.opacity = "1";
+      selectedIcon = icon.textContent;
+      console.log(`🧩 CFC_SYNC: Ícono seleccionado — ${selectedIcon}`);
+    });
   });
 
-  const blob = new Blob([contenido], { type: "text/plain" });
-  const enlace = document.createElement("a");
-  enlace.href = URL.createObjectURL(blob);
-  enlace.download = "Bitacora_Mental.txt";
-  enlace.click();
-}
+  toneSelect.addEventListener("change", (e) => {
+    selectedTone = e.target.value;
+    console.log(`🧩 CFC_SYNC: Tono seleccionado — ${selectedTone}`);
+  });
 
-/* ==========================================================
-   CFC_SYNC LOG
-========================================================== */
-console.log("🧩 CFC_SYNC checkpoint: bitacora.js — V41.3 BITÁCORA PLUS activo", new Date().toLocaleString());
+  // =====================================================
+  // 6️⃣ Inicialización
+  // =====================================================
+  loadBitacora();
+  console.log("🧩 CFC_SYNC checkpoint: bitacora.js — V41.3 PLUS FIX cargado correctamente");
+});
