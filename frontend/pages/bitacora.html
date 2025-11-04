@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 Bitácora Mental del Trader</title>
+  <link rel="stylesheet" href="../css/premium.css?v=20251106" />
+  <link rel="stylesheet" href="../css/bitacora.css?v=20251106" />
+</head>
+<body>
+  <header class="bitacora-header">
+    <h2>🧠 Bitácora Mental del Trader</h2>
+    <p>Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
+  </header>
+
+  <main class="bitacora-container">
+    <!-- ✅ CFC_FUNC_41_3A — Selector de tono inspiracional -->
+    <div class="bitacora-top">
+      <select id="toneSelect">
+        <option value="">🌈 Seleccioná un tono sugerido (opcional)</option>
+        <option>Reflexivo / Inspirador</option>
+        <option>Científico / Energético</option>
+        <option>Introceptivo / Focalizado</option>
+        <option>Mentalidad / Racional</option>
+        <option>Sereno / Controlado</option>
+        <option>Calmante / Natural</option>
+        <option>Motivador / Resiliente</option>
+        <option>Analítico / Desafiante</option>
+        <option>Matemático / Estratégico</option>
+        <option>Firme / Persistente</option>
+        <option>Ambicioso / Enfocado</option>
+        <option>Minimalista / Claro</option>
+        <option>Madurez / Reflexión</option>
+        <option>Filosófico / Sobrio</option>
+        <option>Introspectivo / Terapéutico</option>
+        <option>Práctico / Conductual</option>
+        <option>Firme / Estratégico</option>
+        <option>Productividad / Mental</option>
+        <option>Fuerte / Emocional</option>
+        <option>Elevado / Espiritual</option>
+      </select>
+
+      <!-- ✅ CFC_FUNC_41_3B — Selector de ícono -->
+      <div id="iconSelector">
+        <span class="icon-option">🔥</span>
+        <span class="icon-option">💡</span>
+        <span class="icon-option">🎯</span>
+        <span class="icon-option">🧘‍♂️</span>
+        <span class="icon-option">⚡</span>
+        <span class="icon-option">🌙</span>
+        <span class="icon-option">🌞</span>
+        <span class="icon-option">🧠</span>
+        <span class="icon-option">💭</span>
+        <span class="icon-option">✨</span>
+      </div>
+    </div>
+
+    <!-- ✅ CFC_FUNC_41_3C — Área de texto principal -->
+    <textarea id="thoughts" placeholder="Escribí tu reflexión..."></textarea>
+    <button id="saveBtn" class="btn-main">💾 Guardar</button>
+
+    <!-- ✅ CFC_FUNC_41_3D — Listado de pensamientos -->
+    <ul id="list" class="bitacora-list"></ul>
+
+    <div class="bitacora-footer">
+      <button id="exportBtn" class="btn-secondary">📤 Exportar</button>
+      <button id="backBtn" class="btn-return" onclick="window.location.href='profile.html'">⬅ Volver al Perfil</button>
+    </div>
+  </main>
+
+  <script src="../js/bitacora.js?v=20251106"></script>
+</body>
+</html>
