@@ -1,5 +1,5 @@
 <!-- ==========================================================
-✅ CFC_FUNC_3_3_FIX_V11.0 — results.html con JS local (Plan B)
+✅ CFC_FUNC_3_6_V12.1_REAL — Historial de Exámenes Avanzado
 ========================================================== -->
 <!DOCTYPE html>
 <html lang="es">
@@ -7,32 +7,120 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📘 Historial de Exámenes — Campus CFC LITE</title>
+
+  <!-- ✅ Estilos globales -->
   <link rel="stylesheet" href="/frontend/css/premium.css?v=20251109" />
   <style>
-    body { background:#000; color:#ffd700; font-family:'Poppins',sans-serif; text-align:center; margin:0; }
-    table { width:90%; margin:40px auto; border-collapse:collapse; background:rgba(30,30,30,0.8); border-radius:8px; overflow:hidden; }
-    th,td { padding:12px; border-bottom:1px solid rgba(255,255,255,0.15); }
-    th { background:rgba(255,215,0,0.15); color:#ffd700; text-transform:uppercase; }
-    tr:hover td { background:rgba(255,215,0,0.08); }
-    button { background:#ffd700; color:#000; border:none; padding:10px 25px; border-radius:6px; cursor:pointer; font-weight:600; margin-bottom:40px; }
-    button:hover { background:#ffcc00; }
+    body {
+      background: #000;
+      color: #ffd700;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+
+    h2 {
+      margin-top: 30px;
+      letter-spacing: 1px;
+    }
+
+    table {
+      width: 92%;
+      margin: 40px auto;
+      border-collapse: collapse;
+      background: rgba(25, 25, 25, 0.9);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    th {
+      background: rgba(255, 215, 0, 0.12);
+      color: #ffd700;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    tr:hover td {
+      background: rgba(255, 215, 0, 0.08);
+    }
+
+    td {
+      color: #eee;
+      font-size: 0.95rem;
+    }
+
+    button {
+      background: #ffd700;
+      color: #000;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 40px;
+    }
+
+    button:hover {
+      background: #ffcc00;
+    }
   </style>
 </head>
 
 <body>
   <h2>📘 Historial de Exámenes</h2>
-  <table id="examHistory">
-    <tr>
-      <th>Módulo</th>
-      <th>Fecha</th>
-      <th>Nota</th>
-      <th>Estado</th>
-    </tr>
+
+  <table id="examResultsTable">
+    <thead>
+      <tr>
+        <th>MÓDULO</th>
+        <th>FECHA Y HORA</th>
+        <th>NOTA</th>
+        <th>ESTADO</th>
+        <th>INTENTOS</th>
+        <th>DURACIÓN</th>
+        <th>ERROR A MEJORAR</th>
+      </tr>
+    </thead>
+    <tbody id="examResultsBody">
+      <tr><td colspan="7">Cargando historial...</td></tr>
+    </tbody>
   </table>
 
   <button onclick="window.location.href='/frontend/index.html'">🏠 Volver al inicio</button>
 
-  <!-- ✅ CFC_FUNC_3_3_FIX_V11.0 — carga local garantizada -->
-  <script src="results.js?v=20251109" defer></script>
+  <!-- ✅ CFC_FUNC_3_6_V12.1_REAL — Render avanzado con intentos, duración y error -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tableBody = document.getElementById("examResultsBody");
+      const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
+
+      if (examResults.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7">⚠️ No hay resultados aún.</td></tr>`;
+      } else {
+        examResults.forEach(r => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${r.module}</td>
+            <td>${r.date || "-"} ${r.time || ""}</td>
+            <td>${r.score || 0}%</td>
+            <td>${r.status || "-"}</td>
+            <td>${r.attempts || 1}</td>
+            <td>${r.duration || "-"}</td>
+            <td>${r.error || "-"}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      console.log("✅ CFC_SYNC checkpoint: results.html — QA-SYNC V12.1 activo");
+    });
+  </script>
 </body>
 </html>
