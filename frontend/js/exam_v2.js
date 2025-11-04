@@ -1,26 +1,38 @@
 /* ==========================================================
-   CFC — EXAM V2 (SYNC FIX v8.6 + AUDIO V9.3 FINAL)
-   ========================================================== */
-// ✅ CFC_FUNC_3_3_EXAM_SOUND_V9.3 — Audio examen integrado en flujo principal — QA-SYNC 2025-10-30
+   ✅ CFC_FUNC_3_6_V12.1_REAL — EXAM V2 con duración, intentos y error
+   Basado en QA-SYNC V9.3 + FIX SAVE avanzado 2025-11-03
+========================================================== */
 
-console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V9.3 activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.1 activo", new Date().toLocaleString());
+
+let examStartTime = Date.now(); // ⏱ Marca de inicio del examen
 
 function enviarExamen() {
   try {
     const preguntas = document.querySelectorAll("fieldset");
     let correctas = 0;
+    let errores = [];
 
     preguntas.forEach((pregunta) => {
       const seleccionada = pregunta.querySelector("input[type='radio']:checked");
-      if (seleccionada) {
-        const comentario = pregunta.innerHTML.match(/<!-- Correcta:\s*([A-D]) -->/);
-        if (comentario && seleccionada.value === comentario[1]) correctas++;
+      const comentario = pregunta.innerHTML.match(/<!-- Correcta:\s*([A-D]) -->/);
+
+      if (comentario) {
+        const correcta = comentario[1];
+        if (seleccionada && seleccionada.value === correcta) {
+          correctas++;
+        } else if (seleccionada && seleccionada.value !== correcta) {
+          // Guarda texto de la pregunta errada
+          const textoPregunta = pregunta.querySelector("legend")?.textContent.trim() || "Pregunta desconocida";
+          errores.push(textoPregunta);
+        }
       }
     });
 
     const total = preguntas.length;
     const porcentaje = (correctas / total) * 100;
     const aprobado = porcentaje >= 75;
+    const duracionSegundos = Math.floor((Date.now() - examStartTime) / 1000);
 
     const modulo = parseInt(document.body.dataset.module || 0);
     const resultado = {
@@ -28,54 +40,34 @@ function enviarExamen() {
       correctas,
       total,
       porcentaje,
-      passed: aprobado,
+      aprobado,
+      errores,
+      duracionSegundos,
       timestamp: new Date().toISOString(),
     };
 
-    // ✅ Guardado persistente
     localStorage.setItem("examResult", JSON.stringify(resultado));
 
-    // ✅ Emisión del evento global (para progress_v2.js)
+    // 🧩 Guardado avanzado local con intentos + duración
+    guardarResultadoLocal(correctas, total, errores, duracionSegundos);
+
+    // ✅ Emisión global (para progress_v2.js)
     const evento = new CustomEvent("examCompleted", { detail: resultado });
     window.dispatchEvent(evento);
 
-    console.log(
-      `🧠 CFC_SYNC → Examen módulo ${modulo} emitido — ${correctas}/${total} (${porcentaje.toFixed(
-        0
-      )}%) — aprobado=${aprobado}`
-    );
-
-    // ✅ Mensaje visual + sonido integrado QA-SYNC
     const mensaje = aprobado
       ? `🎯 ¡Aprobado! Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`
       : `❌ No aprobado. Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`;
 
-    console.log("🧩 CFC_SYNC checkpoint: antes del alert() — QA-SYNC V9.3");
     alert(mensaje);
-    console.log("🧩 CFC_SYNC checkpoint: después del alert() — QA-SYNC V9.3");
 
-    // 🔊 Reproducción controlada (desde interacción directa)
-    try {
-      const successSound = new Audio("../../sounds/success.wav");
-      const errorSound = new Audio("../../sounds/error.wav");
-      successSound.volume = 0.6;
-      errorSound.volume = 0.6;
+    // 🔊 Sonido integrado
+    const successSound = new Audio("../../sounds/success.wav");
+    const errorSound = new Audio("../../sounds/error.wav");
+    const snd = aprobado ? successSound : errorSound;
+    snd.volume = 0.6;
+    snd.play().catch(() => console.warn("🔇 Reproducción bloqueada por navegador."));
 
-      const snd = aprobado ? successSound : errorSound;
-      snd.currentTime = 0;
-
-      snd.play()
-        .then(() =>
-          console.log(
-            `🧩 CFC_SYNC checkpoint: ${(aprobado ? "success" : "error")}.wav reproducido — QA-SYNC V9.3`
-          )
-        )
-        .catch((err) => console.warn("Audio playback bloqueado:", err));
-    } catch (err) {
-      console.error("CFC Audio exam error:", err);
-    }
-
-    // ✅ Redirección si aprobado
     if (aprobado) {
       setTimeout(() => {
         window.location.href = "../../modules/index.html";
@@ -87,9 +79,43 @@ function enviarExamen() {
   }
 }
 
-// =====================================================
-// Protección QA-SYNC doble declaración
-// =====================================================
+/* ==========================================================
+   ✅ CFC_FUNC_3_6_V12.1_REAL — Registro completo avanzado
+========================================================== */
+function guardarResultadoLocal(score, total, errores, duracionSegundos) {
+  try {
+    const moduleTitle = document.querySelector("h1,h2")?.textContent || "Módulo desconocido";
+    const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
+
+    let registro = examResults.find(r => r.module === moduleTitle);
+    if (!registro) {
+      registro = { module: moduleTitle, attempts: 0 };
+      examResults.push(registro);
+    }
+
+    registro.attempts++;
+    registro.date = new Date().toLocaleDateString("es-AR");
+    registro.time = new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
+    registro.score = Math.round((score / total) * 100);
+    registro.status = (score / total) >= 0.75 ? "✅ Aprobado" : "❌ Reprobado";
+    registro.duration = duracionSegundos ? `${(duracionSegundos / 60).toFixed(1)} min` : "-";
+
+    if (registro.score === 75 && errores?.length) {
+      registro.error = errores[0];
+    } else {
+      delete registro.error;
+    }
+
+    localStorage.setItem("examResults", JSON.stringify(examResults));
+    console.log("🧩 CFC_SYNC checkpoint: Resultado avanzado guardado localmente", registro);
+  } catch (err) {
+    console.error("❌ Error al guardar resultado en localStorage:", err);
+  }
+}
+
+/* ==========================================================
+   Protección QA-SYNC doble declaración
+========================================================== */
 try {
   if (window._cfc_enviarExamen && typeof _cfc_enviarExamen === "function") {
     console.log("🧩 CFC_SYNC FIX: _cfc_enviarExamen ya existe, omitiendo redeclaración.");
@@ -101,4 +127,4 @@ try {
   console.warn("🧩 CFC_SYNC FIX: control preventivo aplicado.", err);
 }
 
-console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V9.3 validado", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.1 validado", new Date().toLocaleString());
