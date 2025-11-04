@@ -1,5 +1,5 @@
 <!-- ==========================================================
-✅ CFC_FUNC_2_20_V45_FULL_MOTIVATION_RESTORE — Overlay motivacional inicial + reinicio
+✅ CFC_FUNC_2_18_V45_FINAL — Overlay Motivacional Premium Restaurado
 ========================================================== -->
 <!DOCTYPE html>
 <html lang="es">
@@ -8,10 +8,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Módulos del Campus CFC LITE</title>
 
-  <link rel="stylesheet" href="../css/premium.css?v=20251109" />
+  <!-- CSS principal -->
+  <link rel="stylesheet" href="../css/premium.css?v=20251103" />
   <link rel="stylesheet" href="../css/extra-extra.css?v=20251101" />
   <link rel="stylesheet" href="../css/variables.css?v=20251101" />
 
+  <!-- ✅ CFC_FIX_V43 — Fondos dinámicos por tema -->
   <style>
     body {
       font-family: "Poppins", sans-serif;
@@ -72,7 +74,9 @@
       transition: color 0.3s ease;
     }
 
-    a:hover { color: var(--color-accent); }
+    a:hover {
+      color: var(--color-accent);
+    }
 
     footer {
       text-align: center;
@@ -80,6 +84,7 @@
       font-size: 0.9em;
       color: var(--color-text);
       opacity: 0.8;
+      transition: color 0.5s ease;
     }
 
     .btn-volver {
@@ -134,13 +139,13 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 🌟 Overlay motivacional */
+    /* Overlay motivacional */
     #motivationalOverlay {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.85);
       color: #ffd700;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
       display: flex;
       justify-content: center;
@@ -149,52 +154,48 @@
       z-index: 99999;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 1s ease-in-out;
+      transition: opacity 0.8s ease-in-out;
       flex-direction: column;
-      line-height: 1.6;
+      line-height: 1.5;
       letter-spacing: 0.4px;
     }
 
-    #motivationalOverlay.visible { opacity: 1; pointer-events: all; }
+    body.light-mode #motivationalOverlay {
+      background: rgba(255, 255, 255, 0.95);
+      color: #d4af37;
+    }
+
+    #motivationalOverlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
 
     #motivationalOverlay p {
-      max-width: 650px;
-      margin: 0 25px;
-      animation: pulseText 2s ease-in-out infinite;
+      max-width: 600px;
+      margin: 0 20px;
     }
 
-    @keyframes pulseText {
-      0%,100% { text-shadow: 0 0 6px rgba(255,215,0,0.2), 0 0 10px rgba(255,215,0,0.1); }
-      50% { text-shadow: 0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,215,0,0.3); }
-    }
-
-    #theme-toggle {
+    .confetti {
       position: fixed;
-      top: 18px;
-      right: 22px;
-      background: rgba(255,215,0,0.2);
-      border: 2px solid rgba(255,215,0,0.4);
-      color: #FFD700;
-      border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 10px rgba(255,215,0,0.3);
-      z-index: 9999;
+      width: 8px;
+      height: 8px;
+      background: #ffd700;
+      top: -10px;
+      animation: fall 3s linear forwards;
+      z-index: 999999;
     }
-    #theme-toggle:hover { background: #FFD700; color: #000; transform: scale(1.05); }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
   </style>
 
   <script src="../js/theme.js" defer></script>
 </head>
 
 <body>
+  <!-- 🌗 Botón de tema -->
   <button id="theme-toggle" title="Cambiar modo">🌙</button>
 
   <main id="dashboard">
@@ -206,26 +207,26 @@
     </div>
 
     <ul>
-      <li><a href="./1/index.html">Módulo 1 – Introducción a la Psicología del Trader</a></li>
-      <li><a href="./2/index.html">Módulo 2 – Neurociencia del Trading</a></li>
-      <li><a href="./3/index.html">Módulo 3 – Fundamentos de Psicología Profunda</a></li>
-      <li><a href="./4/index.html">Módulo 4 – Modelo Mental del Trader Profesional</a></li>
-      <li><a href="./5/index.html">Módulo 5 – Herramientas Avanzadas de Regulación Emocional</a></li>
-      <li><a href="./6/index.html">Módulo 6 – Psicología de la Gestión del Capital</a></li>
-      <li><a href="./7/index.html">Módulo 7 – Estrategias Psicológicas por Etapas</a></li>
-      <li><a href="./8/index.html">Módulo 8 – Integración Estrategia–Psicología</a></li>
-      <li><a href="./9/index.html">Módulo 9 – Casos de Estudio y Simulaciones Reales</a></li>
-      <li><a href="./10/index.html">Módulo 10 – Optimización Mental y Rendimiento Peak</a></li>
-      <li><a href="./11/index.html">Módulo 11 – Ecosistema de Apoyo y Herramientas</a></li>
-      <li><a href="./12/index.html">Módulo 12 – Maestría Continua y Legado</a></li>
-      <li><a href="./13/index.html">Módulo 13 – Psicología del Error y Reprogramación Mental</a></li>
-      <li><a href="./14/index.html">Módulo 14 – El Mapa del Autocontrol Extremo</a></li>
-      <li><a href="./15/index.html">Módulo 15 – Arquitectura del Trading Mental Automático</a></li>
-      <li><a href="./16/index.html">Módulo 16 – Reversión Psicológica y Superación del Burnout</a></li>
-      <li><a href="./17/index.html">Módulo 17 – Psicología del Trader de Alto Impacto</a></li>
-      <li><a href="./18/index.html">Módulo 18 – La Mentalidad del Mentor Trader</a></li>
-      <li><a href="./19/index.html">Módulo 19 – Integración Total Cuerpo–Mente–Mercado</a></li>
-      <li><a href="./20/index.html">Módulo 20 – Legado Final del Trader Consciente</a></li>
+      <li><a class="module-link" href="./1/index.html">Módulo 1 – Introducción a la Psicología del Trader</a></li>
+      <li><a class="module-link" href="./2/index.html">Módulo 2 – Neurociencia del Trading</a></li>
+      <li><a class="module-link" href="./3/index.html">Módulo 3 – Fundamentos de Psicología Profunda</a></li>
+      <li><a class="module-link" href="./4/index.html">Módulo 4 – Modelo Mental del Trader Profesional</a></li>
+      <li><a class="module-link" href="./5/index.html">Módulo 5 – Herramientas Avanzadas de Regulación Emocional</a></li>
+      <li><a class="module-link" href="./6/index.html">Módulo 6 – Psicología de la Gestión del Capital</a></li>
+      <li><a class="module-link" href="./7/index.html">Módulo 7 – Estrategias Psicológicas por Etapas</a></li>
+      <li><a class="module-link" href="./8/index.html">Módulo 8 – Integración Estrategia–Psicología</a></li>
+      <li><a class="module-link" href="./9/index.html">Módulo 9 – Casos de Estudio y Simulaciones Reales</a></li>
+      <li><a class="module-link" href="./10/index.html">Módulo 10 – Optimización Mental y Rendimiento Peak</a></li>
+      <li><a class="module-link" href="./11/index.html">Módulo 11 – Ecosistema de Apoyo y Herramientas</a></li>
+      <li><a class="module-link" href="./12/index.html">Módulo 12 – Maestría Continua y Legado</a></li>
+      <li><a class="module-link" href="./13/index.html">Módulo 13 – Psicología del Error y Reprogramación Mental</a></li>
+      <li><a class="module-link" href="./14/index.html">Módulo 14 – El Mapa del Autocontrol Extremo</a></li>
+      <li><a class="module-link" href="./15/index.html">Módulo 15 – Arquitectura del Trading Mental Automático</a></li>
+      <li><a class="module-link" href="./16/index.html">Módulo 16 – Reversión Psicológica y Superación del Burnout</a></li>
+      <li><a class="module-link" href="./17/index.html">Módulo 17 – Psicología del Trader de Alto Impacto</a></li>
+      <li><a class="module-link" href="./18/index.html">Módulo 18 – La Mentalidad del Mentor Trader</a></li>
+      <li><a class="module-link" href="./19/index.html">Módulo 19 – Integración Total Cuerpo–Mente–Mercado</a></li>
+      <li><a class="module-link" href="./20/index.html">Módulo 20 – Legado Final del Trader Consciente</a></li>
     </ul>
 
     <div style="text-align:center;">
@@ -235,61 +236,61 @@
     </div>
   </main>
 
-  <footer>© 2025 Campus CFC Trading — Versión V45</footer>
+  <footer>© 2025 Campus CFC Trading — Versión V41</footer>
 
   <script src="../js/progress_v2.js?v=20251102" defer></script>
   <script src="../js/exam-logic_v2.js?v=20251101" defer></script>
+  <script src="../js/motivation_v2.js?v=20251101" defer></script>
+  <script src="../js/auto_injector.js?v=20251102" defer></script>
 
-  <!-- ✅ Overlay motivacional -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const frases = [
-        "✨ Tu mente crea los límites… y tu disciplina los destruye.",
-        "💎 Cada módulo que completas, moldea tu versión maestra.",
-        "🚀 Hoy es otro paso hacia tu mentalidad de élite.",
-        "🔥 Persistir cuando nadie mira, eso te hace indestructible.",
-        "🌟 El control mental precede al éxito financiero."
-      ];
-      const frase = frases[Math.floor(Math.random() * frases.length)];
-
-      const overlay = document.createElement("div");
-      overlay.id = "motivationalOverlay";
-      overlay.innerHTML = `<p>${frase}</p>`;
-      document.body.appendChild(overlay);
-
-      const sound = new Audio("../audio/success.wav");
-      sound.volume = 0.5;
-      setTimeout(() => sound.play().catch(()=>{}), 300);
-
-      setTimeout(()=>overlay.classList.add("visible"),100);
-      setTimeout(()=>overlay.classList.remove("visible"),3800);
-      setTimeout(()=>overlay.remove(),4800);
-    });
-  </script>
-
-  <!-- ✅ Overlay al reiniciar progreso -->
+  <!-- ✅ Overlay Motivacional Dorado + Audio + Confeti -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const resetBtn = document.getElementById("resetProgressBtn");
-      if (resetBtn) {
-        resetBtn.addEventListener("click", () => {
-          const overlay = document.createElement("div");
-          overlay.id = "motivationalOverlay";
-          overlay.innerHTML = `<p>✨ Volver a empezar también es progreso.<br>Cada reinicio te acerca a la versión más consciente de vos mismo.</p>`;
-          document.body.appendChild(overlay);
-          const bell = new Audio("../audio/bell-gold.wav");
-          bell.volume = 0.6;
-          setTimeout(()=>bell.play().catch(()=>{}),300);
-          setTimeout(()=>overlay.classList.add("visible"),100);
-          setTimeout(()=>overlay.classList.remove("visible"),3200);
-          setTimeout(()=>overlay.remove(),4000);
-        });
-      }
+      if (!resetBtn) return;
+
+      const frases = [
+        "✨ Volver a empezar también es progreso. Cada reinicio te acerca a la versión más consciente de vos mismo.",
+        "💫 Cada paso que reiniciás, fortalece tu disciplina mental. Seguís creciendo.",
+        "🔥 Reiniciar no es rendirse, es reprogramar tu mente para superar tu propio límite.",
+        "🌟 Cada comienzo es una oportunidad de hacerlo con más sabiduría que antes.",
+        "🏆 La constancia es el puente entre tus errores y tu maestría."
+      ];
+
+      resetBtn.addEventListener("click", () => {
+        // Overlay
+        const overlay = document.createElement("div");
+        overlay.id = "motivationalOverlay";
+        overlay.innerHTML = `<p>${frases[Math.floor(Math.random() * frases.length)]}</p>`;
+        document.body.appendChild(overlay);
+
+        // Reproducir sonido
+        const audio = new Audio("../audio/bell-gold.wav");
+        audio.volume = 0.7;
+        setTimeout(() => audio.play().catch(()=>{}), 300);
+
+        // Confeti dorado
+        for (let i = 0; i < 60; i++) {
+          const conf = document.createElement("div");
+          conf.classList.add("confetti");
+          conf.style.left = Math.random() * 100 + "vw";
+          conf.style.background = ["#d4af37", "#ffd700"][Math.floor(Math.random() * 2)];
+          conf.style.animationDuration = 2.5 + Math.random() * 1.5 + "s";
+          document.body.appendChild(conf);
+          setTimeout(() => conf.remove(), 3500);
+        }
+
+        // Mostrar overlay
+        setTimeout(() => overlay.classList.add("visible"), 100);
+        setTimeout(() => overlay.classList.remove("visible"), 3500);
+        setTimeout(() => overlay.remove(), 4000);
+      });
     });
   </script>
 
+  <script src="../js/activity_tracker.js?v=20251106" defer></script>
   <script>
-    console.log("🧩 CFC_SYNC checkpoint: modules/index.html — V45_FULL_MOTIVATION_RESTORE ✅", new Date().toLocaleString());
+    console.log("🧩 CFC_SYNC checkpoint: modules/index.html — V45_FINAL_MOTIVATION ✅", new Date().toLocaleString());
   </script>
 </body>
 </html>
