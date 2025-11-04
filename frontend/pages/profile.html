@@ -6,6 +6,7 @@
   <title>Perfil — Campus CFC LITE</title>
   <link rel="stylesheet" href="../css/premium.css?v=20251105" />
 </head>
+
 <body>
   <header>
     <h2>👤 Perfil del Usuario</h2>
@@ -65,6 +66,46 @@
     }
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.10-profile_emotion-20251105-SYNC-STATS -->
+  <!-- ✅ CFC_FUNC_11_2_V41.2 — Integración con Historial de Exámenes -->
+  <script>
+    function mostrarUltimoExamen() {
+      try {
+        const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
+        if (!examResults.length) return;
+
+        // Ordenar por fecha más reciente
+        const ultimo = examResults.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+        // Crear contenedor visual
+        const contenedor = document.querySelector("main") || document.body;
+        const bloque = document.createElement("div");
+        bloque.className = "ultimo-examen";
+        bloque.style.marginTop = "35px";
+        bloque.style.borderTop = "1px solid rgba(255,215,0,0.3)";
+        bloque.style.paddingTop = "15px";
+        bloque.style.textAlign = "center";
+        bloque.style.opacity = "0.9";
+        bloque.style.transition = "all 0.4s ease";
+
+        bloque.innerHTML = `
+          <h3 style="color:#FFD700;font-size:1.1rem;">📘 Último examen completado</h3>
+          <p style="color:#fff;font-size:0.95rem;line-height:1.4;margin-top:6px;">
+            <strong>${ultimo.module}</strong><br>
+            Puntaje: <span style="color:#FFD700;">${ultimo.score}%</span> — ${ultimo.status}<br>
+            ⏱️ ${ultimo.duration} &nbsp;|&nbsp; 📅 ${ultimo.date} ${ultimo.time}
+          </p>
+        `;
+
+        contenedor.appendChild(bloque);
+        console.log("🧩 CFC_SYNC checkpoint: Último examen mostrado correctamente", ultimo);
+      } catch (err) {
+        console.warn("⚠️ CFC_SYNC → Error al mostrar último examen:", err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", mostrarUltimoExamen);
+  </script>
+
+  <!-- 🔒 CFC_LOCK: V41.12-profile_emotion_examLink-20251106-SYNC-STATS -->
 </body>
 </html>
