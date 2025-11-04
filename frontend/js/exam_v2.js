@@ -1,7 +1,7 @@
 /* ==========================================================
-   ✅ CFC_FUNC_3_7_V12.3_REAL — EXAM V2 Final con detalle de error
-   Guarda pregunta + respuesta fallada + duración + intentos
-   Integración QA-SYNC V9.4 — 2025-11-03
+   ✅ CFC_FUNC_3_7B_V12.3_REAL — EXAM V2 FINAL CELEBRATION
+   Integración: Overlay de Graduación + Confeti Dorado + Audio
+   QA-SYNC V12.3 REAL — 2025-11-06
 ========================================================== */
 
 console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.3 activo", new Date().toLocaleString());
@@ -69,6 +69,14 @@ function enviarExamen() {
     snd.volume = 0.6;
     snd.play().catch(() => console.warn("🔇 Reproducción bloqueada por navegador."));
 
+    /* 🎓 ACTIVACIÓN AUTOMÁTICA — GRADUACIÓN CFC V41.1 CELEBRATION */
+    if (aprobado && modulo === 20 && porcentaje === 100) {
+      console.log("🎓 CFC_SYNC checkpoint: Examen final aprobado — Activando Overlay de Graduación");
+      if (typeof activarGraduacionCFC === "function") activarGraduacionCFC();
+      lanzarConfetiDorado();
+      return; // evita redirección inmediata
+    }
+
     if (aprobado) {
       setTimeout(() => {
         window.location.href = "../../modules/index.html";
@@ -100,18 +108,85 @@ function guardarResultadoLocal(score, total, errores, duracionSegundos) {
     registro.score = Math.round((score / total) * 100);
     registro.status = (score / total) >= 0.75 ? "✅ Aprobado" : "❌ Reprobado";
     registro.duration = `${(duracionSegundos / 60).toFixed(1)} min`;
-
-    if (errores?.length) {
-      registro.error = errores.join(" | "); // 🔹 Guarda todas las preguntas falladas
-    } else {
-      registro.error = "-";
-    }
+    registro.error = errores?.length ? errores.join(" | ") : "-";
 
     localStorage.setItem("examResults", JSON.stringify(examResults));
     console.log("🧩 CFC_SYNC checkpoint: Resultado avanzado guardado localmente", registro);
   } catch (err) {
     console.error("❌ Error al guardar resultado en localStorage:", err);
   }
+}
+
+/* ==========================================================
+   🎊 FUNCIÓN: CONFETI DORADO CELEBRATION — V41.1
+========================================================== */
+function lanzarConfetiDorado() {
+  const canvas = document.createElement("canvas");
+  canvas.id = "confeti-cfc";
+  canvas.style.position = "fixed";
+  canvas.style.inset = "0";
+  canvas.style.pointerEvents = "none";
+  canvas.style.zIndex = "99999";
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext("2d");
+  const confetis = [];
+  const colores = ["#d4af37", "#ffd700", "#fff3b0"];
+
+  const resize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+  resize();
+  window.addEventListener("resize", resize);
+
+  for (let i = 0; i < 150; i++) {
+    confetis.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      r: Math.random() * 6 + 4,
+      d: Math.random() * 50,
+      color: colores[Math.floor(Math.random() * colores.length)],
+      tilt: Math.random() * 10 - 10,
+      tiltAngleIncremental: Math.random() * 0.07 + 0.05,
+      tiltAngle: 0
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confetis.forEach(c => {
+      ctx.beginPath();
+      ctx.lineWidth = c.r / 2;
+      ctx.strokeStyle = c.color;
+      ctx.moveTo(c.x + c.tilt + c.r / 3, c.y);
+      ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 5);
+      ctx.stroke();
+    });
+    update();
+  }
+
+  function update() {
+    confetis.forEach(c => {
+      c.tiltAngle += c.tiltAngleIncremental;
+      c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+      c.x += Math.sin(c.d);
+      c.tilt = Math.sin(c.tiltAngle - c.d / 3) * 15;
+    });
+  }
+
+  let anim;
+  function loop() {
+    draw();
+    anim = requestAnimationFrame(loop);
+  }
+  loop();
+
+  setTimeout(() => {
+    cancelAnimationFrame(anim);
+    canvas.remove();
+    console.log("🎊 CFC_SYNC checkpoint: Confeti dorado finalizado — V41.1 CELEBRATION");
+  }, 8000);
 }
 
 /* ==========================================================
@@ -128,4 +203,4 @@ try {
   console.warn("🧩 CFC_SYNC FIX: control preventivo aplicado.", err);
 }
 
-console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.3 validado", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.3 REAL CELEBRATION", new Date().toLocaleString());
