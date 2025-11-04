@@ -6,7 +6,7 @@
   <title>Perfil — Campus CFC LITE</title>
   <link rel="stylesheet" href="../css/premium.css?v=20251105" />
   <style>
-    /* ✅ CFC_FUNC_8_2C_20251105 — Botón flotante modo oscuro/claro sincronizado */
+    /* ✅ CFC_FUNC_8_2D_20251105 — Botón flotante modo oscuro/claro sincronizado */
     #themeToggle {
       position: fixed;
       top: 18px;
@@ -33,8 +33,15 @@
     body.dark-mode { background:#000; color:#e0e0e0; }
 
     /* ✅ Bloque examen dinámico adaptativo */
-    .ultimo-examen.light { color:#111; }
-    .ultimo-examen.dark { color:#fff; }
+    .ultimo-examen h3 { color: #FFD700; font-size: 1.1rem; }
+    .ultimo-examen p {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-top: 6px;
+      transition: color 0.3s ease;
+    }
+    body.dark-mode .ultimo-examen p { color: #fff; }
+    body.light-mode .ultimo-examen p { color: #000; }
   </style>
 </head>
 
@@ -77,6 +84,7 @@
   <script src="../js/activity_tracker.js?v=20251106" defer></script>
   <script src="../js/theme_chapter.js?v=20251105" defer></script>
 
+  <!-- ✅ Estado emocional -->
   <script>
     const scoreRaw = localStorage.getItem("emotionScore");
     const box = document.getElementById("emotionScore");
@@ -95,7 +103,7 @@
     }
   </script>
 
-  <!-- ✅ Versión adaptativa del bloque examen -->
+  <!-- ✅ Bloque de examen adaptativo al tema -->
   <script>
     function mostrarUltimoExamen() {
       try {
@@ -104,30 +112,41 @@
         const ultimo = examResults.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
         const contenedor = document.querySelector("main");
         const bloque = document.createElement("div");
-        const theme = localStorage.getItem("CFC_THEME_STATE") || "dark";
-        bloque.className = `ultimo-examen ${theme}`;
-        bloque.style.marginTop = "35px";
-        bloque.style.borderTop = "1px solid rgba(255,215,0,0.3)";
-        bloque.style.paddingTop = "15px";
-        bloque.style.textAlign = "center";
-        bloque.style.opacity = "0.9";
+        bloque.className = "ultimo-examen";
         bloque.innerHTML = `
-          <h3 style="color:#FFD700;font-size:1.1rem;">📘 Último examen completado</h3>
-          <p style="font-size:0.95rem;line-height:1.4;margin-top:6px;">
+          <h3>📘 Último examen completado</h3>
+          <p>
             <strong>${ultimo.module}</strong><br>
-            <span style="color:inherit;">
-              Puntaje: <b style="color:#FFD700;">${ultimo.score}%</b> — ${ultimo.status}<br>
-              ⏱️ ${ultimo.duration} &nbsp;|&nbsp; 📅 ${ultimo.date} ${ultimo.time}
-            </span>
+            Puntaje: <b style="color:#FFD700;">${ultimo.score}%</b> — ${ultimo.status}<br>
+            ⏱️ ${ultimo.duration} &nbsp;|&nbsp; 📅 ${ultimo.date} ${ultimo.time}
           </p>`;
         contenedor.appendChild(bloque);
       } catch (err) {
         console.warn("⚠️ Error al mostrar último examen:", err);
       }
     }
-    document.addEventListener("DOMContentLoaded", mostrarUltimoExamen);
+
+    // 🔁 Reactivar color dinámico cuando cambia el tema
+    function actualizarColoresExamen() {
+      const body = document.body;
+      const bloque = document.querySelector(".ultimo-examen p");
+      if (!bloque) return;
+      bloque.style.color = body.classList.contains("light-mode") ? "#000" : "#fff";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      mostrarUltimoExamen();
+      actualizarColoresExamen();
+    });
+
+    // Detectar cambios en el tema
+    window.addEventListener("storage", (e) => {
+      if (e.key === "CFC_THEME_STATE") actualizarColoresExamen();
+    });
+    const observer = new MutationObserver(actualizarColoresExamen);
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.15-profile_examThemeFix-20251105 -->
+  <!-- 🔒 CFC_LOCK: V41.16-profile_examThemeReactive-20251105 -->
 </body>
 </html>
