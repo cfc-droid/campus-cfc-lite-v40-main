@@ -1,10 +1,10 @@
 /* ==========================================================
-   ✅ CFC_FUNC_3_7B_V12.3_REAL — EXAM V2 FINAL CELEBRATION
-   Integración: Overlay de Graduación + Confeti Dorado + Audio
-   QA-SYNC V12.3 REAL — 2025-11-06
+   ✅ CFC_FUNC_3_7C_V12.4_REAL — EXAM V2 FINAL CELEBRATION (≥75%)
+   Integración: Overlay de Graduación + Confeti Dorado + Audio Motivacional
+   QA-SYNC V12.4 — 2025-11-06
 ========================================================== */
 
-console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.3 activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.4 activo", new Date().toLocaleString());
 
 let examStartTime = Date.now(); // ⏱ Inicio del examen
 
@@ -37,8 +37,8 @@ function enviarExamen() {
     const porcentaje = (correctas / total) * 100;
     const aprobado = porcentaje >= 75;
     const duracionSegundos = Math.floor((Date.now() - examStartTime) / 1000);
-
     const modulo = parseInt(document.body.dataset.module || 0);
+
     const resultado = {
       moduleNumber: modulo,
       correctas,
@@ -60,7 +60,6 @@ function enviarExamen() {
     const mensaje = aprobado
       ? `🎯 ¡Aprobado! Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`
       : `❌ No aprobado. Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`;
-
     alert(mensaje);
 
     const successSound = new Audio("../../sounds/success.wav");
@@ -70,8 +69,8 @@ function enviarExamen() {
     snd.play().catch(() => console.warn("🔇 Reproducción bloqueada por navegador."));
 
     /* 🎓 ACTIVACIÓN AUTOMÁTICA — GRADUACIÓN CFC V41.1 CELEBRATION */
-    if (aprobado && modulo === 20 && porcentaje === 100) {
-      console.log("🎓 CFC_SYNC checkpoint: Examen final aprobado — Activando Overlay de Graduación");
+    if (aprobado && modulo === 20) {
+      console.log("🎓 CFC_SYNC checkpoint: Examen final aprobado ≥75% — Activando Overlay de Graduación");
       if (typeof activarGraduacionCFC === "function") activarGraduacionCFC();
       lanzarConfetiDorado();
       return; // evita redirección inmediata
@@ -203,4 +202,4 @@ try {
   console.warn("🧩 CFC_SYNC FIX: control preventivo aplicado.", err);
 }
 
-console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.3 REAL CELEBRATION", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.4 REAL CELEBRATION", new Date().toLocaleString());
