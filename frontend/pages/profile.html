@@ -6,7 +6,7 @@
   <title>Perfil — Campus CFC LITE</title>
   <link rel="stylesheet" href="../css/premium.css?v=20251105" />
   <style>
-    /* ✅ CFC_FUNC_8_2_20251105 — Botón flotante modo oscuro/claro */
+    /* ✅ CFC_FUNC_8_2B_20251105 — Botón flotante modo oscuro/claro sincronizado */
     #themeToggle {
       position: fixed;
       top: 18px;
@@ -22,20 +22,14 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
       backdrop-filter: blur(8px);
       box-shadow: 0 0 10px rgba(255,215,0,0.3);
       z-index: 1000;
     }
-    #themeToggle:hover {
-      background: #FFD700;
-      color: #000;
-      transform: scale(1.05);
-    }
-    body.light-mode {
-      background: #f9f9f9;
-      color: #222;
-    }
+    #themeToggle:hover { background:#FFD700; color:#000; transform:scale(1.05); }
+    body.light-mode { background:#f9f9f9; color:#222; }
+    body.dark-mode { background:#000; color:#e0e0e0; }
   </style>
 </head>
 
@@ -50,19 +44,16 @@
   <main style="text-align:center;">
     <p>Esta es la página de Perfil del Campus CFC LITE V41 REAL.</p>
 
-    <!-- ✅ CFC_FUNC_8_1_20251105 — Botón de analítica CFC-STATS V1 -->
     <div style="margin-top:30px;">
       <button id="btnStats" class="btn-main">📊 Mi progreso</button>
     </div>
 
-    <!-- ✅ CFC_FUNC_10_2_20251101 — Visualización de Autoevaluación Emocional -->
     <section id="emocion-section" style="margin-top:30px;">
       <h3>🧠 Estado Emocional Diario</h3>
       <div id="emotionScore" style="font-size:1.5rem;margin-top:10px;font-weight:bold;color:#FFD700;"></div>
       <p id="emotionMessage" style="color:#ccc;font-size:0.9rem;margin-top:8px;"></p>
     </section>
 
-    <!-- ✅ CFC_FUNC_4_3_20251107_FIX4 — Acceso directo a Bitácora Mental actualizada -->
     <div class="bitacora-access" style="margin-top:30px;">
       <button class="btn-bitacora" onclick="window.open('../pages/bitacora_v416.html?v=20251107CFC_FIX4','_blank')">
         🧠 Bitácora Mental del Trader
@@ -70,7 +61,6 @@
       <p style="font-size:0.85rem;color:#aaa;margin-top:6px;">Registrá tus reflexiones y aprendizajes del día.</p>
     </div>
 
-    <!-- ✅ CFC_FUNC_4_5_20251101_NAVBACK — Retorno al Índice -->
     <div class="return-container" style="margin-top:25px;">
       <button class="btn-return" onclick="window.location.href='../modules/index.html'">⬅ Volver al Campus</button>
     </div>
@@ -80,43 +70,41 @@
   <script src="../js/footer.js" defer></script>
   <script src="../js/stats_v1.js" defer></script>
   <script src="../js/activity_tracker.js?v=20251106" defer></script>
+  <script src="../js/theme_chapter.js?v=20251105" defer></script> <!-- ✅ Integración unificada -->
 
-  <!-- ✅ Visualización emocional -->
   <script>
     const scoreRaw = localStorage.getItem("emotionScore");
     const box = document.getElementById("emotionScore");
     const msg = document.getElementById("emotionMessage");
     if (scoreRaw && !isNaN(parseInt(scoreRaw))) {
       const val = parseInt(scoreRaw, 10);
-      let emoji = "🙂", mensaje = "Buen enfoque mental.";
-      if (val <= 3) { emoji = "😔"; mensaje = "Momento de reconectar con tu calma."; }
-      else if (val <= 6) { emoji = "😐"; mensaje = "Estás estable, pero podés mejorar tu enfoque."; }
-      else if (val <= 8) { emoji = "😊"; mensaje = "Excelente disciplina emocional."; }
-      else if (val <= 10) { emoji = "🔥"; mensaje = "Máxima claridad mental, seguí así."; }
-      box.textContent = `${emoji} ${val}/10`;
-      msg.textContent = mensaje;
+      let emoji="🙂",mensaje="Buen enfoque mental.";
+      if (val<=3){emoji="😔";mensaje="Momento de reconectar con tu calma.";}
+      else if (val<=6){emoji="😐";mensaje="Estás estable, pero podés mejorar tu enfoque.";}
+      else if (val<=8){emoji="😊";mensaje="Excelente disciplina emocional.";}
+      else if (val<=10){emoji="🔥";mensaje="Máxima claridad mental, seguí así.";}
+      box.textContent=`${emoji} ${val}/10`; msg.textContent=mensaje;
     } else {
-      box.textContent = "⚠️ Aún no registraste tu emoción de hoy.";
-      msg.textContent = "Registrá tu autoevaluación al cargar el Campus.";
+      box.textContent="⚠️ Aún no registraste tu emoción de hoy.";
+      msg.textContent="Registrá tu autoevaluación al cargar el Campus.";
     }
   </script>
 
-  <!-- ✅ Último examen completado -->
   <script>
     function mostrarUltimoExamen() {
       try {
-        const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
-        if (!examResults.length) return;
-        const ultimo = examResults.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-        const contenedor = document.querySelector("main");
-        const bloque = document.createElement("div");
-        bloque.className = "ultimo-examen";
-        bloque.style.marginTop = "35px";
-        bloque.style.borderTop = "1px solid rgba(255,215,0,0.3)";
-        bloque.style.paddingTop = "15px";
-        bloque.style.textAlign = "center";
-        bloque.style.opacity = "0.9";
-        bloque.innerHTML = `
+        const examResults=JSON.parse(localStorage.getItem("examResults"))||[];
+        if(!examResults.length)return;
+        const ultimo=examResults.sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+        const contenedor=document.querySelector("main");
+        const bloque=document.createElement("div");
+        bloque.className="ultimo-examen";
+        bloque.style.marginTop="35px";
+        bloque.style.borderTop="1px solid rgba(255,215,0,0.3)";
+        bloque.style.paddingTop="15px";
+        bloque.style.textAlign="center";
+        bloque.style.opacity="0.9";
+        bloque.innerHTML=`
           <h3 style="color:#FFD700;font-size:1.1rem;">📘 Último examen completado</h3>
           <p style="color:#fff;font-size:0.95rem;line-height:1.4;margin-top:6px;">
             <strong>${ultimo.module}</strong><br>
@@ -124,34 +112,11 @@
             ⏱️ ${ultimo.duration} &nbsp;|&nbsp; 📅 ${ultimo.date} ${ultimo.time}
           </p>`;
         contenedor.appendChild(bloque);
-      } catch (err) {
-        console.warn("⚠️ Error al mostrar último examen:", err);
-      }
+      } catch (err) { console.warn("⚠️ Error al mostrar último examen:", err); }
     }
     document.addEventListener("DOMContentLoaded", mostrarUltimoExamen);
   </script>
 
-  <!-- ✅ CFC_FUNC_8_2_20251105 — Script cambio de tema -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const btn = document.getElementById("themeToggle");
-      const currentTheme = localStorage.getItem("theme") || "dark";
-      if (currentTheme === "light") {
-        document.body.classList.add("light-mode");
-        btn.textContent = "🌞";
-      } else {
-        btn.textContent = "🌙";
-      }
-
-      btn.addEventListener("click", () => {
-        document.body.classList.toggle("light-mode");
-        const newTheme = document.body.classList.contains("light-mode") ? "light" : "dark";
-        localStorage.setItem("theme", newTheme);
-        btn.textContent = newTheme === "light" ? "🌞" : "🌙";
-      });
-    });
-  </script>
-
-  <!-- 🔒 CFC_LOCK: V41.13-profile_themeToggle-20251105 -->
+  <!-- 🔒 CFC_LOCK: V41.14-profile_themeFixed-20251105 -->
 </body>
 </html>
