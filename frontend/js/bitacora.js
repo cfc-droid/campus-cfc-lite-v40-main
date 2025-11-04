@@ -1,5 +1,5 @@
 // =====================================================
-// ✅ CFC_FUNC_41_4_FIX2_JS_V41.4 — Carga inicial + Filtros visibles
+// ✅ CFC_FUNC_41_5_FIX3_JS_V41.5 — Filtros + QA Visual
 // =====================================================
 document.addEventListener("DOMContentLoaded", () => {
   const textarea = document.getElementById("thoughts");
@@ -17,15 +17,40 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedIcon = "🧠";
   let selectedTone = "";
 
-  // 🔹 Comprobación visual
-  if (!filtersBlock) console.warn("⚠️ CFC_SYNC: filtros no cargados (HTML cacheado)");
-  else console.log("✅ CFC_SYNC: filtros visibles en DOM");
+  // =====================================================
+  // 0️⃣ Diagnóstico visual de carga
+  // =====================================================
+  const banner = document.createElement("div");
+  banner.style.position = "fixed";
+  banner.style.top = "10px";
+  banner.style.left = "50%";
+  banner.style.transform = "translateX(-50%)";
+  banner.style.padding = "8px 16px";
+  banner.style.borderRadius = "8px";
+  banner.style.zIndex = "9999";
+  banner.style.fontFamily = "Poppins, sans-serif";
+  banner.style.fontSize = "14px";
+  banner.style.fontWeight = "600";
+  banner.style.color = "#000";
+  banner.style.transition = "all 0.6s ease";
+
+  if (!filtersBlock) {
+    banner.textContent = "⚠️ Filtros NO detectados (HTML antiguo o cacheado)";
+    banner.style.background = "#ffcc00";
+    console.warn("⚠️ CFC_SYNC: filtros no cargados (HTML cacheado)");
+  } else {
+    banner.textContent = "✅ Filtros cargados correctamente";
+    banner.style.background = "#00ff99";
+    console.log("✅ CFC_SYNC: filtros visibles en DOM");
+  }
+  document.body.appendChild(banner);
+  setTimeout(() => banner.remove(), 4000);
 
   // =====================================================
   // 1️⃣ Cargar Bitácora desde localStorage
   // =====================================================
   const loadBitacora = () => {
-    setTimeout(() => {             // delay de seguridad para inicialización offline
+    setTimeout(() => {
       const data = JSON.parse(localStorage.getItem("bitacora")) || [];
       renderBitacora(data);
     }, 300);
@@ -37,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.saveThought = () => {
     const entry = textarea.value.trim();
     if (!entry) return alert("⚠️ Escribí algo antes de guardar.");
-
     const data = JSON.parse(localStorage.getItem("bitacora")) || [];
     data.push({
       icon: selectedIcon,
@@ -135,6 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 7️⃣ Inicialización
   // =====================================================
   loadBitacora();
-  console.log("🧩 CFC_SYNC checkpoint: bitacora.js — FIX2 OK");
+  console.log("🧩 CFC_SYNC checkpoint: bitacora.js — FIX3 OK");
 });
-/* 🔒 CFC_LOCK: V41.4_BITACORA_FIX2_JS_20251106 */
+/* 🔒 CFC_LOCK: V41.5_BITACORA_FIX3_JS_20251106 */
