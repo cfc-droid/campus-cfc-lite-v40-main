@@ -6,18 +6,18 @@
   <title>🧠 Bitácora Mental del Trader — Campus CFC LITE</title>
 
   <!-- ===================================================== -->
-  <!-- ✅ CFC_FUNC_41_4_HTML_V41.4 — Bitácora con Filtros Activos -->
+  <!-- ✅ CFC_FUNC_41_4_HTML_FIX_V41.4 — Bitácora con Filtros Activos -->
   <!-- ===================================================== -->
   <link rel="stylesheet" href="../css/premium.css?v=20251105" />
-  <link rel="stylesheet" href="../css/bitacora.css?v=20251106" />
+  <link rel="stylesheet" href="../css/bitacora.css?v=20251106a" />
 </head>
 
 <body>
   <h2 class="bitacora-header">🧠 Bitácora Mental del Trader</h2>
   <p style="color:#ccc;">Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
 
-  <!-- ✅ Bloque superior -->
   <div class="bitacora-container">
+    <!-- 🔹 Selector de tono e íconos -->
     <div class="bitacora-top">
       <select id="toneSelect">
         <option value="">🌈 Seleccioná un tono sugerido (opcional)</option>
@@ -26,21 +26,10 @@
         <option>Introceptivo / Focalizado</option>
         <option>Mentalidad / Racional</option>
         <option>Sereno / Controlado</option>
-        <option>Calmante / Natural</option>
         <option>Motivador / Resiliente</option>
         <option>Analítico / Desafiante</option>
-        <option>Matemático / Estratégico</option>
-        <option>Firme / Persistente</option>
-        <option>Ambicioso / Enfocado</option>
-        <option>Minimalista / Claro</option>
-        <option>Madurez / Reflexión</option>
         <option>Filosófico / Sobrio</option>
-        <option>Introspectivo / Terapéutico</option>
-        <option>Práctico / Conductual</option>
-        <option>Firme / Estratégico</option>
-        <option>Productividad / Mental</option>
         <option>Fuerte / Emocional</option>
-        <option>Elevado / Espiritual</option>
       </select>
 
       <div id="iconSelector">
@@ -57,7 +46,7 @@
       </div>
     </div>
 
-    <!-- ✅ Filtros Avanzados -->
+    <!-- 🔹 Bloque de filtros avanzados -->
     <div class="bitacora-filters">
       <h3 class="filters-title">🔍 Filtros de Búsqueda</h3>
       <div class="filters-group">
@@ -93,17 +82,15 @@
       <button id="resetFilters" class="btn-secondary">Reiniciar</button>
     </div>
 
-    <!-- ✅ Entrada -->
+    <!-- 🔹 Entrada y lista -->
     <textarea id="thoughts" placeholder="Escribí aquí tu reflexión..."></textarea><br />
     <button class="btn-main" onclick="saveThought()">Guardar</button>
-
-    <!-- ✅ Lista dinámica -->
     <ul id="list"></ul>
 
     <button class="btn-return" onclick="window.location.href='../pages/profile.html'">⬅ Volver al Perfil</button>
   </div>
 
-  <script src="../js/bitacora.js?v=20251106"></script>
-  <!-- 🔒 CFC_LOCK: V41.4_BITACORA_FILTER_REAL_20251106 -->
+  <script src="../js/bitacora.js?v=20251106a"></script>
+  <!-- 🔒 CFC_LOCK: V41.4_BITACORA_FILTER_FIX_20251106 -->
 </body>
 </html>
