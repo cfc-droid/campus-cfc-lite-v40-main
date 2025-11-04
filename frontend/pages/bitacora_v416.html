@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🧠 Bitácora Mental del Trader — Campus CFC LITE</title>
 
-  <!-- ✅ CFC_FUNC_41_8_THEMEBTN_V41.18C -->
+  <!-- ✅ CFC_FUNC_41_9_CONTRASTE_FIX_V41.19C -->
   <link rel="stylesheet" href="../css/premium.css?v=20251107" />
   <link rel="stylesheet" href="../css/bitacora.css?v=20251107c" />
 
@@ -21,7 +21,7 @@
     }
 
     .bitacora-header {
-      color: var(--color-accent, #ffd700);
+      color: var(--color-accent, #d4af37);
       text-align: center;
       margin-top: 15px;
     }
@@ -35,12 +35,14 @@
     }
 
     body.light-mode .bitacora-container {
-      background: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.95);
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      color: #111;
     }
     body.dark-mode .bitacora-container {
       background: rgba(20,20,20,0.85);
       box-shadow: 0 0 10px rgba(255,215,0,0.15);
+      color: #f5f5f5;
     }
 
     textarea {
@@ -61,27 +63,43 @@
       color: #fff;
     }
 
+    /* 🧠 Listado de reflexiones */
     #list li {
       margin-top: 12px;
-      padding: 10px;
+      padding: 10px 14px;
       border-radius: 8px;
       border: 1px solid rgba(255,215,0,0.3);
       transition: background 0.3s ease, color 0.3s ease;
+      line-height: 1.5;
     }
     body.light-mode #list li {
       background: #fffdf0;
-      color: #000;
+      color: #111;
     }
     body.dark-mode #list li {
       background: rgba(40,40,40,0.9);
-      color: #fff;
+      color: #f1f1f1;
     }
 
-    .thought-header strong { color: #FFD700; }
-    .thought-text em { color: #d4af37; }
+    /* 🎯 Texto dentro de las reflexiones */
+    .thought-header strong {
+      color: #d4af37;
+    }
+    .thought-text em {
+      color: #d4af37;
+      font-weight: 600;
+    }
+    body.light-mode .thought-text {
+      color: #111;
+    }
+    body.dark-mode .thought-text {
+      color: #f5f5f5;
+    }
 
+    /* 🪶 Botones */
     .btn-main, .btn-return {
       transition: all 0.3s ease;
+      font-weight: 600;
     }
 
     body.light-mode .btn-main {
@@ -236,6 +254,6 @@
     });
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.18C_REAL_THEMEBTN_20251107 -->
+  <!-- 🔒 CFC_LOCK: V41.19C_CONTRASTE_FIX_20251107 -->
 </body>
 </html>
