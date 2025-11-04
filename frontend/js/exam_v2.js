@@ -1,10 +1,10 @@
 /* ==========================================================
-   ✅ CFC_FUNC_3_7C_V12.4_REAL — EXAM V2 FINAL CELEBRATION (≥75%)
+   ✅ CFC_FUNC_3_7D_V12.5_REAL — EXAM V2 FINAL CELEBRATION (≥75%)
    Integración: Overlay de Graduación + Confeti Dorado + Audio Motivacional
-   QA-SYNC V12.4 — 2025-11-06
+   QA-SYNC V12.5 REAL — 2025-11-06
 ========================================================== */
 
-console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.4 activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.5 activo", new Date().toLocaleString());
 
 let examStartTime = Date.now(); // ⏱ Inicio del examen
 
@@ -88,29 +88,36 @@ function enviarExamen() {
 }
 
 /* ==========================================================
-   Guardado avanzado local con errores detallados
+   ✅ Guardado avanzado local (con timestamp y backup)
 ========================================================== */
 function guardarResultadoLocal(score, total, errores, duracionSegundos) {
   try {
     const moduleTitle = document.querySelector("h1,h2")?.textContent.trim() || "Módulo desconocido";
     const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
 
-    let registro = examResults.find(r => r.module === moduleTitle);
-    if (!registro) {
-      registro = { module: moduleTitle, attempts: 0 };
-      examResults.push(registro);
-    }
+    // 🧹 Eliminar versiones previas del mismo módulo
+    const filtrado = examResults.filter(r => r.module !== moduleTitle);
 
-    registro.attempts++;
-    registro.date = new Date().toLocaleDateString("es-AR");
-    registro.time = new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
-    registro.score = Math.round((score / total) * 100);
-    registro.status = (score / total) >= 0.75 ? "✅ Aprobado" : "❌ Reprobado";
-    registro.duration = `${(duracionSegundos / 60).toFixed(1)} min`;
-    registro.error = errores?.length ? errores.join(" | ") : "-";
+    const nuevoRegistro = {
+      module: moduleTitle,
+      attempts: (examResults.find(r => r.module === moduleTitle)?.attempts || 0) + 1,
+      date: new Date().toLocaleDateString("es-AR"),
+      time: new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }),
+      score: Math.round((score / total) * 100),
+      status: (score / total) >= 0.75 ? "✅ Aprobado" : "❌ Reprobado",
+      duration: `${(duracionSegundos / 60).toFixed(1)} min`,
+      error: errores?.length ? errores.join(" | ") : "-",
+      timestamp: Date.now()
+    };
 
-    localStorage.setItem("examResults", JSON.stringify(examResults));
-    console.log("🧩 CFC_SYNC checkpoint: Resultado avanzado guardado localmente", registro);
+    // Insertar primero (más reciente arriba)
+    filtrado.unshift(nuevoRegistro);
+
+    // 🧭 Guardar y crear copia de respaldo
+    localStorage.setItem("examResults", JSON.stringify(filtrado));
+    localStorage.setItem("examResults_backup", JSON.stringify(filtrado));
+
+    console.log("🧩 CFC_SYNC checkpoint: Resultado actualizado y reordenado correctamente", nuevoRegistro);
   } catch (err) {
     console.error("❌ Error al guardar resultado en localStorage:", err);
   }
@@ -202,4 +209,4 @@ try {
   console.warn("🧩 CFC_SYNC FIX: control preventivo aplicado.", err);
 }
 
-console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.4 REAL CELEBRATION", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.5 REAL CELEBRATION", new Date().toLocaleString());
