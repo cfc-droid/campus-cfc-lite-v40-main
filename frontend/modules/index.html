@@ -1,5 +1,5 @@
 <!-- ==========================================================
-✅ CFC_FUNC_2_18_V45_FINAL — Overlay Motivacional Premium Restaurado
+✅ CFC_FUNC_2_18_V45.2_FIX_THEME_FINAL — Overlay Motivacional Premium Restaurado
 ========================================================== -->
 <!DOCTYPE html>
 <html lang="es">
@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="../css/extra-extra.css?v=20251101" />
   <link rel="stylesheet" href="../css/variables.css?v=20251101" />
 
-  <!-- ✅ CFC_FIX_V43 — Fondos dinámicos por tema -->
   <style>
     body {
       font-family: "Poppins", sans-serif;
@@ -143,8 +142,6 @@
     #motivationalOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      color: #ffd700;
       font-size: 1.4rem;
       font-weight: 700;
       display: flex;
@@ -158,11 +155,6 @@
       flex-direction: column;
       line-height: 1.5;
       letter-spacing: 0.4px;
-    }
-
-    body.light-mode #motivationalOverlay {
-      background: rgba(255, 255, 255, 0.95);
-      color: #d4af37;
     }
 
     #motivationalOverlay.visible {
@@ -179,7 +171,6 @@
       position: fixed;
       width: 8px;
       height: 8px;
-      background: #ffd700;
       top: -10px;
       animation: fall 3s linear forwards;
       z-index: 999999;
@@ -195,7 +186,6 @@
 </head>
 
 <body>
-  <!-- 🌗 Botón de tema -->
   <button id="theme-toggle" title="Cambiar modo">🌙</button>
 
   <main id="dashboard">
@@ -243,7 +233,7 @@
   <script src="../js/motivation_v2.js?v=20251101" defer></script>
   <script src="../js/auto_injector.js?v=20251102" defer></script>
 
-  <!-- ✅ Overlay Motivacional Dorado + Audio + Confeti -->
+  <!-- ✅ Overlay Motivacional Dorado + Audio + Confeti + Detección dinámica -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const resetBtn = document.getElementById("resetProgressBtn");
@@ -258,18 +248,24 @@
       ];
 
       resetBtn.addEventListener("click", () => {
-        // Overlay
         const overlay = document.createElement("div");
         overlay.id = "motivationalOverlay";
         overlay.innerHTML = `<p>${frases[Math.floor(Math.random() * frases.length)]}</p>`;
+
+        // Detectar modo visual real
+        const bg = getComputedStyle(document.body).getPropertyValue("--color-bg").trim();
+        const isLight = bg.includes("255") || bg === "#fff" || bg === "white";
+        overlay.style.background = isLight ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.85)";
+        overlay.style.color = "#d4af37";
+
         document.body.appendChild(overlay);
 
-        // Reproducir sonido
+        // Sonido
         const audio = new Audio("../audio/bell-gold.wav");
         audio.volume = 0.7;
         setTimeout(() => audio.play().catch(()=>{}), 300);
 
-        // Confeti dorado
+        // Confeti
         for (let i = 0; i < 60; i++) {
           const conf = document.createElement("div");
           conf.classList.add("confetti");
@@ -280,7 +276,7 @@
           setTimeout(() => conf.remove(), 3500);
         }
 
-        // Mostrar overlay
+        // Mostrar y remover
         setTimeout(() => overlay.classList.add("visible"), 100);
         setTimeout(() => overlay.classList.remove("visible"), 3500);
         setTimeout(() => overlay.remove(), 4000);
@@ -290,7 +286,7 @@
 
   <script src="../js/activity_tracker.js?v=20251106" defer></script>
   <script>
-    console.log("🧩 CFC_SYNC checkpoint: modules/index.html — V45_FINAL_MOTIVATION ✅", new Date().toLocaleString());
+    console.log("🧩 CFC_SYNC checkpoint: modules/index.html — V45.2_FIX_THEME_FINAL ✅", new Date().toLocaleString());
   </script>
 </body>
 </html>
