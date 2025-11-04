@@ -1,104 +1,177 @@
-<!-- =====================================================
-✅ CFC_FUNC_4_3_20251031 — Bitácora mental HTML creada
-===================================================== -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🧠 Bitácora Mental del Trader | CFC LITE</title>
-  <link rel="stylesheet" href="./css/premium.css" />
-  <script defer src="./js/bitacora.js"></script>
+  <title>🧠 Bitácora Mental del Trader — Campus CFC LITE</title>
+  <link rel="stylesheet" href="../css/premium.css?v=20251105" />
   <style>
-    .bitacora-container {
-      width: 90%;
-      max-width: 800px;
-      margin: 40px auto;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,215,0,0.2);
-      border-radius: 16px;
-      padding: 24px;
+    /* 🔱 Estilo Premium Visual */
+    body {
+      background: #000;
       color: #fff;
-      box-shadow: 0 0 18px rgba(255,215,0,0.1);
+      font-family: 'Poppins', sans-serif;
       text-align: center;
+      padding: 40px 15px;
+    }
+    h2 {
+      color: #FFD700;
+      margin-bottom: 10px;
+      text-shadow: 0 0 6px rgba(255,215,0,0.4);
+    }
+    .bitacora-top {
+      margin-bottom: 15px;
+    }
+    #toneSelect {
+      width: 80%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,215,0,0.5);
+      background: rgba(255,255,255,0.05);
+      color: #FFD700;
+      font-size: 0.9rem;
+    }
+    #iconSelector {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .icon-option {
+      cursor: pointer;
+      font-size: 1.3rem;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .icon-option:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 6px #FFD700);
     }
     textarea {
-      width: 100%;
-      height: 120px;
+      width: 80%;
+      height: 100px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,215,0,0.4);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
       padding: 10px;
-      background: #111;
-      color: #ffd700;
-      border: 1px solid #444;
-      border-radius: 8px;
+      font-size: 0.95rem;
       resize: none;
-      font-size: 1rem;
-      font-family: "Poppins", sans-serif;
-      outline: none;
     }
     button {
-      background: linear-gradient(90deg, #ffd700, #e0a821);
-      color: #111;
+      background-color: #FFD700;
       border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-weight: 700;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 25px;
+      border-radius: 10px;
       cursor: pointer;
       margin-top: 10px;
-      transition: transform .3s ease, box-shadow .3s ease;
+      transition: all 0.3s ease;
     }
     button:hover {
+      background-color: #fff;
+      color: #000;
       transform: scale(1.05);
-      box-shadow: 0 0 16px rgba(255,215,0,0.4);
     }
     ul {
-      margin-top: 20px;
       list-style: none;
       padding: 0;
+      margin-top: 25px;
     }
     li {
-      background: rgba(255,215,0,0.07);
-      border-left: 4px solid #ffd700;
+      background: rgba(255,215,0,0.08);
+      border: 1px solid rgba(255,215,0,0.2);
       padding: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      color: #FFD700;
+    }
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .actions button {
+      font-size: 0.8rem;
+      padding: 6px 10px;
       border-radius: 6px;
-      text-align: left;
     }
     .btn-return {
+      background: transparent;
+      color: #FFD700;
+      border: 1px solid #FFD700;
       margin-top: 25px;
-      background: linear-gradient(90deg,#0b0b0b,#1a1a1a);
-      color: #ffd700;
-      border: 2px solid #ffd700;
-      border-radius: 10px;
-      padding: 10px 18px;
-      font-weight: 700;
-      letter-spacing: .4px;
-      cursor: pointer;
-      transition: all .3s ease-in-out;
+      font-size: 0.9rem;
+      padding: 8px 20px;
+      transition: all 0.3s ease;
     }
     .btn-return:hover {
-      background: linear-gradient(90deg,#ffd700,#ffec8b);
-      color: #111;
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(255,215,0,0.6);
+      background: #FFD700;
+      color: #000;
     }
   </style>
 </head>
-<body>
-  <div class="bitacora-container">
-    <h2>🧠 Bitácora Mental del Trader</h2>
-    <p>Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
-    <textarea id="thoughts" placeholder="Escribí aquí..."></textarea>
-    <button onclick="saveThought()">Guardar</button>
-    <ul id="list"></ul>
 
-    <!-- ✅ CFC_FUNC_4_5_20251101_NAVBACK — Retorno al Perfil -->
-    <button class="btn-return" onclick="window.location.href='./pages/profile.html'">
-      ⬅ Volver al Perfil
-    </button>
+<body>
+  <h2>🧠 Bitácora Mental del Trader</h2>
+  <p style="color:#ccc;">Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
+
+  <!-- ✅ Bloque superior: Íconos y Tonos sugeridos -->
+  <div class="bitacora-top">
+    <select id="toneSelect">
+      <option value="">🌈 Seleccioná un tono sugerido (opcional)</option>
+      <option>Reflexivo / Inspirador</option>
+      <option>Científico / Energético</option>
+      <option>Introceptivo / Focalizado</option>
+      <option>Mentalidad / Racional</option>
+      <option>Sereno / Controlado</option>
+      <option>Calmante / Natural</option>
+      <option>Motivador / Resiliente</option>
+      <option>Analítico / Desafiante</option>
+      <option>Matemático / Estratégico</option>
+      <option>Firme / Persistente</option>
+      <option>Ambicioso / Enfocado</option>
+      <option>Minimalista / Claro</option>
+      <option>Madurez / Reflexión</option>
+      <option>Filosófico / Sobrio</option>
+      <option>Introspectivo / Terapéutico</option>
+      <option>Práctico / Conductual</option>
+      <option>Firme / Estratégico</option>
+      <option>Productividad / Mental</option>
+      <option>Fuerte / Emocional</option>
+      <option>Elevado / Espiritual</option>
+    </select>
+
+    <div id="iconSelector">
+      <span class="icon-option">🔥</span>
+      <span class="icon-option">💡</span>
+      <span class="icon-option">🎯</span>
+      <span class="icon-option">🧘‍♂️</span>
+      <span class="icon-option">⚡</span>
+      <span class="icon-option">🌙</span>
+      <span class="icon-option">🌞</span>
+      <span class="icon-option">🧠</span>
+      <span class="icon-option">💭</span>
+      <span class="icon-option">✨</span>
+    </div>
   </div>
 
-  <script>
-    console.log("🧩 CFC_SYNC checkpoint:", "bitacora.html", "Punto 4.5 NAVBACK actualizado", new Date().toLocaleString());
-  </script>
+  <!-- ✅ Área de texto y botón principal -->
+  <textarea id="thoughts" placeholder="Escribí aquí tu reflexión..."></textarea><br />
+  <button onclick="saveThought()">Guardar</button>
+
+  <!-- ✅ Lista dinámica de registros -->
+  <ul id="list"></ul>
+
+  <button class="btn-return" onclick="window.location.href='../pages/profile.html'">⬅ Volver al Perfil</button>
+
+  <script src="../js/bitacora.js?v=20251105"></script>
+  <!-- 🔒 CFC_LOCK: V41.3_BITACORA_PLUS_REAL_20251105 -->
 </body>
 </html>
