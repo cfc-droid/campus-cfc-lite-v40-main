@@ -5,14 +5,111 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🧠 Bitácora Mental del Trader — Campus CFC LITE</title>
 
-  <!-- ✅ CFC_FUNC_41_6_HTML_FIX4_V41.6 -->
+  <!-- ✅ CFC_FUNC_41_7_HTML_THEME_V41.17C -->
   <link rel="stylesheet" href="../css/premium.css?v=20251107" />
   <link rel="stylesheet" href="../css/bitacora.css?v=20251107c" />
+
+  <style>
+    /* 🎨 Ajustes adaptativos por tema */
+    body.light-mode {
+      background: #f9f9f9;
+      color: #111;
+    }
+    body.dark-mode {
+      background: #000;
+      color: #e0e0e0;
+    }
+
+    .bitacora-header {
+      color: var(--color-accent, #ffd700);
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .bitacora-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 12px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-mode .bitacora-container {
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    body.dark-mode .bitacora-container {
+      background: rgba(20,20,20,0.85);
+      box-shadow: 0 0 10px rgba(255,215,0,0.15);
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,215,0,0.4);
+      padding: 10px;
+      font-family: Poppins, sans-serif;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.light-mode textarea {
+      background: #fff;
+      color: #000;
+    }
+    body.dark-mode textarea {
+      background: #111;
+      color: #fff;
+    }
+
+    #list li {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,215,0,0.3);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.light-mode #list li {
+      background: #fffdf0;
+      color: #000;
+    }
+    body.dark-mode #list li {
+      background: rgba(40,40,40,0.9);
+      color: #fff;
+    }
+
+    .thought-header strong { color: #FFD700; }
+    .thought-text em { color: #d4af37; }
+
+    .btn-main, .btn-return {
+      transition: all 0.3s ease;
+    }
+
+    body.light-mode .btn-main {
+      background: #FFD700;
+      color: #000;
+      border: 2px solid #FFD700;
+    }
+    body.dark-mode .btn-main {
+      background: transparent;
+      color: #FFD700;
+      border: 2px solid #FFD700;
+    }
+
+    body.light-mode .btn-return {
+      background: #333;
+      color: #FFD700;
+      border: 2px solid #FFD700;
+    }
+    body.dark-mode .btn-return {
+      background: #FFD700;
+      color: #000;
+    }
+  </style>
 </head>
 
 <body>
   <h2 class="bitacora-header">🧠 Bitácora Mental del Trader</h2>
-  <p style="color:#ccc;">Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
+  <p style="text-align:center;">Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
 
   <div class="bitacora-container">
     <div class="bitacora-top">
@@ -80,6 +177,20 @@
   </div>
 
   <script src="../js/bitacora.js?v=20251107CFC_FIX4"></script>
-  <!-- 🔒 CFC_LOCK: V41.6_BITACORA_FIX4_20251107 -->
+
+  <!-- ✅ Tema sincronizado -->
+  <script>
+    function aplicarTemaCFC() {
+      const tema = localStorage.getItem("CFC_THEME_STATE") || "dark";
+      document.body.classList.toggle("light-mode", tema === "light");
+      document.body.classList.toggle("dark-mode", tema === "dark");
+    }
+    aplicarTemaCFC();
+    window.addEventListener("storage", (e) => {
+      if (e.key === "CFC_THEME_STATE") aplicarTemaCFC();
+    });
+  </script>
+
+  <!-- 🔒 CFC_LOCK: V41.17C_BITACORA_THEME_SYNC_20251107 -->
 </body>
 </html>
