@@ -5,38 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAQ — Campus CFC LITE V41</title>
 
-  <!-- ✅ CFC_FUNC_6_5_COLOR_SYNC_FINAL_V41.23C -->
+  <!-- ✅ CFC_FUNC_6_6_COLOR_SYNC_FULL_FINAL_V41.23D -->
   <link rel="stylesheet" href="../css/premium.css?v=20251107" />
 
   <style>
     /* ==========================================================
-       🎨 ESTILO UNIFICADO (modo claro / oscuro)
+       🌗 MODO CLARO / OSCURO — Campus Premium Visual
        ========================================================== */
 
     body {
       font-family: 'Poppins', sans-serif;
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* 🌞 Modo claro */
+    /* 🌞 MODO CLARO */
     body.light-mode {
       background: #ffffff !important;
       color: #111111 !important;
     }
 
-    /* 🌙 Modo oscuro */
+    /* 🌙 MODO OSCURO */
     body.dark-mode {
       background: #000000 !important;
       color: #f5f5f5 !important;
     }
 
-    /* 🌗 Contenedor principal */
+    /* Contenedor principal */
     main {
       max-width: 850px;
       margin: 50px auto;
       padding: 25px 25px 60px 25px;
       border-radius: 16px;
-      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.4s ease;
     }
 
     body.light-mode main {
@@ -51,12 +51,13 @@
       border: 1px solid rgba(255,215,0,0.25);
     }
 
-    /* ✨ Títulos */
+    /* ✨ TÍTULOS */
     h2 {
       color: #d4af37;
       text-align: center;
       margin-bottom: 5px;
     }
+
     h4.section-title {
       color: #d4af37;
       margin-top: 35px;
@@ -65,6 +66,14 @@
       text-transform: uppercase;
       font-size: 1rem;
       letter-spacing: 1px;
+      text-align: left;
+      animation: goldPulse 3.2s ease-in-out infinite;
+    }
+
+    @keyframes goldPulse {
+      0% { text-shadow: 0 0 4px rgba(212,175,55,0.2), 0 0 8px rgba(212,175,55,0.1); }
+      50% { text-shadow: 0 0 8px rgba(212,175,55,0.5), 0 0 16px rgba(212,175,55,0.3); }
+      100% { text-shadow: 0 0 4px rgba(212,175,55,0.2), 0 0 8px rgba(212,175,55,0.1); }
     }
 
     /* 💬 Preguntas */
@@ -77,7 +86,7 @@
 
     body.light-mode .faq-item {
       background: #fffdf0;
-      border: 1px solid rgba(212,175,55,0.2);
+      border: 1px solid rgba(212,175,55,0.25);
       color: #111;
     }
 
@@ -155,7 +164,7 @@
       transform: scale(1.03);
     }
 
-    /* 🌗 Botón flotante de tema */
+    /* 🌗 Botón flotante tema */
     #themeToggle {
       position: fixed;
       top: 18px;
@@ -192,13 +201,8 @@
       transition: color 0.3s ease;
     }
 
-    body.light-mode footer {
-      color: #333;
-    }
-
-    body.dark-mode footer {
-      color: #bbb;
-    }
+    body.light-mode footer { color: #333; }
+    body.dark-mode footer { color: #bbb; }
   </style>
 </head>
 
@@ -214,19 +218,66 @@
   <main>
     <p style="text-align:center;margin-bottom:25px;">Elegí una categoría o pregunta para ver su respuesta 👇</p>
 
-    <!-- SECCIONES Y PREGUNTAS -->
-    <!-- Se conserva todo el contenido original -->
-    <!-- ... (no modificado en estructura, solo hereda nuevo estilo visual) -->
-
+    <!-- ==========================================================
+         🟡 SECCIÓN 1 — INFORMACIÓN GENERAL
+    ========================================================== -->
     <h4 class="section-title">🟡 SECCIÓN 1 — INFORMACIÓN GENERAL</h4>
-    <div class="faq-item"><h3>1. 🧭 ¿Qué incluye el Campus CFC LITE V41?</h3>
-      <div class="faq-answer">Incluye 20 módulos completos (cada uno con 4 capítulos + examen final), audio-lectura guiada, refuerzos motivacionales y bitácora de progreso.</div>
-    </div>
-    <div class="faq-item"><h3>2. 💡 ¿Necesito instalar algo?</h3>
-      <div class="faq-answer">No. Funciona 100 % online mediante Cloudflare Pages.</div>
-    </div>
+    <div class="faq-item"><h3>1. 🧭 ¿Qué incluye el Campus CFC LITE V41?</h3><div class="faq-answer">Incluye 20 módulos completos (cada uno con 4 capítulos + examen final), audio-lectura guiada, refuerzos motivacionales y bitácora de progreso.</div></div>
+    <div class="faq-item"><h3>2. 💡 ¿Necesito instalar algo?</h3><div class="faq-answer">No. Funciona 100 % online mediante Cloudflare Pages.</div></div>
+    <div class="faq-item"><h3>3. 🧠 ¿Qué temas se abordan en los módulos?</h3><div class="faq-answer">Cada módulo desarrolla un aspecto del modelo mental del trader: neurociencia aplicada, psicología del error, disciplina, regulación emocional, autocontrol y mentalidad de maestro.</div></div>
+    <div class="faq-item"><h3>4. 🧩 ¿Quién creó el Campus CFC?</h3><div class="faq-answer">Fue diseñado por Cristian F. Choqui (CFC), autor de <i>Psicología del Trader 2025</i>.</div></div>
 
-    <!-- 🔸 Resto de las preguntas intactas (omitidas por brevedad) -->
+    <!-- ==========================================================
+         🔐 SECCIÓN 2 — ACCESO, LICENCIA Y SEGURIDAD
+    ========================================================== -->
+    <h4 class="section-title">🔐 SECCIÓN 2 — ACCESO, LICENCIA Y SEGURIDAD</h4>
+    <div class="faq-item"><h3>5. 🔑 ¿Cómo ingreso al Campus?</h3><div class="faq-answer">Recibirás tu usuario y contraseña por correo tras la compra.</div></div>
+    <div class="faq-item"><h3>6. 🧪 ¿Puedo probar el Campus?</h3><div class="faq-answer">Sí, con el usuario demo:<br><b>demo@campuscfc.com</b> — Contraseña: <b>demo123</b>.</div></div>
+    <div class="faq-item"><h3>7. 🔒 ¿Qué tan seguro es mi acceso?</h3><div class="faq-answer">Protegido por Supabase y CFC-LOCK ONLINE V1.</div></div>
+    <div class="faq-item"><h3>8. 🚫 ¿Puedo usar mi cuenta en más de un dispositivo?</h3><div class="faq-answer">No. Cada licencia permite una sola sesión activa.</div></div>
+    <div class="faq-item"><h3>9. 🧾 ¿Puedo usar mi licencia para enseñar?</h3><div class="faq-answer">No. Es de uso personal. Para uso educativo escribir a cfchoqui@gmail.com.</div></div>
+
+    <!-- ==========================================================
+         💬 SECCIÓN 3 — FUNCIONAMIENTO Y EXPERIENCIA
+    ========================================================== -->
+    <h4 class="section-title">💬 SECCIÓN 3 — FUNCIONAMIENTO Y EXPERIENCIA</h4>
+    <div class="faq-item"><h3>10. 🎓 ¿Cómo se mide mi progreso?</h3><div class="faq-answer">Cada capítulo completado actualiza tu porcentaje global.</div></div>
+    <div class="faq-item"><h3>11. 🎧 ¿Tiene narración por voz?</h3><div class="faq-answer">Sí, con voz masculina o femenina configurable.</div></div>
+    <div class="faq-item"><h3>12. ⏱️ ¿Registra mi tiempo de estudio?</h3><div class="faq-answer">Sí, cada sesión activa suma minutos a tu contador.</div></div>
+    <div class="faq-item"><h3>13. 🌓 ¿Puedo cambiar el tema?</h3><div class="faq-answer">Sí, con el botón superior derecho 🌙/🌞.</div></div>
+    <div class="faq-item"><h3>14. 📈 ¿Guarda mi última sesión?</h3><div class="faq-answer">Sí, tu progreso se conserva localmente.</div></div>
+
+    <!-- ==========================================================
+         🧭 SECCIÓN 4 — VERSIONES Y ACTUALIZACIONES
+    ========================================================== -->
+    <h4 class="section-title">🧭 SECCIÓN 4 — VERSIONES Y ACTUALIZACIONES</h4>
+    <div class="faq-item"><h3>15. 🧭 ¿Diferencia entre LITE y PREMIUM?</h3><div class="faq-answer"><b>LITE:</b> entrenamiento local.<br><b>PREMIUM:</b> sincronización en la nube + IA coach.</div></div>
+    <div class="faq-item"><h3>16. 💬 ¿Acceso a actualizaciones futuras?</h3><div class="faq-answer">Sí, recibirás aviso por correo en cada versión.</div></div>
+
+    <!-- ==========================================================
+         💸 SECCIÓN 5 — PAGOS Y SOPORTE
+    ========================================================== -->
+    <h4 class="section-title">💸 SECCIÓN 5 — PAGOS Y SOPORTE</h4>
+    <div class="faq-item"><h3>17. 💰 ¿Precio actual?</h3><div class="faq-answer">USD 47 (lanzamiento CFC Pack 2025).</div></div>
+    <div class="faq-item"><h3>18. 💸 ¿Hay garantía?</h3><div class="faq-answer">Sí, 7 días para solicitar reembolso a cfchoqui@gmail.com.</div></div>
+    <div class="faq-item"><h3>19. 📈 ¿Cómo recupero mi cuenta?</h3><div class="faq-answer">Escribir a cfchoqui@gmail.com con correo registrado.</div></div>
+    <div class="faq-item"><h3>20. 🛠️ ¿Qué hago si no carga?</h3><div class="faq-answer">Verificá conexión o actualizá navegador.</div></div>
+    <div class="faq-item"><h3>21. 📬 ¿Soporte?</h3><div class="faq-answer">Correo: cfchoqui@gmail.com — Lunes a Viernes 9-18 hs (ARG).</div></div>
+
+    <!-- ==========================================================
+         🎁 SECCIÓN 6 — BONOS Y MATERIALES EXTRA
+    ========================================================== -->
+    <h4 class="section-title">🎁 SECCIÓN 6 — BONOS Y MATERIALES EXTRA</h4>
+    <div class="faq-item"><h3>22. 🎁 ¿Material adicional?</h3><div class="faq-answer">Sí, Bitácora Excel + eBook PDF disponibles en “Contenido adicional”.</div></div>
+    <div class="faq-item"><h3>23. 📚 ¿Puedo descargar los módulos?</h3><div class="faq-answer">No por seguridad, solo material complementario.</div></div>
+
+    <!-- ==========================================================
+         ⚖️ SECCIÓN 7 — POLÍTICAS Y LEGAL
+    ========================================================== -->
+    <h4 class="section-title">⚖️ SECCIÓN 7 — POLÍTICAS Y LEGAL</h4>
+    <div class="faq-item"><h3>24. ⚖️ ¿Puedo compartir contenido?</h3><div class="faq-answer">No. Todo el material está protegido por derechos de autor.</div></div>
+    <div class="faq-item"><h3>25. 🔐 ¿Qué pasa si intento duplicar?</h3><div class="faq-answer">Se bloqueará el acceso. Cada versión tiene firma CFC-LOCK.</div></div>
+    <div class="faq-item"><h3>26. 🧾 ¿Qué legislación protege mi compra?</h3><div class="faq-answer">Ley 11.723 (Argentina) y tratados internacionales.</div></div>
 
     <div style="text-align:center;margin-top:40px;">
       <button class="btn-return" onclick="window.location.href='../modules/index.html'">⬅ Volver al Campus</button>
@@ -237,47 +288,36 @@
     <p>© 2025 Campus CFC Trading — Cristian F. Choqui | Soporte: cfchoqui@gmail.com</p>
   </footer>
 
-  <!-- ✅ Script de comportamiento -->
+  <!-- ✅ Script -->
   <script>
-    // 🎯 Activar/desactivar preguntas
     const items = document.querySelectorAll(".faq-item h3");
     items.forEach(q => {
-      q.addEventListener("click", () => {
-        const p = q.parentElement;
-        p.classList.toggle("active");
-      });
+      q.addEventListener("click", () => q.parentElement.classList.toggle("active"));
     });
 
-    // 🌗 Sincronización de tema
     function aplicarTemaCFC() {
       const tema = localStorage.getItem("CFC_THEME_STATE") || "dark";
       document.body.classList.toggle("light-mode", tema === "light");
       document.body.classList.toggle("dark-mode", tema === "dark");
-      const btn = document.getElementById("themeToggle");
-      if (btn) btn.textContent = tema === "light" ? "🌞" : "🌙";
+      document.getElementById("themeToggle").textContent = tema === "light" ? "🌞" : "🌙";
     }
 
     aplicarTemaCFC();
-
-    window.addEventListener("storage", (e) => {
+    window.addEventListener("storage", e => {
       if (e.key === "CFC_THEME_STATE") aplicarTemaCFC();
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const btn = document.getElementById("themeToggle");
-      if (!btn) return;
-      btn.addEventListener("click", () => {
-        const current = localStorage.getItem("CFC_THEME_STATE") || "dark";
-        const nuevo = current === "dark" ? "light" : "dark";
-        localStorage.setItem("CFC_THEME_STATE", nuevo);
-        aplicarTemaCFC();
-        console.log("🎨 CFC_THEME_SWITCH — FAQ:", nuevo);
-      });
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const current = localStorage.getItem("CFC_THEME_STATE") || "dark";
+      const nuevo = current === "dark" ? "light" : "dark";
+      localStorage.setItem("CFC_THEME_STATE", nuevo);
+      aplicarTemaCFC();
+      console.log("🎨 CFC_THEME_SWITCH — FAQ:", nuevo);
     });
 
-    console.log("🧩 CFC_SYNC checkpoint: faq.html — V41.23C_COLOR_SYNC_FINAL ✅", new Date().toLocaleString());
+    console.log("🧩 CFC_SYNC checkpoint: faq.html — V41.23D_FULL_COLOR_SYNC_FINAL ✅", new Date().toLocaleString());
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.23C_COLOR_SYNC_FINAL_20251107 -->
+  <!-- 🔒 CFC_LOCK: V41.23D_FULL_COLOR_SYNC_FINAL_20251107 -->
 </body>
 </html>
