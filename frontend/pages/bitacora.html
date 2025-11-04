@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🧠 Bitácora Mental del Trader</title>
-  <link rel="stylesheet" href="../css/premium.css?v=20251106" />
+  <title>🧠 Bitácora Mental del Trader — Campus CFC LITE</title>
+
+  <!-- ===================================================== -->
+  <!-- ✅ CFC_FUNC_41_4_HTML_V41.4 — Bitácora con Filtros Activos -->
+  <!-- ===================================================== -->
+  <link rel="stylesheet" href="../css/premium.css?v=20251105" />
   <link rel="stylesheet" href="../css/bitacora.css?v=20251106" />
 </head>
-<body>
-  <header class="bitacora-header">
-    <h2>🧠 Bitácora Mental del Trader</h2>
-    <p>Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
-  </header>
 
-  <main class="bitacora-container">
-    <!-- ✅ CFC_FUNC_41_3A — Selector de tono inspiracional -->
+<body>
+  <h2 class="bitacora-header">🧠 Bitácora Mental del Trader</h2>
+  <p style="color:#ccc;">Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
+
+  <!-- ✅ Bloque superior -->
+  <div class="bitacora-container">
     <div class="bitacora-top">
       <select id="toneSelect">
         <option value="">🌈 Seleccioná un tono sugerido (opcional)</option>
@@ -40,7 +43,6 @@
         <option>Elevado / Espiritual</option>
       </select>
 
-      <!-- ✅ CFC_FUNC_41_3B — Selector de ícono -->
       <div id="iconSelector">
         <span class="icon-option">🔥</span>
         <span class="icon-option">💡</span>
@@ -55,19 +57,53 @@
       </div>
     </div>
 
-    <!-- ✅ CFC_FUNC_41_3C — Área de texto principal -->
-    <textarea id="thoughts" placeholder="Escribí tu reflexión..."></textarea>
-    <button id="saveBtn" class="btn-main">💾 Guardar</button>
+    <!-- ✅ Filtros Avanzados -->
+    <div class="bitacora-filters">
+      <h3 class="filters-title">🔍 Filtros de Búsqueda</h3>
+      <div class="filters-group">
+        <label>📅 Desde:</label>
+        <input type="date" id="filterStart" />
+        <label>📅 Hasta:</label>
+        <input type="date" id="filterEnd" />
+      </div>
+      <div class="filters-group">
+        <label>🎭 Ícono:</label>
+        <select id="filterIcon">
+          <option value="">Todos</option>
+          <option>🔥</option><option>💡</option><option>🎯</option>
+          <option>🧘‍♂️</option><option>⚡</option><option>🌙</option>
+          <option>🌞</option><option>🧠</option><option>💭</option><option>✨</option>
+        </select>
 
-    <!-- ✅ CFC_FUNC_41_3D — Listado de pensamientos -->
-    <ul id="list" class="bitacora-list"></ul>
-
-    <div class="bitacora-footer">
-      <button id="exportBtn" class="btn-secondary">📤 Exportar</button>
-      <button id="backBtn" class="btn-return" onclick="window.location.href='profile.html'">⬅ Volver al Perfil</button>
+        <label>🎨 Tono:</label>
+        <select id="filterTone">
+          <option value="">Todos</option>
+          <option>Reflexivo / Inspirador</option>
+          <option>Científico / Energético</option>
+          <option>Introceptivo / Focalizado</option>
+          <option>Mentalidad / Racional</option>
+          <option>Sereno / Controlado</option>
+          <option>Motivador / Resiliente</option>
+          <option>Analítico / Desafiante</option>
+          <option>Filosófico / Sobrio</option>
+          <option>Fuerte / Emocional</option>
+        </select>
+      </div>
+      <button id="applyFilters" class="btn-main">Aplicar Filtros</button>
+      <button id="resetFilters" class="btn-secondary">Reiniciar</button>
     </div>
-  </main>
+
+    <!-- ✅ Entrada -->
+    <textarea id="thoughts" placeholder="Escribí aquí tu reflexión..."></textarea><br />
+    <button class="btn-main" onclick="saveThought()">Guardar</button>
+
+    <!-- ✅ Lista dinámica -->
+    <ul id="list"></ul>
+
+    <button class="btn-return" onclick="window.location.href='../pages/profile.html'">⬅ Volver al Perfil</button>
+  </div>
 
   <script src="../js/bitacora.js?v=20251106"></script>
+  <!-- 🔒 CFC_LOCK: V41.4_BITACORA_FILTER_REAL_20251106 -->
 </body>
 </html>
