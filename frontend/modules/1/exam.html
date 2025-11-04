@@ -80,6 +80,46 @@
 <!-- 🧩 CFC-SYNC QA-CLEANUP V8.6 — Motor unificado -->
   <script src="../../js/exam_v2.js"></script>
 
+<!-- ✅ CFC_FUNC_3_3_FIX_V11.2 — Registro local de resultados -->
+<script>
+  function guardarResultadoLocal(score, total) {
+    try {
+      const moduleTitle = document.querySelector("h1,h2")?.textContent || "Módulo desconocido";
+      const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
+      const newResult = {
+        module: moduleTitle.replace("Examen — ", "").trim(),
+        date: new Date().toLocaleDateString("es-AR"),
+        score: Math.round((score / total) * 100),
+        status: score / total >= 0.7 ? "✅ Aprobado" : "❌ Reprobado"
+      };
+      examResults.push(newResult);
+      localStorage.setItem("examResults", JSON.stringify(examResults));
+      console.log("🧩 CFC_SYNC checkpoint:", "Resultado guardado localmente", newResult);
+    } catch (err) {
+      console.error("❌ Error al guardar resultado en localStorage:", err);
+    }
+  }
+
+  // 🔹 Interceptar el alert del examen_v2.js
+  const originalAlert = window.alert;
+  window.alert = function (msg) {
+    try {
+      if (msg.includes("Aprobado") || msg.includes("Reprobado")) {
+        const regex = /(\d+)\/(\d+)/;
+        const match = msg.match(regex);
+        if (match) {
+          const correctas = parseInt(match[1]);
+          const total = parseInt(match[2]);
+          guardarResultadoLocal(correctas, total);
+        }
+      }
+    } catch (e) {
+      console.warn("⚠️ CFC_SYNC: no se pudo interceptar alert:", e);
+    }
+    originalAlert(msg);
+  };
+</script>  
+  
 <!-- ✅ QA-SYNC V41.10 — Auto-Injector Global -->
   <script src="../../js/auto_injector.js?v=20251102" defer>
 </script> 
@@ -103,3 +143,4 @@ echo "🧩 CFC_SYNC checkpoint: Narrador IA activo en examen — P9 completado"
 ========================================================== -->
 </body>
 </html>
+
