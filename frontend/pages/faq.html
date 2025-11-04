@@ -3,93 +3,278 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAQ — Campus CFC LITE</title>
-  <link rel="stylesheet" href="../css/premium.css?v=20251101" />
+  <title>FAQ — Campus CFC LITE V42</title>
+  <link rel="stylesheet" href="../css/premium.css?v=20251104" />
   <style>
+    /* ==========================================================
+       ✅ CFC_FUNC_6_3_20251104 — FAQ Premium V42
+       ========================================================== */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at center, #111 0%, #000 100%);
+      color: #e0e0e0;
+    }
     main {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-      color: #ddd;
-      background: rgba(20,20,20,0.9);
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(255,215,0,0.2);
+      max-width: 850px;
+      margin: 50px auto;
+      padding: 25px 25px 60px 25px;
+      background: rgba(25,25,25,0.85);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 25px rgba(255,215,0,0.1);
+      border: 1px solid rgba(255,215,0,0.25);
+    }
+    h2 {
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    h4.section-title {
+      color: #FFD700;
+      margin-top: 35px;
+      border-bottom: 1px solid rgba(255,215,0,0.2);
+      padding-bottom: 4px;
+      text-transform: uppercase;
+      font-size: 1rem;
+      letter-spacing: 1px;
     }
     .faq-item {
       background: rgba(255,215,0,0.05);
       border: 1px solid rgba(255,215,0,0.2);
       border-radius: 10px;
-      margin-bottom: 12px;
-      padding: 12px 16px;
-      transition: 0.3s;
+      margin-top: 10px;
+      padding: 14px 18px;
+      transition: all 0.3s ease;
+    }
+    .faq-item:hover {
+      background: rgba(255,215,0,0.08);
+      box-shadow: 0 0 10px rgba(255,215,0,0.1);
     }
     .faq-item h3 {
       margin: 0;
       cursor: pointer;
       color: #FFD700;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .faq-item h3::after {
+      content: "＋";
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .faq-item.active h3::after {
+      content: "－";
+      color: #fff;
     }
     .faq-answer {
       display: none;
-      margin-top: 8px;
+      margin-top: 10px;
       color: #ccc;
       font-size: 0.95rem;
-    }
-    .faq-answer.visible {
-      display: block;
+      line-height: 1.6em;
       animation: fadeIn 0.3s ease-in-out;
+    }
+    .faq-item.active .faq-answer {
+      display: block;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .btn-return {
+      background: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-return:hover {
+      background: #fff;
+      color: #000;
+      transform: scale(1.03);
+    }
+    footer {
+      text-align: center;
+      margin-top: 35px;
+      font-size: 0.8rem;
+      color: #777;
+    }
   </style>
 </head>
+
 <body>
-  <header style="text-align:center;margin-top:20px;">
+  <header style="text-align:center;margin-top:25px;">
     <h2>❓ Preguntas Frecuentes (FAQ)</h2>
+    <p style="color:#aaa;font-size:0.95rem;">Versión V42 — Actualizado al 04/11/2025</p>
   </header>
 
   <main>
-    <p style="text-align:center;">Elegí una pregunta para ver su respuesta 👇</p>
 
-    <!-- ✅ CFC_FUNC_6_1_20251029 — FAQ base creada -->
-    <div class="faq-item">
-      <h3>¿Cómo guardo mi progreso?</h3>
-      <p class="faq-answer">Automáticamente se guarda en tu navegador local (LocalStorage), sin necesidad de iniciar sesión.</p>
+    <p style="text-align:center;margin-bottom:25px;">Elegí una categoría o pregunta para ver su respuesta 👇</p>
+
+    <!-- ==========================================================
+         🟡 SECCIÓN 1 — INFORMACIÓN GENERAL
+    ========================================================== -->
+    <h4 class="section-title">🟡 Información General del Campus</h4>
+
+    <div class="faq-item"><h3>¿Qué incluye el Campus CFC LITE V41?</h3>
+      <div class="faq-answer">Incluye 20 módulos completos (cada uno con 4 capítulos + examen final), audio-lectura guiada, refuerzos motivacionales y bitácora de progreso. Fue diseñado para entrenar tu mente como trader disciplinado, resiliente y consciente.</div>
     </div>
 
-    <div class="faq-item">
-      <h3>¿Puedo perder mis datos?</h3>
-      <p class="faq-answer">Solo si borrás la caché o los datos del navegador. Recomendamos usar siempre el mismo dispositivo.</p>
+    <div class="faq-item"><h3>¿Necesito instalar algo para usar el Campus?</h3>
+      <div class="faq-answer">No. Funciona 100 % online mediante Cloudflare Pages. Solo necesitás un navegador moderno (Chrome, Edge o Firefox) y conexión estable a internet.</div>
     </div>
 
-    <div class="faq-item">
-      <h3>¿Qué diferencia hay entre LITE y PREMIUM?</h3>
-      <p class="faq-answer">La versión PREMIUM incluye sincronización en la nube, nuevos módulos, seguimiento emocional y más herramientas CFC.</p>
+    <div class="faq-item"><h3>¿Qué temas se abordan en los módulos?</h3>
+      <div class="faq-answer">Cada módulo desarrolla un aspecto del modelo mental del trader: neurociencia aplicada, psicología del error, disciplina, regulación emocional, autocontrol y mentalidad de maestro. Desarrollado por Cristian F. Choqui (CFC).</div>
     </div>
 
-    <div class="faq-item">
-      <h3>¿Dónde puedo ver mi rendimiento?</h3>
-      <p class="faq-answer">Desde tu Perfil → sección “Estado Emocional Diario” y el Historial de Exámenes.</p>
+    <div class="faq-item"><h3>¿Quién creó el Campus CFC?</h3>
+      <div class="faq-answer">Fue diseñado por Cristian F. Choqui (CFC), autor de <i>Psicología del Trader 2025</i> y fundador del Campus CFC Trading. Su propósito es integrar formación técnica y mental en una experiencia única.</div>
     </div>
 
-    <div style="text-align:center;margin-top:25px;">
-      <button class="btn-return" onclick="window.location.href='../modules/index.html'">
-        ⬅ Volver al Campus
-      </button>
+    <!-- ==========================================================
+         🔐 SECCIÓN 2 — ACCESO, LICENCIA Y SEGURIDAD
+    ========================================================== -->
+    <h4 class="section-title">🔐 Acceso, Licencia y Seguridad</h4>
+
+    <div class="faq-item"><h3>¿Cómo ingreso al Campus?</h3>
+      <div class="faq-answer">Recibirás tu usuario y contraseña por correo tras la compra. Iniciá sesión desde la página principal y accederás automáticamente al Campus.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Puedo probar el Campus antes de comprar?</h3>
+      <div class="faq-answer">Sí. Tenés acceso al Módulo 1 libre con el usuario demo:<br><b>Usuario:</b> demo@campuscfc.com<br><b>Contraseña:</b> demo123<br>Los demás módulos están bloqueados con mensajes motivacionales.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Qué tan seguro es mi acceso?</h3>
+      <div class="faq-answer">Tu cuenta está protegida por Supabase (Auth + DB) y CFC-LOCK ONLINE V1, que valida la sesión cada 30 segundos. También contiene firma invisible anticopia y licencia personal intransferible.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Puedo usar mi cuenta en más de un dispositivo?</h3>
+      <div class="faq-answer">No. Por seguridad, cada licencia permite una sesión activa. Si inicias desde otro equipo, la anterior se cierra automáticamente.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Puedo usar mi licencia para enseñar a otros?</h3>
+      <div class="faq-answer">No. Es de uso personal. Si querés usarla en clases o mentorías, escribí a <b>cfchoqui@gmail.com</b> con el asunto “Programa CFC Educators 2026”.</div>
+    </div>
+
+    <!-- ==========================================================
+         💬 SECCIÓN 3 — FUNCIONAMIENTO Y EXPERIENCIA
+    ========================================================== -->
+    <h4 class="section-title">💬 Funcionamiento y Experiencia</h4>
+
+    <div class="faq-item"><h3>¿Cómo se mide mi progreso?</h3>
+      <div class="faq-answer">Cada capítulo o examen completado actualiza tu porcentaje global. Al llegar al 100 %, se activa una celebración final con overlay y confeti dorado.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿El Campus tiene narración por voz?</h3>
+      <div class="faq-answer">Sí. Podés escuchar los textos con voz masculina o femenina, ajustar velocidad y seguir el texto resaltado.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿El Campus registra mi tiempo de estudio?</h3>
+      <div class="faq-answer">Sí. Cada sesión activa suma minutos a tu contador, visible en el panel de progreso.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Puedo cambiar el color de fondo o tema?</h3>
+      <div class="faq-answer">Sí. Desde el ícono superior derecho podés alternar entre modo claro y oscuro.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿El sistema guarda mi última sesión?</h3>
+      <div class="faq-answer">Sí. Al volver, continuarás exactamente desde donde lo dejaste.</div>
+    </div>
+
+    <!-- ==========================================================
+         🧭 SECCIÓN 4 — VERSIONES Y ACTUALIZACIONES
+    ========================================================== -->
+    <h4 class="section-title">🧭 Versiones y Actualizaciones</h4>
+
+    <div class="faq-item"><h3>¿Qué diferencia hay entre Campus LITE y Campus PREMIUM?</h3>
+      <div class="faq-answer">LITE es autónomo y offline. PREMIUM (2026) sumará mentorías en vivo, backup en nube y sincronización avanzada.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Puedo acceder a actualizaciones futuras?</h3>
+      <div class="faq-answer">Sí, las versiones menores (V42→V43) son gratuitas. Recibirás aviso por correo con enlace de descarga.</div>
+    </div>
+
+    <!-- ==========================================================
+         💸 SECCIÓN 5 — PAGOS Y SOPORTE
+    ========================================================== -->
+    <h4 class="section-title">💸 Pagos, Garantía y Soporte</h4>
+
+    <div class="faq-item"><h3>¿Cuál es el precio actual?</h3>
+      <div class="faq-answer">USD 47 lanzamiento (CFC Pack 2025). El valor puede subir progresivamente hasta USD 97 según la demanda.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Hay garantía de satisfacción?</h3>
+      <div class="faq-answer">Sí. Tenés 7 días para solicitar reembolso escribiendo a <b>cfchoqui@gmail.com</b> con asunto “Reembolso Campus CFC”.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Cómo recupero mi cuenta si pierdo el acceso?</h3>
+      <div class="faq-answer">Contactá a <b>cfchoqui@gmail.com</b> con tu correo registrado y comprobante de pago. Se reactivará en menos de 24 hs.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Qué hago si el Campus no carga correctamente?</h3>
+      <div class="faq-answer">Verificá tu conexión y actualizá el navegador. Si persiste, enviá captura del error a <b>cfchoqui@gmail.com</b>.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Cómo contacto al soporte?</h3>
+      <div class="faq-answer">Por correo a <b>cfchoqui@gmail.com</b> — Horario: Lunes a Viernes 9-18 hs (ARG). Respuesta en 12-24 hs.</div>
+    </div>
+
+    <!-- ==========================================================
+         🎁 SECCIÓN 6 — BONOS Y RECURSOS
+    ========================================================== -->
+    <h4 class="section-title">🎁 Bonos y Material Extra</h4>
+
+    <div class="faq-item"><h3>¿Recibo material adicional al completar el Campus?</h3>
+      <div class="faq-answer">Sí. Se habilita el <b>CFC Pack 2025</b> con checklists, guías PDF, Bitácora Excel y frases motivacionales.</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Puedo descargar los módulos en PDF?</h3>
+      <div class="faq-answer">No por seguridad. Solo el material complementario del CFC Pack 2025 es descargable.</div>
+    </div>
+
+    <!-- ==========================================================
+         ⚖️ SECCIÓN 7 — POLÍTICAS Y LEGAL
+    ========================================================== -->
+    <h4 class="section-title">⚖️ Políticas y Legal</h4>
+
+    <div class="faq-item"><h3>¿Puedo compartir el contenido del Campus?</h3>
+      <div class="faq-answer">No. Todo el material está protegido por derechos de autor (© Cristian F. Choqui – Campus CFC 2025).</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Qué pasa si intento duplicar el Campus?</h3>
+      <div class="faq-answer">El sistema detecta discrepancias y bloquea la licencia. Cada copia tiene firma invisible trazable (CFC-LOCK V1).</div>
+    </div>
+
+    <div class="faq-item"><h3>¿Qué legislación protege mi compra?</h3>
+      <div class="faq-answer">Regido por la Ley 11.723 (Argentina) y tratados internacionales. Tu compra te otorga una licencia personal educativa intransferible.</div>
+    </div>
+
+    <div style="text-align:center;margin-top:40px;">
+      <button class="btn-return" onclick="window.location.href='../modules/index.html'">⬅ Volver al Campus</button>
     </div>
   </main>
 
-  <div id="footer-placeholder"></div>
-  <script src="../js/footer.js" defer></script>
-  <script src="../js/faqBot.js" defer></script>
+  <footer>
+    <p>© 2025 Campus CFC Trading — Cristian F. Choqui  |  Soporte: cfchoqui@gmail.com</p>
+  </footer>
 
-  <!-- 🔒 CFC-SYNC -->
-  <!-- ✅ CFC_FUNC_6_1_20251029 — FAQ base creada -->
-  <!-- ✅ CFC_FUNC_6_2_20251029 — FAQ interactivo funcional -->
+  <!-- ✅ CFC_FUNC_6_3_20251104 — FAQ Premium V42 Final -->
   <script>
-    console.log("🧩 CFC_SYNC checkpoint:", "faq.html", "Punto 6.1 actualizado", new Date().toLocaleString());
+    const items=document.querySelectorAll(".faq-item h3");
+    items.forEach(q=>{
+      q.addEventListener("click",()=>{
+        const p=q.parentElement;
+        p.classList.toggle("active");
+      });
+    });
+    console.log("🧩 CFC_SYNC checkpoint: faq.html — V42 Premium completo ✅",new Date().toLocaleString());
   </script>
 </body>
 </html>
