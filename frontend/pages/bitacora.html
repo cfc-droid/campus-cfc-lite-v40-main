@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🧠 Bitácora Mental del Trader — Campus CFC LITE</title>
 
-  <!-- ===================================================== -->
-  <!-- ✅ CFC_FUNC_41_4_HTML_FIX_V41.4 — Bitácora con Filtros Activos -->
-  <!-- ===================================================== -->
+  <!-- ✅ CFC_FUNC_41_4_HTML_FIX2_V41.4 -->
   <link rel="stylesheet" href="../css/premium.css?v=20251105" />
-  <link rel="stylesheet" href="../css/bitacora.css?v=20251106a" />
+  <link rel="stylesheet" href="../css/bitacora.css?v=20251106b" />
 </head>
 
 <body>
@@ -17,7 +15,6 @@
   <p style="color:#ccc;">Anotá tus pensamientos, reflexiones o aprendizajes del día.</p>
 
   <div class="bitacora-container">
-    <!-- 🔹 Selector de tono e íconos -->
     <div class="bitacora-top">
       <select id="toneSelect">
         <option value="">🌈 Seleccioná un tono sugerido (opcional)</option>
@@ -33,27 +30,20 @@
       </select>
 
       <div id="iconSelector">
-        <span class="icon-option">🔥</span>
-        <span class="icon-option">💡</span>
-        <span class="icon-option">🎯</span>
-        <span class="icon-option">🧘‍♂️</span>
-        <span class="icon-option">⚡</span>
-        <span class="icon-option">🌙</span>
-        <span class="icon-option">🌞</span>
-        <span class="icon-option">🧠</span>
-        <span class="icon-option">💭</span>
-        <span class="icon-option">✨</span>
+        <span class="icon-option">🔥</span><span class="icon-option">💡</span>
+        <span class="icon-option">🎯</span><span class="icon-option">🧘‍♂️</span>
+        <span class="icon-option">⚡</span><span class="icon-option">🌙</span>
+        <span class="icon-option">🌞</span><span class="icon-option">🧠</span>
+        <span class="icon-option">💭</span><span class="icon-option">✨</span>
       </div>
     </div>
 
-    <!-- 🔹 Bloque de filtros avanzados -->
-    <div class="bitacora-filters">
+    <!-- 🔹 Bloque de filtros -->
+    <div class="bitacora-filters" id="filtersBlock">
       <h3 class="filters-title">🔍 Filtros de Búsqueda</h3>
       <div class="filters-group">
-        <label>📅 Desde:</label>
-        <input type="date" id="filterStart" />
-        <label>📅 Hasta:</label>
-        <input type="date" id="filterEnd" />
+        <label>📅 Desde:</label><input type="date" id="filterStart" />
+        <label>📅 Hasta:</label><input type="date" id="filterEnd" />
       </div>
       <div class="filters-group">
         <label>🎭 Ícono:</label>
@@ -82,7 +72,6 @@
       <button id="resetFilters" class="btn-secondary">Reiniciar</button>
     </div>
 
-    <!-- 🔹 Entrada y lista -->
     <textarea id="thoughts" placeholder="Escribí aquí tu reflexión..."></textarea><br />
     <button class="btn-main" onclick="saveThought()">Guardar</button>
     <ul id="list"></ul>
@@ -90,7 +79,7 @@
     <button class="btn-return" onclick="window.location.href='../pages/profile.html'">⬅ Volver al Perfil</button>
   </div>
 
-  <script src="../js/bitacora.js?v=20251106a"></script>
-  <!-- 🔒 CFC_LOCK: V41.4_BITACORA_FILTER_FIX_20251106 -->
+  <script src="../js/bitacora.js?v=20251106b"></script>
+  <!-- 🔒 CFC_LOCK: V41.4_BITACORA_FIX2_20251106 -->
 </body>
 </html>
