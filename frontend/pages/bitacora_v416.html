@@ -5,42 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🧠 Bitácora Mental del Trader — Campus CFC LITE</title>
 
-  <!-- ✅ CFC_FUNC_41_10_FINAL_CONTRASTE_FULL_V41.20C -->
+  <!-- ✅ CFC_FUNC_41_11_COLOR_FIX_FINAL_V41.21C -->
   <link rel="stylesheet" href="../css/premium.css?v=20251107" />
   <link rel="stylesheet" href="../css/bitacora.css?v=20251107c" />
 
   <style>
-    /* 🎨 Ajustes adaptativos globales */
+    /* 🎨 BASE GLOBAL */
     body.light-mode {
       background: #ffffff !important;
-      color: #111 !important;
+      color: #111111 !important;
     }
     body.dark-mode {
-      background: #000 !important;
-      color: #e0e0e0 !important;
+      background: #000000 !important;
+      color: #f5f5f5 !important;
     }
 
-    p, label, select, option, input, textarea, button, h3 {
-      transition: color 0.3s ease, background 0.3s ease;
+    p, label, select, option, input, textarea, button, h2, h3, span {
+      transition: color 0.3s ease, background 0.3s ease, border 0.3s ease;
     }
 
+    /* 🌞 Modo claro */
     body.light-mode p,
     body.light-mode label,
     body.light-mode select,
     body.light-mode option,
-    body.light-mode h3 {
+    body.light-mode input,
+    body.light-mode textarea,
+    body.light-mode h2,
+    body.light-mode h3,
+    body.light-mode span {
       color: #111 !important;
     }
+
+    /* 🌙 Modo oscuro */
     body.dark-mode p,
     body.dark-mode label,
     body.dark-mode select,
     body.dark-mode option,
-    body.dark-mode h3 {
+    body.dark-mode input,
+    body.dark-mode textarea,
+    body.dark-mode h2,
+    body.dark-mode h3,
+    body.dark-mode span {
       color: #f5f5f5 !important;
     }
 
     .bitacora-header {
-      color: var(--color-accent, #d4af37);
+      color: #d4af37;
       text-align: center;
       margin-top: 15px;
     }
@@ -64,6 +75,7 @@
       color: #f5f5f5;
     }
 
+    /* ✍️ Área de texto */
     textarea {
       width: 100%;
       height: 100px;
@@ -74,7 +86,7 @@
       transition: background 0.3s ease, color 0.3s ease;
     }
     body.light-mode textarea {
-      background: #fff;
+      background: #ffffff;
       color: #000;
     }
     body.dark-mode textarea {
@@ -82,13 +94,13 @@
       color: #fff;
     }
 
-    /* 🧠 Listado de reflexiones */
+    /* 🧠 Listado */
     #list li {
       margin-top: 12px;
       padding: 10px 14px;
       border-radius: 8px;
       border: 1px solid rgba(255,215,0,0.3);
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
       line-height: 1.5;
     }
     body.light-mode #list li {
@@ -97,7 +109,11 @@
     }
     body.dark-mode #list li {
       background: rgba(40,40,40,0.9);
-      color: #f1f1f1;
+      color: #f5f5f5;
+    }
+    #list li:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 8px rgba(212,175,55,0.4);
     }
 
     .thought-header strong {
@@ -135,7 +151,23 @@
       color: #000;
     }
 
-    /* 🌙 Botón flotante de tema */
+    /* 🎯 Selects e Inputs */
+    select, input[type="date"] {
+      border-radius: 6px;
+      padding: 4px 8px;
+      border: 1px solid rgba(212,175,55,0.4);
+      background: transparent;
+    }
+    body.light-mode select, body.light-mode input[type="date"] {
+      color: #111;
+      background: #fffef8;
+    }
+    body.dark-mode select, body.dark-mode input[type="date"] {
+      color: #f5f5f5;
+      background: #111;
+    }
+
+    /* 🌙 Botón flotante */
     #themeToggle {
       position: fixed;
       top: 18px;
@@ -195,7 +227,7 @@
       </div>
     </div>
 
-    <!-- 🔹 Bloque de filtros -->
+    <!-- 🔹 Filtros -->
     <div class="bitacora-filters" id="filtersBlock">
       <h3 class="filters-title">🔍 Filtros de Búsqueda</h3>
       <div class="filters-group">
@@ -238,7 +270,7 @@
 
   <script src="../js/bitacora.js?v=20251107CFC_FIX4"></script>
 
-  <!-- ✅ Tema sincronizado + botón -->
+  <!-- ✅ Tema sincronizado -->
   <script>
     function aplicarTemaCFC() {
       const tema = localStorage.getItem("CFC_THEME_STATE") || "dark";
@@ -266,6 +298,6 @@
     });
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.20C_CONTRASTE_FULL_WHITE_20251107 -->
+  <!-- 🔒 CFC_LOCK: V41.21C_COLOR_FIX_FINAL_20251107 -->
 </body>
 </html>
