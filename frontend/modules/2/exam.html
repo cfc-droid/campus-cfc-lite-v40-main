@@ -79,6 +79,7 @@
 
   <!-- 🧩 CFC-SYNC QA-CLEANUP V8.6 — Motor unificado -->
   <script src="../../js/exam_v2.js"></script>
+  <script>function guardarResultadoLocal(s,t){try{const e=document.querySelector("h1,h2")?.textContent||"Módulo desconocido",a=JSON.parse(localStorage.getItem("examResults"))||[],n={module:e.replace("Examen — ","").trim(),date:new Date().toLocaleDateString("es-AR"),score:Math.round(s/t*100),status:s/t>=.75?"✅ Aprobado":"❌ Reprobado"};a.some(e=>e.module===n.module&&e.date===n.date)||(a.push(n),localStorage.setItem("examResults",JSON.stringify(a))),console.log("🧩 CFC_SYNC checkpoint:","Resultado guardado localmente",n)}catch(e){console.error("❌ Error al guardar resultado en localStorage:",e)}}const originalAlert=window.alert;window.alert=function(s){try{if(s.includes("Aprobado")||s.includes("Reprobado")){const e=s.match(/(\d+)\/(\d+)/);if(e){const a=parseInt(e[1]),t=parseInt(e[2]);guardarResultadoLocal(a,t)}}}catch(e){console.warn("⚠️ CFC_SYNC: no se pudo interceptar alert:",e)}originalAlert(s)};</script>
 
   <!-- ✅ QA-SYNC V41.10 — Auto-Injector Global -->
   <script src="../../js/auto_injector.js?v=20251102" defer></script>
@@ -102,3 +103,4 @@ echo "🧩 CFC_SYNC checkpoint: Narrador IA activo en examen — P9 completado"
 ========================================================== -->
 </body>
 </html>
+
