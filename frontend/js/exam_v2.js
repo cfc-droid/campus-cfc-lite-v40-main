@@ -1,12 +1,17 @@
 /* ==========================================================
-   ✅ CFC_FUNC_3_6_V12.1_REAL — EXAM V2 con duración, intentos y error
-   Basado en QA-SYNC V9.3 + FIX SAVE avanzado 2025-11-03
+   ✅ CFC_FUNC_3_6_V12.2_REAL — EXAM V2 Final con duración, intentos y error
+   Integración completa QA-SYNC V9.3 + FIX SAVE avanzado 2025-11-03
+   Cristian F. Choqui — Campus CFC Trading LITE V41
 ========================================================== */
 
-console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.1 activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.2 activo", new Date().toLocaleString());
 
-let examStartTime = Date.now(); // ⏱ Marca de inicio del examen
+// ⏱ Marca de inicio del examen
+let examStartTime = Date.now();
 
+/* ==========================================================
+   Envío y evaluación del examen
+========================================================== */
 function enviarExamen() {
   try {
     const preguntas = document.querySelectorAll("fieldset");
@@ -22,7 +27,6 @@ function enviarExamen() {
         if (seleccionada && seleccionada.value === correcta) {
           correctas++;
         } else if (seleccionada && seleccionada.value !== correcta) {
-          // Guarda texto de la pregunta errada
           const textoPregunta = pregunta.querySelector("legend")?.textContent.trim() || "Pregunta desconocida";
           errores.push(textoPregunta);
         }
@@ -44,26 +48,24 @@ function enviarExamen() {
       errores,
       duracionSegundos,
       timestamp: new Date().toISOString(),
-      // ✅ Compatibilidad retro con progress_v2.js
-      passed: aprobado, // este campo es leído por progress_v2.js
+      // ✅ Compatibilidad con progress_v2.js
+      passed: aprobado
     };
 
-    localStorage.setItem("examResult", JSON.stringify(resultado));
-
-    // 🧩 Guardado avanzado local con intentos + duración
+    // 🧩 Guardado avanzado local
     guardarResultadoLocal(correctas, total, errores, duracionSegundos);
 
-    // ✅ Emisión global (para progress_v2.js)
+    // ✅ Emisión global para progress_v2.js
     const evento = new CustomEvent("examCompleted", { detail: resultado });
     window.dispatchEvent(evento);
 
+    // Mensaje al usuario
     const mensaje = aprobado
       ? `🎯 ¡Aprobado! Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`
       : `❌ No aprobado. Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`;
-
     alert(mensaje);
 
-    // 🔊 Sonido integrado
+    // 🔊 Sonido
     const successSound = new Audio("../../sounds/success.wav");
     const errorSound = new Audio("../../sounds/error.wav");
     const snd = aprobado ? successSound : errorSound;
@@ -82,11 +84,11 @@ function enviarExamen() {
 }
 
 /* ==========================================================
-   ✅ CFC_FUNC_3_6_V12.1_REAL — Registro completo avanzado
+   Registro avanzado en localStorage
 ========================================================== */
 function guardarResultadoLocal(score, total, errores, duracionSegundos) {
   try {
-    const moduleTitle = document.querySelector("h1,h2")?.textContent || "Módulo desconocido";
+    const moduleTitle = document.querySelector("h1,h2")?.textContent.trim() || "Módulo desconocido";
     const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
 
     let registro = examResults.find(r => r.module === moduleTitle);
@@ -100,9 +102,12 @@ function guardarResultadoLocal(score, total, errores, duracionSegundos) {
     registro.time = new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
     registro.score = Math.round((score / total) * 100);
     registro.status = (score / total) >= 0.75 ? "✅ Aprobado" : "❌ Reprobado";
-    registro.duration = duracionSegundos ? `${(duracionSegundos / 60).toFixed(1)} min` : "-";
+    registro.duration = `${(duracionSegundos / 60).toFixed(1)} min`;
 
+    // Guarda primer error solo si hay al menos uno y nota = 75 %
     if (registro.score === 75 && errores?.length) {
+      registro.error = errores[0];
+    } else if (errores?.length) {
       registro.error = errores[0];
     } else {
       delete registro.error;
@@ -129,4 +134,4 @@ try {
   console.warn("🧩 CFC_SYNC FIX: control preventivo aplicado.", err);
 }
 
-console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.1 validado", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.2 validado", new Date().toLocaleString());
