@@ -1,11 +1,12 @@
 /* =========================================================
-   ✅ CFC_FUNC_5_1C_V41_REAL_20251102 — Modo claro/oscuro para capítulos
+   ✅ CFC_FUNC_5_2_V41_FINAL_20251105 — Sistema unificado de tema global (dark/light)
    📄 Archivo: /frontend/js/theme_chapter.js
-   🔒 CFC-SYNC V8.3 | QA-SYNC V41.6 (Observer + Retry + Sync localStorage)
+   🔒 CFC-SYNC V8.5 | QA-SYNC V41.7
    ========================================================= */
 
 (function () {
   const CFC_ID = "theme-toggle";
+  const THEME_KEY = "CFC_THEME_STATE";
   const CFC_STYLE = {
     position: "fixed",
     top: "18px",
@@ -20,27 +21,39 @@
     transition: "all 0.3s ease",
     border: "2px solid var(--color-accent, #ffd700)",
     boxShadow: "0 0 10px rgba(255,215,0,0.4)",
+    backdropFilter: "blur(8px)",
   };
 
-  // 🧩 Aplicar tema
+  /* ---------------------------------------------------------
+     🧭 Aplicar tema global
+     --------------------------------------------------------- */
   function applyTheme(theme, toggle) {
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("CFC_THEME_STATE", theme);
+    localStorage.setItem(THEME_KEY, theme);
 
-    if (!toggle) return; // seguridad si aún no existe el botón
+    // Clases globales para compatibilidad con botones locales
+    document.body.classList.toggle("light-mode", theme === "light");
+    document.body.classList.toggle("dark-mode", theme === "dark");
 
-    if (theme === "dark") {
-      toggle.textContent = "☀️";
-      toggle.style.background = "var(--color-accent, #ffd700)";
-      toggle.style.color = "#000";
-    } else {
-      toggle.textContent = "🌙";
-      toggle.style.background = "#111";
-      toggle.style.color = "var(--color-accent, #ffd700)";
+    // Actualizar botón
+    if (toggle) {
+      if (theme === "dark") {
+        toggle.textContent = "🌙";
+        toggle.style.background = "rgba(255,215,0,0.15)";
+        toggle.style.color = "#FFD700";
+      } else {
+        toggle.textContent = "🌞";
+        toggle.style.background = "#FFD700";
+        toggle.style.color = "#000";
+      }
     }
+
+    console.log(`🎨 CFC_THEME_APPLIED → ${theme}`);
   }
 
-  // 🪶 Crear botón si no existe
+  /* ---------------------------------------------------------
+     🪶 Crear botón si no existe
+     --------------------------------------------------------- */
   function injectButton() {
     if (document.getElementById(CFC_ID)) return;
 
@@ -50,31 +63,25 @@
     Object.assign(toggle.style, CFC_STYLE);
     document.body.appendChild(toggle);
 
-    // Leer tema actual
-    let currentTheme = localStorage.getItem("CFC_THEME_STATE") || "dark";
+    let currentTheme = localStorage.getItem(THEME_KEY) || "dark";
     applyTheme(currentTheme, toggle);
 
-    // Evento de clic
     toggle.addEventListener("click", () => {
       currentTheme = currentTheme === "dark" ? "light" : "dark";
       applyTheme(currentTheme, toggle);
-      console.log("🎨 CFC_THEME_SWITCH — nuevo tema:", currentTheme);
     });
 
-    // Indicador visual rápido
-    toggle.style.outline = "3px solid lime";
-    setTimeout(() => (toggle.style.outline = ""), 800);
-
-    console.log("✅ CFC_THEME_ACTIVE — botón insertado y tema actual:", currentTheme);
+    console.log("✅ CFC_THEME_BUTTON activo:", currentTheme);
   }
 
-  // 🕐 Reintento hasta que body exista
+  /* ---------------------------------------------------------
+     🕐 Inicialización segura (reintento + observer)
+     --------------------------------------------------------- */
   function ensureBodyLoaded() {
     if (document.body) injectButton();
-    else setTimeout(ensureBodyLoaded, 150);
+    else setTimeout(ensureBodyLoaded, 120);
   }
 
-  // 🧩 Doble seguridad (reintento + observador)
   ensureBodyLoaded();
   const observer = new MutationObserver(() => {
     if (!document.getElementById(CFC_ID) && document.body) injectButton();
@@ -82,8 +89,8 @@
   observer.observe(document.documentElement, { childList: true, subtree: true });
 
   // Aplicar el tema antes del render
-  const preTheme = localStorage.getItem("CFC_THEME_STATE") || "dark";
-  document.documentElement.setAttribute("data-theme", preTheme);
+  const preTheme = localStorage.getItem(THEME_KEY) || "dark";
+  applyTheme(preTheme);
 
   console.log("🧩 CFC_SYNC checkpoint:", "theme_chapter.js activo en", window.location.pathname);
 })();
