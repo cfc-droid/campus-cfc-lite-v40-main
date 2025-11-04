@@ -1,35 +1,35 @@
 /* ==========================================================
-   ✅ CFC_FUNC_3_6_V12.2_REAL — EXAM V2 Final con duración, intentos y error
-   Integración completa QA-SYNC V9.3 + FIX SAVE avanzado 2025-11-03
-   Cristian F. Choqui — Campus CFC Trading LITE V41
+   ✅ CFC_FUNC_3_7_V12.3_REAL — EXAM V2 Final con detalle de error
+   Guarda pregunta + respuesta fallada + duración + intentos
+   Integración QA-SYNC V9.4 — 2025-11-03
 ========================================================== */
 
-console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.2 activo", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint: exam_v2.js — QA-SYNC V12.3 activo", new Date().toLocaleString());
 
-// ⏱ Marca de inicio del examen
-let examStartTime = Date.now();
+let examStartTime = Date.now(); // ⏱ Inicio del examen
 
-/* ==========================================================
-   Envío y evaluación del examen
-========================================================== */
 function enviarExamen() {
   try {
     const preguntas = document.querySelectorAll("fieldset");
     let correctas = 0;
     let errores = [];
 
-    preguntas.forEach((pregunta) => {
+    preguntas.forEach((pregunta, index) => {
       const seleccionada = pregunta.querySelector("input[type='radio']:checked");
       const comentario = pregunta.innerHTML.match(/<!-- Correcta:\s*([A-D]) -->/);
+      const correcta = comentario ? comentario[1] : null;
 
-      if (comentario) {
-        const correcta = comentario[1];
-        if (seleccionada && seleccionada.value === correcta) {
+      if (seleccionada) {
+        if (seleccionada.value === correcta) {
           correctas++;
-        } else if (seleccionada && seleccionada.value !== correcta) {
-          const textoPregunta = pregunta.querySelector("legend")?.textContent.trim() || "Pregunta desconocida";
-          errores.push(textoPregunta);
+        } else {
+          const textoPregunta = pregunta.querySelector("legend")?.textContent.trim() || `Pregunta ${index + 1}`;
+          const textoRespuesta = seleccionada.parentElement.textContent.trim();
+          errores.push(`${textoPregunta}\n❌ Respuesta marcada: ${textoRespuesta}`);
         }
+      } else if (correcta) {
+        const textoPregunta = pregunta.querySelector("legend")?.textContent.trim() || `Pregunta ${index + 1}`;
+        errores.push(`${textoPregunta}\n⚠️ Sin respuesta seleccionada.`);
       }
     });
 
@@ -48,24 +48,21 @@ function enviarExamen() {
       errores,
       duracionSegundos,
       timestamp: new Date().toISOString(),
-      // ✅ Compatibilidad con progress_v2.js
       passed: aprobado
     };
 
-    // 🧩 Guardado avanzado local
+    localStorage.setItem("examResult", JSON.stringify(resultado));
     guardarResultadoLocal(correctas, total, errores, duracionSegundos);
 
-    // ✅ Emisión global para progress_v2.js
     const evento = new CustomEvent("examCompleted", { detail: resultado });
     window.dispatchEvent(evento);
 
-    // Mensaje al usuario
     const mensaje = aprobado
       ? `🎯 ¡Aprobado! Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`
       : `❌ No aprobado. Obtuviste ${correctas}/${total} (${porcentaje.toFixed(0)}%).`;
+
     alert(mensaje);
 
-    // 🔊 Sonido
     const successSound = new Audio("../../sounds/success.wav");
     const errorSound = new Audio("../../sounds/error.wav");
     const snd = aprobado ? successSound : errorSound;
@@ -84,7 +81,7 @@ function enviarExamen() {
 }
 
 /* ==========================================================
-   Registro avanzado en localStorage
+   Guardado avanzado local con errores detallados
 ========================================================== */
 function guardarResultadoLocal(score, total, errores, duracionSegundos) {
   try {
@@ -104,13 +101,10 @@ function guardarResultadoLocal(score, total, errores, duracionSegundos) {
     registro.status = (score / total) >= 0.75 ? "✅ Aprobado" : "❌ Reprobado";
     registro.duration = `${(duracionSegundos / 60).toFixed(1)} min`;
 
-    // Guarda primer error solo si hay al menos uno y nota = 75 %
-    if (registro.score === 75 && errores?.length) {
-      registro.error = errores[0];
-    } else if (errores?.length) {
-      registro.error = errores[0];
+    if (errores?.length) {
+      registro.error = errores.join(" | "); // 🔹 Guarda todas las preguntas falladas
     } else {
-      delete registro.error;
+      registro.error = "-";
     }
 
     localStorage.setItem("examResults", JSON.stringify(examResults));
@@ -134,4 +128,4 @@ try {
   console.warn("🧩 CFC_SYNC FIX: control preventivo aplicado.", err);
 }
 
-console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.2 validado", new Date().toLocaleString());
+console.log("🧩 CFC_SYNC checkpoint FINAL — QA-SYNC V12.3 validado", new Date().toLocaleString());
