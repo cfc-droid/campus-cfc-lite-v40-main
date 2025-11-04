@@ -90,7 +90,7 @@
         module: moduleTitle.replace("Examen — ", "").trim(),
         date: new Date().toLocaleDateString("es-AR"),
         score: Math.round((score / total) * 100),
-        status: score / total >= 0.7 ? "✅ Aprobado" : "❌ Reprobado"
+        status: score / total >= 0.75 ? "✅ Aprobado" : "❌ Reprobado"
       };
       examResults.push(newResult);
       localStorage.setItem("examResults", JSON.stringify(examResults));
@@ -143,4 +143,5 @@ echo "🧩 CFC_SYNC checkpoint: Narrador IA activo en examen — P9 completado"
 ========================================================== -->
 </body>
 </html>
+
 
