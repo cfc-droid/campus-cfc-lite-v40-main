@@ -1,0 +1,127 @@
+/* ==========================================================
+   ✅ CFC_FUNC_41_3CSS_V41.3_REAL — Estilos Bitácora Mental PLUS
+   ========================================================== */
+
+body {
+  background: radial-gradient(circle at center, #0a0a0a, #000);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  padding: 20px;
+}
+
+.bitacora-header {
+  text-align: center;
+  color: #FFD700;
+  margin-bottom: 15px;
+}
+
+.bitacora-container {
+  max-width: 720px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+}
+
+#toneSelect {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 10px;
+}
+
+#iconSelector {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.icon-option {
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: transform 0.2s;
+}
+
+.icon-option.selected {
+  transform: scale(1.3);
+  filter: drop-shadow(0 0 6px #FFD700);
+}
+
+#thoughts {
+  width: 100%;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-main, .btn-secondary, .btn-return {
+  background: #FFD700;
+  color: #000;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-main:hover, .btn-secondary:hover, .btn-return:hover {
+  background: #fff3b0;
+}
+
+.thought-item {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.thought-header {
+  display: flex;
+  justify-content: space-between;
+  color: #FFD700;
+  font-size: 0.9rem;
+}
+
+.thought-text {
+  margin: 8px 0;
+  color: #fff;
+  white-space: pre-wrap;
+}
+
+.thought-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #FFD700;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+  transform: scale(1.2);
+}
+
+.bitacora-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
