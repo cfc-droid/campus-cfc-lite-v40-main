@@ -5,9 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil — Campus CFC LITE</title>
   <link rel="stylesheet" href="../css/premium.css?v=20251105" />
+  <style>
+    /* ==========================================================
+       ✅ CFC_FUNC_12_1_20251104 — Botón flotante global (guía / acción superior)
+       ========================================================== */
+    .btn-global-top {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      z-index: 999;
+      background: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 18px;
+      font-weight: 600;
+      font-family: "Poppins", sans-serif;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,215,0,0.4);
+      transition: all 0.3s ease;
+    }
+    .btn-global-top:hover {
+      background: #fff;
+      color: #000;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255,215,0,0.7);
+    }
+
+    @media (max-width: 768px) {
+      .btn-global-top {
+        top: 15px;
+        right: 15px;
+        padding: 8px 14px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <!-- ✅ BOTÓN GLOBAL UNIVERSAL -->
+  <button class="btn-global-top" onclick="openGlobalGuide()">✨ Guía</button>
+
   <header>
     <h2>👤 Perfil del Usuario</h2>
   </header>
@@ -28,13 +67,12 @@
     </section>
 
     <!-- ✅ CFC_FUNC_4_3_20251107_FIX4 — Acceso directo a Bitácora Mental actualizada -->
-<div class="bitacora-access" style="margin-top:30px;">
-  <button class="btn-bitacora" onclick="window.open('../pages/bitacora_v416.html?v=20251107CFC_FIX4','_blank')">
-    🧠 Bitácora Mental del Trader
-  </button>
-  <p style="font-size:0.85rem;color:#aaa;margin-top:6px;">Registrá tus reflexiones y aprendizajes del día.</p>
-</div>
-
+    <div class="bitacora-access" style="margin-top:30px;">
+      <button class="btn-bitacora" onclick="window.open('../pages/bitacora_v416.html?v=20251107CFC_FIX4','_blank')">
+        🧠 Bitácora Mental del Trader
+      </button>
+      <p style="font-size:0.85rem;color:#aaa;margin-top:6px;">Registrá tus reflexiones y aprendizajes del día.</p>
+    </div>
 
     <!-- ✅ CFC_FUNC_4_5_20251101_NAVBACK — Retorno al Índice -->
     <div class="return-container" style="margin-top:25px;">
@@ -76,10 +114,8 @@
         const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
         if (!examResults.length) return;
 
-        // Ordenar por fecha más reciente
         const ultimo = examResults.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
 
-        // Crear contenedor visual
         const contenedor = document.querySelector("main") || document.body;
         const bloque = document.createElement("div");
         bloque.className = "ultimo-examen";
@@ -107,6 +143,15 @@
     }
 
     document.addEventListener("DOMContentLoaded", mostrarUltimoExamen);
+
+    /* ==========================================================
+       ✅ CFC_FUNC_12_2_20251104 — Acción del botón superior
+       ========================================================== */
+    function openGlobalGuide() {
+      alert("🌟 Próximamente: Guía general o menú rápido CFC.");
+      // En futuras pantallas, este botón puede abrir la guía.js o el menú universal.
+      console.log("🧭 CFC_SYNC checkpoint: botón superior ejecutado correctamente");
+    }
   </script>
 
   <!-- 🔒 CFC_LOCK: V41.12-profile_emotion_examLink-20251106-SYNC-STATS -->
