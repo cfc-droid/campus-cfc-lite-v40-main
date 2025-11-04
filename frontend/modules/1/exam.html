@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <title>Examen — Módulo 1 — Introducción a la Psicología del Trader</title>
 
-  <!-- ✅ CFC_FUNC_1_01_FIXRUTAS_2025-10-30 — rutas relativas corregidas -->
+  <!-- ✅ CFC_FUNC_1_01_FIXRUTAS_2025-10-30 -->
   <link rel="stylesheet" href="../../css/premium.css">
   <link rel="stylesheet" href="../../css/exam-extra.css">
-
-  <!-- ✅ Estilos necesarios para modo claro/oscuro -->
   <link rel="stylesheet" href="../../css/variables.css?v=20251102" />
   <link rel="stylesheet" href="../../css/premium.min.css?v=20251102" />
 
@@ -73,82 +71,20 @@
   <!-- 🔙 Botón volver -->
   <script src="../../js/backButton.js"></script>
 
-<!-- ✅ CFC_SYNC QA-SYNC V9.8C — progress global -->
-  <script src="../../js/progress_v2.js?v=9.8C" defer>
-  </script>  
-  
-<!-- 🧩 CFC-SYNC QA-CLEANUP V8.6 — Motor unificado -->
+  <!-- ✅ Progress global -->
+  <script src="../../js/progress_v2.js?v=9.8C" defer></script>
+  <!-- ✅ Motor examen unificado -->
   <script src="../../js/exam_v2.js"></script>
-
-<!-- ✅ CFC_FUNC_3_3_FIX_V11.3 — Registro local de resultados (criterio ≥75 %) -->
-<script>
-  function guardarResultadoLocal(score, total) {
-    try {
-      const moduleTitle = document.querySelector("h1,h2")?.textContent || "Módulo desconocido";
-      const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
-      const newResult = {
-        module: moduleTitle.replace("Examen — ", "").trim(),
-        date: new Date().toLocaleDateString("es-AR"),
-        score: Math.round((score / total) * 100),
-        status: (score / total) >= 0.75 ? "✅ Aprobado" : "❌ Reprobado"
-      };
-
-      // Evita duplicados del mismo día/módulo
-      const yaExiste = examResults.some(r => r.module === newResult.module && r.date === newResult.date);
-      if (!yaExiste) {
-        examResults.push(newResult);
-        localStorage.setItem("examResults", JSON.stringify(examResults));
-      }
-
-      console.log("🧩 CFC_SYNC checkpoint:", "Resultado guardado localmente", newResult);
-    } catch (err) {
-      console.error("❌ Error al guardar resultado en localStorage:", err);
-    }
-  }
-
-  // 🔹 Interceptar el alert del examen_v2.js
-  const originalAlert = window.alert;
-  window.alert = function (msg) {
-    try {
-      if (msg.includes("Aprobado") || msg.includes("Reprobado")) {
-        const regex = /(\d+)\/(\d+)/;
-        const match = msg.match(regex);
-        if (match) {
-          const correctas = parseInt(match[1]);
-          const total = parseInt(match[2]);
-          guardarResultadoLocal(correctas, total);
-        }
-      }
-    } catch (e) {
-      console.warn("⚠️ CFC_SYNC: no se pudo interceptar alert:", e);
-    }
-    originalAlert(msg);
-  };
-</script>  
-  
-<!-- ✅ QA-SYNC V41.10 — Auto-Injector Global -->
-  <script src="../../js/auto_injector.js?v=20251102" defer>
-</script> 
-
-  <!-- ✅ CFC_FUNC_5_1C_V41_REAL — Modo claro/oscuro -->
+  <!-- ✅ Auto-injector global -->
+  <script src="../../js/auto_injector.js?v=20251102" defer></script>
+  <!-- ✅ Modo claro/oscuro -->
   <script src="../../js/theme_chapter.js?v=20251102" defer></script>
+  <!-- ✅ Tracker actividad -->
+  <script src="../../js/activity_tracker.js?v=20251106" defer></script>
 
-<!-- ✅ CFC_FUNC_8_3_FIX_V1.6_REALTIME_RESET_20251106 -->
-<script src="../../js/activity_tracker.js?v=20251106" defer></script>
-
-<!-- ✅ CFC_FUNC_10_1_20251105 — Narrador IA Integrado -->
-<button class="tts-btn-fixed" title="Escuchar este examen 🎧">🎧</button>
-
-<!-- Archivos del narrador -->
-<link rel="stylesheet" href="../../css/voiceReader.css?v=20251105">
-<script src="../../js/core/voiceReader.js?v=20251105" defer></script>
-
-<!-- 🔒 CFC-SYNC
-# ✅ CFC_FUNC_10_1_20251105 — CFC-VOICE READER V1 añadido (modo estático)
-echo "🧩 CFC_SYNC checkpoint: Narrador IA activo en examen — P9 completado"
-========================================================== -->
+  <!-- ✅ Narrador IA -->
+  <button class="tts-btn-fixed" title="Escuchar este examen 🎧">🎧</button>
+  <link rel="stylesheet" href="../../css/voiceReader.css?v=20251105">
+  <script src="../../js/core/voiceReader.js?v=20251105" defer></script>
 </body>
 </html>
-
-
-
