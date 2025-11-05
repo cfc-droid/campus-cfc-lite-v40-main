@@ -1,30 +1,30 @@
 /* ==========================================================
-✅ CFC_FUNC_8_3_FIX_V1.7_REALTIME_QA_SAFE_20251106
-Tracker de actividad avanzado + corrección de duplicado por CFC_time_temp residual
-========================================================== */
+   ✅ CFC_ACTIVITY_V10.5_FULLSYNC_REAL — 2025-11-06
+   Integración total con progress_v2.js y stats_v1.js
+   ----------------------------------------------------------
+   • Acumula tiempo en capítulos, perfil y exámenes
+   • Guarda minutos activos en studyStats.minutesActive
+   • Reinicio total efectivo con localStorage.clear()
+   • Logs QA visibles + indicador visual real
+   ========================================================== */
 
 (function () {
-  let startTime = Date.now();
   const today = new Date().toISOString().split("T")[0];
+  let startTime = Date.now();
 
-  // 🧼 Limpieza inicial para evitar arrastre de tiempo fantasma
+  /* 🧼 Limpieza inicial (por si quedó tiempo fantasma) */
   localStorage.removeItem("CFC_time_temp");
 
-  // 🧩 Cargar valores previos o inicializar
+  /* 🧩 Cargar valores previos */
   let totalSeconds = parseFloat(localStorage.getItem("CFC_time") || 0);
   let lastDate = localStorage.getItem("CFC_lastDate") || today;
   let consecutiveDays = parseInt(localStorage.getItem("CFC_days") || 1);
-  let totalDays = parseInt(localStorage.getItem("CFC_totalDays") || 0);
+  let totalDays = parseInt(localStorage.getItem("CFC_totalDays") || 1);
 
-  if (!localStorage.getItem("CFC_lastDate")) {
-    localStorage.setItem("CFC_lastDate", today);
-    totalDays = 1;
-  }
-
+  /* 🗓️ Control de cambio de día */
   if (today !== lastDate) {
-    const diffDays =
-      (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
-    consecutiveDays = diffDays === 1 ? consecutiveDays + 1 : 1;
+    const diff = (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
+    consecutiveDays = diff === 1 ? consecutiveDays + 1 : 1;
     totalDays += 1;
     localStorage.setItem("CFC_lastDate", today);
   }
@@ -32,10 +32,10 @@ Tracker de actividad avanzado + corrección de duplicado por CFC_time_temp resid
   localStorage.setItem("CFC_days", consecutiveDays);
   localStorage.setItem("CFC_totalDays", totalDays);
 
-  // 🕓 Indicador visual
+  /* =====================================================
+     BLOQUE 1 — Indicador visual
+     ===================================================== */
   const indicator = document.createElement("div");
-  indicator.id = "sessionIndicator";
-
   Object.assign(indicator.style, {
     position: "fixed",
     bottom: "10px",
@@ -48,12 +48,10 @@ Tracker de actividad avanzado + corrección de duplicado por CFC_time_temp resid
     fontSize: "0.9rem",
     fontFamily: "Poppins, sans-serif",
     zIndex: "9999",
-    backdropFilter: "blur(6px)",
+    backdropFilter: "blur(6px)"
   });
-
   document.body.appendChild(indicator);
 
-  // 🧮 Actualización visual
   function updateVisualTime() {
     const elapsed = (Date.now() - startTime) / 1000;
     const minutes = Math.floor(elapsed / 60);
@@ -62,52 +60,67 @@ Tracker de actividad avanzado + corrección de duplicado por CFC_time_temp resid
       .toString()
       .padStart(2, "0")} s`;
   }
-
   setInterval(updateVisualTime, 1000);
 
-  // 💾 Sincronización cada 10 s
+  /* =====================================================
+     BLOQUE 2 — Sincronización cada 10 s
+     ===================================================== */
   setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000;
-    const newTotal = totalSeconds + elapsed;
-    totalSeconds = newTotal;
-    localStorage.setItem("CFC_time", newTotal);
-    localStorage.removeItem("CFC_time_temp");
-
-    // 🧠 Reset de base temporal
     startTime = Date.now();
+    totalSeconds += elapsed;
+    localStorage.setItem("CFC_time", totalSeconds);
 
-    // 🔍 Log de QA (visible solo en consola)
+    /* 🧠 Guardar también en estructura unificada studyStats */
+    const study = JSON.parse(localStorage.getItem("studyStats") || "{}");
+    const prev = parseInt(study.minutesActive || 0);
+    study.minutesActive = prev + Math.floor(elapsed / 60);
+    study.sessions = totalDays;
+    localStorage.setItem("studyStats", JSON.stringify(study));
+
     console.log(
-      `[${new Date().toLocaleTimeString()}] +${(elapsed / 60).toFixed(
-        1
-      )} min → Total ${(newTotal / 60).toFixed(1)} min`
+      `🧩 CFC_SYNC → +${(elapsed / 60).toFixed(1)} min | Total ${(totalSeconds / 60).toFixed(1)} min`
     );
   }, 10000);
 
-  // 🕐 Guardado al cerrar
+  /* =====================================================
+     BLOQUE 3 — Guardar al cerrar pestaña
+     ===================================================== */
   window.addEventListener("beforeunload", () => {
-    const elapsedSeconds = (Date.now() - startTime) / 1000;
-    const newTotal = totalSeconds + elapsedSeconds;
-    localStorage.setItem("CFC_time", newTotal);
-    localStorage.removeItem("CFC_time_temp");
+    const elapsed = (Date.now() - startTime) / 1000;
+    totalSeconds += elapsed;
+    localStorage.setItem("CFC_time", totalSeconds);
+
+    const study = JSON.parse(localStorage.getItem("studyStats") || "{}");
+    const prev = parseInt(study.minutesActive || 0);
+    study.minutesActive = prev + Math.floor(elapsed / 60);
+    study.sessions = totalDays;
+    localStorage.setItem("studyStats", JSON.stringify(study));
 
     console.log(
-      `🕒 CFC-ACTIVITY — Sesión guardada (${(elapsedSeconds / 60).toFixed(
-        1
-      )} min) | Total ${(newTotal / 3600).toFixed(2)} h`
+      `🕒 CFC-ACTIVITY — Guardado final ${(elapsed / 60).toFixed(1)} min | Total ${(totalSeconds / 3600).toFixed(2)} h`
     );
   });
 
+  /* =====================================================
+     BLOQUE 4 — Detección de reinicio total
+     ===================================================== */
+  window.addEventListener("storage", (e) => {
+    if (e.key === null || e.key === "progressData") {
+      const study = { minutesActive: 0, sessions: 0 };
+      localStorage.setItem("studyStats", JSON.stringify(study));
+      localStorage.setItem("CFC_time", 0);
+      console.log("🧹 CFC_SYNC → Reinicio total detectado: tiempo puesto en 0.");
+    }
+  });
+
   console.log(
-    `✅ CFC-ACTIVITY FIX V1.7 — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Tiempo acumulado:${(
+    `✅ CFC-ACTIVITY_V10.5_FULLSYNC_REAL — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Total:${(
       totalSeconds / 3600
     ).toFixed(2)} h`
   );
 })();
 
 /* ==========================================================
-🔒 CFC-SYNC
-# ✅ CFC_FUNC_8_3_FIX_V1.7_REALTIME_QA_SAFE_20251106
-— Limpieza inicial + QA log visible
-echo "🧩 CFC_SYNC checkpoint: ACTIVITY V1.7 REALTIME QA SAFE OK"
+🔒 CFC_LOCK: V10.5-activity_fullsync-20251106
 ========================================================== */
