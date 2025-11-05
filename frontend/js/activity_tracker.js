@@ -1,9 +1,10 @@
 /* ==========================================================
-   ✅ CFC_ACTIVITY_V10.8_FULLSYNC_REAL — 2025-11-06
+   ✅ CFC_ACTIVITY_V10.8_REAL_FIX — 2025-11-06
    ----------------------------------------------------------
    • Reinicio duro de tiempo (RAM + localStorage)
-   • Sincronizado con progress_v2.js V10.7 REAL
    • Evita reescrituras fantasma tras reinicio
+   • Sincronizado con progress_v2.js V10.7 REAL
+   • Resetea contador visual al instante (sin recargar)
    ========================================================== */
 
 (function () {
@@ -68,7 +69,7 @@
   /* =====================================================
      BLOQUE 2 — Sincronización cada 10 s
      ===================================================== */
-  setInterval(() => {
+  const syncInterval = setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000;
     startTime = Date.now();
     totalSeconds += elapsed;
@@ -105,23 +106,40 @@
   });
 
   /* =====================================================
-     BLOQUE 4 — Escucha de reinicio explícito
+     BLOQUE 4 — Escucha de reinicio explícito (RAM + UI)
      ===================================================== */
   window.addEventListener("storage", (e) => {
     if (e.key === "progressData" || e.key === null) {
-      console.log("🧹 CFC_ACTIVITY → Reinicio detectado vía storage, limpiando RAM...");
+      console.log("🧹 CFC_ACTIVITY → Reinicio detectado vía storage, limpiando RAM + UI...");
       totalSeconds = 0;
       startTime = Date.now();
+      clearInterval(syncInterval);
+
       localStorage.setItem("CFC_time", 0);
       localStorage.setItem("studyStats", JSON.stringify({ minutesActive: 0, sessions: 0 }));
+
+      // 🧭 Reiniciar visual al instante
+      indicator.textContent = "🕒 Sesión activa: 0 min 00 s";
+
+      // 🧱 Reiniciar temporizador de sync
+      setTimeout(() => {
+        console.log("♻️ CFC_ACTIVITY → Sincronización reactivada tras reinicio global.");
+        startTime = Date.now();
+        setInterval(() => {
+          const elapsed = (Date.now() - startTime) / 1000;
+          startTime = Date.now();
+          totalSeconds += elapsed;
+          localStorage.setItem("CFC_time", totalSeconds);
+        }, 10000);
+      }, 1500);
     }
   });
 
   console.log(
-    `✅ CFC_ACTIVITY_V10.8_FULLSYNC_REAL — Día:${today} | Consec:${consecutiveDays} | Total ${(totalSeconds / 3600).toFixed(2)} h`
+    `✅ CFC_ACTIVITY_V10.8_REAL_FIX — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Tiempo ${(totalSeconds / 3600).toFixed(2)} h`
   );
 })();
 
 /* ==========================================================
-🔒 CFC_LOCK: V10.8-activity_fullsync_real-20251106
+🔒 CFC_LOCK: V10.8-REAL_FIX-activity_persistente-20251106
 ========================================================== */
