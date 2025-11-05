@@ -1,10 +1,7 @@
 /* ==========================================================
-   ✅ CFC-STATS V10.1 REAL — Sincronización total con progress_v2.js V9.9
-   ----------------------------------------------------------
-   • Lee datos reales desde studyStats + progressData
-   • Reinicio total efectivo (detecta localStorage vacío)
-   • Porcentaje, horas y días actualizados dinámicamente
-   ========================================================== */
+✅ CFC_FUNC_8_1_FIX_20251106b — Analítica interna con porcentaje visible
+Incluye minutos activos + porcentaje de módulos completados
+========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("btnStats");
@@ -13,91 +10,72 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function openStatsModal() {
-  /* 🧭 Variables base */
-  let modules = 0, hours = 0, minutes = 0, daysConsec = 0, daysTotal = 0;
+  // 🧩 Leer progreso general
+  let modules = 0, exams = 0, hours = 0, minutes = 0, days = 1, totalDays = 1;
 
-  /* =====================================================
-     BLOQUE 1 — Detectar reinicio total
-     ===================================================== */
-  if (!localStorage.length) {
-    console.log("🧹 CFC-STATS → Reinicio total detectado: mostrando valores 0.");
-    showStatsModal(0, 0, 0, 0, 0);
-    return;
-  }
-
-  /* =====================================================
-     BLOQUE 2 — Leer progreso de módulos
-     ===================================================== */
   try {
     const progressData = JSON.parse(localStorage.getItem("progressData") || "{}");
     if (progressData.completed && Array.isArray(progressData.completed)) {
       modules = progressData.completed.length;
     }
   } catch (err) {
-    console.warn("⚠️ CFC-STATS → Error leyendo progressData:", err);
+    console.warn("⚠️ CFC-STATS: No se pudo leer progressData:", err);
   }
 
-  /* =====================================================
-     BLOQUE 3 — Leer estadísticas de estudio reales
-     ===================================================== */
-  try {
-    const study = JSON.parse(localStorage.getItem("studyStats") || "{}");
-    if (study.minutesActive) {
-      minutes = parseInt(study.minutesActive);
-      hours = minutes / 60;
-    }
-    if (study.sessions) {
-      daysConsec = study.sessions;     // sesiones = días consecutivos de estudio aprox
-      daysTotal = study.sessions;      // mismo valor inicial hasta implementar tracking diario real
-    }
-  } catch (err) {
-    console.warn("⚠️ CFC-STATS → Error leyendo studyStats:", err);
+  // 🧩 Variables locales
+  const legacyModules = parseInt(localStorage.getItem("CFC_modulesCompleted") || 0);
+  const legacyExams = parseInt(localStorage.getItem("CFC_examsPassed") || 0);
+  const legacyTime = parseFloat(localStorage.getItem("CFC_time") || localStorage.getItem("CFC_time_temp") || 0);
+  const legacyDays = parseInt(localStorage.getItem("CFC_days") || 1);
+  const legacyTotalDays = parseInt(localStorage.getItem("CFC_totalDays") || 1);
+
+  modules = Math.max(modules, legacyModules);
+  exams = legacyExams;
+  const tempTime = parseFloat(localStorage.getItem("CFC_time_temp") || 0);
+  const totalTime = Math.max(legacyTime, tempTime);
+  hours = totalTime / 3600;
+  minutes = totalTime / 60;
+  days = legacyDays;
+  totalDays = legacyTotalDays;
+
+  // 🧩 Sincronización examen aprobado
+  const examResult = localStorage.getItem("examResult");
+  if (examResult) {
+    try {
+      const parsed = JSON.parse(examResult);
+      if (parsed.passed) exams += 1;
+    } catch {}
   }
 
-  /* =====================================================
-     BLOQUE 4 — Calcular porcentaje global
-     ===================================================== */
-  const percentage = Math.min(100, Math.round((modules / 20) * 100));
-
-  /* =====================================================
-     BLOQUE 5 — Mostrar modal
-     ===================================================== */
-  showStatsModal(modules, hours, minutes, daysConsec, daysTotal, percentage);
-}
-
-/* =====================================================
-   FUNCIÓN — Renderizar modal visual
-   ===================================================== */
-function showStatsModal(modules, hours, minutes, daysConsec, daysTotal, percentage = 0) {
+  // 🧼 Eliminar modal previo
   document.querySelector(".stats-modal")?.remove();
 
-  const html = `
-    <div class="stats-modal" style="
-      position:fixed;inset:0;background:rgba(0,0,0,0.85);
-      display:flex;flex-direction:column;justify-content:center;align-items:center;
-      color:#FFD700;font-family:'Poppins',sans-serif;z-index:99999;
-      padding:20px;text-align:center;border:2px solid rgba(255,215,0,0.25);
-      backdrop-filter:blur(6px);border-radius:14px;">
-      <h3 style="margin-bottom:14px;">📊 Tu progreso</h3>
+  // 📊 Calcular porcentaje
+  const percentage = Math.round((modules / 20) * 100);
+
+  // 🪶 Crear modal
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
+    <div class="stats-modal">
+      <h3>📊 Tu progreso</h3>
       <p>Módulos completados: <b>${modules}/20</b> (<b>${percentage}%</b>)</p>
       <p>Horas activas: <b>${hours.toFixed(1)} h</b> (<b>${minutes.toFixed(0)} min</b>)</p>
-      <p>Días consecutivos de estudio: <b>${daysConsec}</b></p>
-      <p>Días totales de estudio: <b>${daysTotal}</b></p>
-      <button id="closeStats" style="
-        margin-top:20px;padding:10px 20px;
-        background:linear-gradient(90deg,#FFD700,#FFEC8B);
-        border:none;border-radius:10px;font-weight:700;color:#000;cursor:pointer;
-        box-shadow:0 0 12px rgba(255,215,0,0.4);">
-        Cerrar
-      </button>
-    </div>`;
+      <p>Días consecutivos de estudio: <b>${days}</b></p>
+      <p>Días totales de estudio: <b>${totalDays}</b></p>
+      <button onclick="document.querySelector('.stats-modal').remove()">Cerrar</button>
+    </div>`
+  );
 
-  document.body.insertAdjacentHTML("beforeend", html);
-  document.getElementById("closeStats").onclick = () => document.querySelector(".stats-modal")?.remove();
-
-  console.log(`🧩 CFC-STATS V10.1 → Mód:${modules}, Horas:${hours.toFixed(1)}, Min:${minutes.toFixed(0)}, DíasC:${daysConsec}, DíasT:${daysTotal}, %:${percentage}`);
+  console.log(
+    `CFC-STATS FIX — Módulos:${modules}, Exámenes:${exams}, Horas:${hours.toFixed(
+      1
+    )}, Min:${minutes.toFixed(0)}, Consecutivos:${days}, Totales:${totalDays}, Porcentaje:${percentage}%`
+  );
 }
 
-/* =====================================================
-   🔒 CFC_LOCK: V10.1-stats_fullsync-20251106
-   ===================================================== */
+/* ==========================================================
+🔒 CFC-SYNC
+# ✅ CFC_FUNC_8_1_FIX_20251106b — Porcentaje + minutos activos visibles
+echo "🧩 CFC_SYNC checkpoint: CFC-STATS FIX V1.2 (porcentaje y minutos activos)"
+========================================================== */
