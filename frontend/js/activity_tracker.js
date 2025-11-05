@@ -1,34 +1,37 @@
 /* ==========================================================
-   ✅ CFC_ACTIVITY_V10.5_FULLSYNC_REAL — 2025-11-06
-   Integración total con progress_v2.js y stats_v1.js
+   ✅ CFC_ACTIVITY_V10.8_FULLSYNC_REAL — 2025-11-06
    ----------------------------------------------------------
-   • Acumula tiempo en capítulos, perfil y exámenes
-   • Guarda minutos activos en studyStats.minutesActive
-   • Reinicio total efectivo con localStorage.clear()
-   • Logs QA visibles + indicador visual real
+   • Reinicio duro de tiempo (RAM + localStorage)
+   • Sincronizado con progress_v2.js V10.7 REAL
+   • Evita reescrituras fantasma tras reinicio
    ========================================================== */
 
 (function () {
   const today = new Date().toISOString().split("T")[0];
   let startTime = Date.now();
+  let totalSeconds = 0;
 
-  /* 🧼 Limpieza inicial (por si quedó tiempo fantasma) */
-  localStorage.removeItem("CFC_time_temp");
+  /* 🧩 Reinicio duro si localStorage está vacío */
+  if (!localStorage.getItem("progressData")) {
+    console.log("🧹 CFC_ACTIVITY → Reinicio duro detectado, reseteando variables internas...");
+    localStorage.setItem("CFC_time", 0);
+    localStorage.setItem("studyStats", JSON.stringify({ minutesActive: 0, sessions: 0 }));
+    totalSeconds = 0;
+  } else {
+    totalSeconds = parseFloat(localStorage.getItem("CFC_time") || 0);
+  }
 
-  /* 🧩 Cargar valores previos */
-  let totalSeconds = parseFloat(localStorage.getItem("CFC_time") || 0);
+  /* 🗓️ Control de cambio de día */
   let lastDate = localStorage.getItem("CFC_lastDate") || today;
   let consecutiveDays = parseInt(localStorage.getItem("CFC_days") || 1);
   let totalDays = parseInt(localStorage.getItem("CFC_totalDays") || 1);
 
-  /* 🗓️ Control de cambio de día */
   if (today !== lastDate) {
     const diff = (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
     consecutiveDays = diff === 1 ? consecutiveDays + 1 : 1;
     totalDays += 1;
     localStorage.setItem("CFC_lastDate", today);
   }
-
   localStorage.setItem("CFC_days", consecutiveDays);
   localStorage.setItem("CFC_totalDays", totalDays);
 
@@ -46,20 +49,20 @@
     border: "1px solid #FFD700",
     borderRadius: "12px",
     fontSize: "0.9rem",
-    fontFamily: "Poppins, sans-serif",
+    fontFamily: "Poppins,sans-serif",
     zIndex: "9999",
     backdropFilter: "blur(6px)"
   });
   document.body.appendChild(indicator);
 
-  function updateVisualTime() {
+  const updateVisualTime = () => {
     const elapsed = (Date.now() - startTime) / 1000;
     const minutes = Math.floor(elapsed / 60);
     const seconds = Math.floor(elapsed % 60);
     indicator.textContent = `🕒 Sesión activa: ${minutes} min ${seconds
       .toString()
       .padStart(2, "0")} s`;
-  }
+  };
   setInterval(updateVisualTime, 1000);
 
   /* =====================================================
@@ -71,7 +74,6 @@
     totalSeconds += elapsed;
     localStorage.setItem("CFC_time", totalSeconds);
 
-    /* 🧠 Guardar también en estructura unificada studyStats */
     const study = JSON.parse(localStorage.getItem("studyStats") || "{}");
     const prev = parseInt(study.minutesActive || 0);
     study.minutesActive = prev + Math.floor(elapsed / 60);
@@ -98,29 +100,28 @@
     localStorage.setItem("studyStats", JSON.stringify(study));
 
     console.log(
-      `🕒 CFC-ACTIVITY — Guardado final ${(elapsed / 60).toFixed(1)} min | Total ${(totalSeconds / 3600).toFixed(2)} h`
+      `🕒 CFC-ACTIVITY → Guardado final ${(elapsed / 60).toFixed(1)} min | Total ${(totalSeconds / 3600).toFixed(2)} h`
     );
   });
 
   /* =====================================================
-     BLOQUE 4 — Detección de reinicio total
+     BLOQUE 4 — Escucha de reinicio explícito
      ===================================================== */
   window.addEventListener("storage", (e) => {
-    if (e.key === null || e.key === "progressData") {
-      const study = { minutesActive: 0, sessions: 0 };
-      localStorage.setItem("studyStats", JSON.stringify(study));
+    if (e.key === "progressData" || e.key === null) {
+      console.log("🧹 CFC_ACTIVITY → Reinicio detectado vía storage, limpiando RAM...");
+      totalSeconds = 0;
+      startTime = Date.now();
       localStorage.setItem("CFC_time", 0);
-      console.log("🧹 CFC_SYNC → Reinicio total detectado: tiempo puesto en 0.");
+      localStorage.setItem("studyStats", JSON.stringify({ minutesActive: 0, sessions: 0 }));
     }
   });
 
   console.log(
-    `✅ CFC-ACTIVITY_V10.5_FULLSYNC_REAL — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Total:${(
-      totalSeconds / 3600
-    ).toFixed(2)} h`
+    `✅ CFC_ACTIVITY_V10.8_FULLSYNC_REAL — Día:${today} | Consec:${consecutiveDays} | Total ${(totalSeconds / 3600).toFixed(2)} h`
   );
 })();
 
 /* ==========================================================
-🔒 CFC_LOCK: V10.5-activity_fullsync-20251106
+🔒 CFC_LOCK: V10.8-activity_fullsync_real-20251106
 ========================================================== */
