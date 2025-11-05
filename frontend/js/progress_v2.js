@@ -1,7 +1,12 @@
 /* ==========================================================
-   ✅ CFC — PROGRESS V2 (SYNC FIX V8.6 + LOCKED V9.4 + OVERLAY + CHAPTER TRANSITION V9.8C)
+   ✅ CFC — PROGRESS V2 (SYNC FIX V9.9 REAL)
+   Integración completa con exam_v2.js — incluye:
+   • Sincronización automática de horas activas
+   • Cálculo y guardado local (studyStats)
+   • Compatibilidad Cloudflare LITE/PREMIUM
    ========================================================== */
-console.log("🧩 CFC_SYNC checkpoint: progress_v2.js — QA-SYNC V9.8C activo", new Date().toLocaleString());
+
+console.log("🧩 CFC_SYNC checkpoint: progress_v2.js — QA-SYNC V9.9 REAL activo", new Date().toLocaleString());
 
 /* =====================================================
    BLOQUE B1 — Gestión persistente
@@ -61,13 +66,13 @@ function updateProgressDisplay() {
   if (el) el.textContent = `${percent}% completado`;
   if (bar) bar.style.width = `${percent}%`;
 
-  // 🔁 NUEVO — Sincronizar con localStorage y cookie global
+  // 🔁 Sincronizar con localStorage y cookie global
   localStorage.setItem("progressPercent", percent);
   document.cookie = `progressPercent=${percent}; path=/; max-age=31536000`;
 }
 
 /* =====================================================
-   BLOQUE B4 — Botón “Continuar último módulo” + Sync examen
+   BLOQUE B4 — Carga inicial y botón Continuar
    ===================================================== */
 window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
@@ -115,6 +120,31 @@ window.addEventListener("examCompleted", (e) => {
   if (passed) markModuleComplete(moduleNumber);
   updateProgressDisplay();
 });
+
+/* =====================================================
+   🕒 CFC_FUNC_5_9D — SINCRONIZAR TIEMPO DE EXAMEN CON HORAS ACTIVAS (V9.9)
+   ===================================================== */
+try {
+  window.addEventListener("examCompleted", (e) => {
+    const { duracionSegundos } = e.detail || {};
+    if (!duracionSegundos) return;
+
+    const raw = localStorage.getItem("studyStats");
+    const stats = raw ? JSON.parse(raw) : { minutesActive: 0, sessions: 0 };
+
+    const minutos = Math.round(duracionSegundos / 60);
+    stats.minutesActive += minutos;
+    stats.sessions += 1;
+
+    localStorage.setItem("studyStats", JSON.stringify(stats));
+    console.log(`🕒 CFC_SYNC → Tiempo acumulado actualizado: +${minutos} min (Total: ${stats.minutesActive} min)`);
+
+    const updateEvent = new CustomEvent("studyTimeUpdated", { detail: stats });
+    window.dispatchEvent(updateEvent);
+  });
+} catch (err) {
+  console.warn("⚠️ CFC_SYNC → Error al sincronizar tiempo de examen con progreso:", err);
+}
 
 /* =====================================================
    BLOQUE B6 — Confeti Dorado
@@ -196,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =====================================================
-   BLOQUE B8 — Overlay Motivacional Dorado (FUNCIONAL)
+   BLOQUE B8 — Overlay Motivacional Dorado
    ===================================================== */
 function showUnlockOverlay(nextModule) {
   try {
@@ -233,12 +263,10 @@ function showUnlockOverlay(nextModule) {
       </button>`;
     document.body.appendChild(overlay);
 
-    // 🔊 Sonido dorado
     const bell = new Audio("../../audio/bell-gold.wav");
     bell.volume = 0.7;
     setTimeout(() => bell.play().catch(() => {}), 400);
 
-    // ✅ Click funcional: ir al módulo siguiente
     const btn = overlay.querySelector("#goToNextModuleBtn");
     if (btn) {
       btn.addEventListener("click", () => {
@@ -255,55 +283,10 @@ function showUnlockOverlay(nextModule) {
 }
 
 /* =====================================================
-   FUNCIÓN — Transición dorada global
-   ===================================================== */
-function launchGoldenTransition(targetPath) {
-  const overlay = document.createElement("div");
-  overlay.style = `
-    position:fixed;inset:0;background:#000;
-    display:flex;align-items:center;justify-content:center;
-    z-index:99999;opacity:0;transition:opacity .5s ease-in-out;
-  `;
-  overlay.innerHTML = `
-    <div id="gold-flash" style="
-      width:0;height:0;border-radius:50%;
-      background:radial-gradient(circle,#FFD700 0%,#000 70%);
-      filter:blur(40px);transition:all .6s ease-out;"></div>
-    <div style="position:absolute;font-family:'Poppins',sans-serif;
-      color:#FFD700;font-size:1.8rem;font-weight:700;text-align:center;">
-      Cargando siguiente capítulo...
-    </div>`;
-  document.body.appendChild(overlay);
-
-  const flash = overlay.querySelector("#gold-flash");
-  setTimeout(() => {
-    overlay.style.opacity = 1;
-    flash.style.width = "300px";
-    flash.style.height = "300px";
-  }, 50);
-
-  const bell = new Audio("../../audio/bell-gold.wav");
-  bell.volume = 0.6;
-  setTimeout(() => bell.play().catch(() => {}), 200);
-
-    // 🔊 Audio adicional: transición entre capítulos
-  const transitionSound = new Audio("../../audio/transition.wav");
-  transitionSound.volume = 0.7;
-  setTimeout(() => transitionSound.play().catch(() => {}), 400); 
-   
-  setTimeout(() => {
-    overlay.style.transition = "opacity .6s ease-in-out";
-    overlay.style.opacity = 0;
-    setTimeout(() => (window.location.href = targetPath), 600);
-  }, 1000);
-}
-
-/* =====================================================
-   BLOQUE B10 — Botón dorado “Continuar al siguiente capítulo o examen” (FINAL FIX V9.8D)
+   BLOQUE B10 — Botón “Continuar” dorado
    ===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   let path = window.location.pathname;
-  // Compatibilidad Cloudflare: si no incluye .html, asumimos cap1.html
   if (!path.endsWith(".html") && path.includes("/cap")) path += ".html";
 
   const match = path.match(/\/modules\/(\d+)\/cap(\d+)\.html$/);
@@ -323,7 +306,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const insertButton = () => {
     if (document.getElementById("nextChapterBtn")) return;
-
     const footer = document.querySelector("footer");
     const container = footer || document.body;
 
@@ -356,7 +338,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(`✅ CFC_SYNC → Botón de continuación insertado correctamente (${btnText})`);
   };
 
-  // 🔁 Espera hasta que el footer esté realmente renderizado
   const waitForFooter = () => {
     const footer = document.querySelector("footer");
     if (footer) insertButton();
@@ -368,3 +349,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("progressUpdated", updateProgressDisplay);
 
+/* =====================================================
+   BLOQUE FINAL — Actualización visual del tiempo en perfil
+   ===================================================== */
+window.addEventListener("studyTimeUpdated", (e) => {
+  const { minutesActive } = e.detail || {};
+  const horas = (minutesActive / 60).toFixed(1);
+  const el = document.getElementById("totalHours");
+  if (el) el.textContent = `${horas} h`;
+});
