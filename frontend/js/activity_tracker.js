@@ -1,29 +1,44 @@
 /* ==========================================================
-   ✅ CFC_ACTIVITY_V10.9_REAL_FIX_LOCALTRIGGER — 2025-11-06
+   ✅ CFC_ACTIVITY_V11.1_FIX_TIMELOGIC_20251106
    ----------------------------------------------------------
-   • Reinicio total garantizado (RAM + localStorage)
-   • Compatible con trigger local desde progress_v2.js
-   • Previene persistencia fantasma de tiempo
+   • Mantiene horas activas persistentes (no se reinician)
+   • Corrige cálculo de días consecutivos y totales
+   • Ignora triggers de examen (no resetea)
+   • Sincronización estable con profile.html
    ========================================================== */
 
 (function () {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
   let startTime = Date.now();
   let totalSeconds = parseFloat(localStorage.getItem("CFC_time_total") || 0);
   let isResetting = false;
 
-  /* 🗓️ Control de días */
-  let lastDate = localStorage.getItem("CFC_lastDate") || today;
+  /* 🗓️ Control de días reales */
+  const storedDate = localStorage.getItem("CFC_lastDate") || todayStr;
   let consecutiveDays = parseInt(localStorage.getItem("CFC_days") || 1);
   let totalDays = parseInt(localStorage.getItem("CFC_totalDays") || 1);
-  if (today !== lastDate) {
-    const diff = (new Date(today) - new Date(lastDate)) / 86400000;
-    consecutiveDays = diff === 1 ? consecutiveDays + 1 : 1;
-    totalDays += 1;
-    localStorage.setItem("CFC_lastDate", today);
+
+  // Normalizar formato de fecha (ISO)
+  const normalizeDate = (str) => str.replace(/-/g, "/").slice(0, 10);
+  const last = normalizeDate(storedDate);
+  const curr = normalizeDate(todayStr);
+
+  if (curr !== last) {
+    const diffDays = Math.floor(
+      (today - new Date(storedDate)) / (1000 * 60 * 60 * 24)
+    );
+    if (diffDays >= 1) {
+      consecutiveDays = diffDays === 1 ? consecutiveDays + 1 : 1;
+      totalDays += 1;
+      localStorage.setItem("CFC_lastDate", todayStr);
+      localStorage.setItem("CFC_days", consecutiveDays);
+      localStorage.setItem("CFC_totalDays", totalDays);
+      console.log(
+        `📅 CFC_ACTIVITY → Nuevo día detectado (${todayStr}) | Totales:${totalDays}`
+      );
+    }
   }
-  localStorage.setItem("CFC_days", consecutiveDays);
-  localStorage.setItem("CFC_totalDays", totalDays);
 
   /* 🎯 Indicador visual */
   const indicator = document.createElement("div");
@@ -39,7 +54,7 @@
     fontSize: "0.9rem",
     fontFamily: "Poppins,sans-serif",
     zIndex: "9999",
-    backdropFilter: "blur(6px)"
+    backdropFilter: "blur(6px)",
   });
   document.body.appendChild(indicator);
 
@@ -84,7 +99,7 @@
   });
 
   /* =====================================================
-     BLOQUE 3 — Duración de examen
+     BLOQUE 3 — Duración de examen (solo suma)
      ===================================================== */
   window.addEventListener("examCompleted", (e) => {
     const data = e.detail;
@@ -97,20 +112,22 @@
   });
 
   /* =====================================================
-     BLOQUE 4 — Reinicio global (trigger remoto o local)
+     BLOQUE 4 — Reinicio global (manual o QA)
      ===================================================== */
   const performReset = (origin = "auto") => {
+    if (origin === "exam") return; // 🚫 no reiniciar tras examen
     console.warn(`🧹 CFC_ACTIVITY → Reinicio total detectado (${origin})`);
     isResetting = true;
     clearInterval(syncInterval);
 
+    // Mantener métricas globales
     totalSeconds = 0;
     startTime = Date.now();
     localStorage.setItem("CFC_time_total", 0);
     localStorage.setItem("CFC_time", 0);
     localStorage.setItem(
       "studyStats",
-      JSON.stringify({ minutesActive: 0, sessions: 0 })
+      JSON.stringify({ minutesActive: 0, sessions: totalDays })
     );
     indicator.textContent = "🕒 Sesión activa: 0 min 00 s";
 
@@ -122,27 +139,21 @@
     }, 2000);
   };
 
-  // Trigger desde otras pestañas
+  // Trigger desde otras pestañas (solo manual)
   window.addEventListener("storage", (e) => {
-    if (e.key === "progressData" || e.key === null) performReset("storage");
+    if (e.key === "CFC_triggerReset") {
+      performReset("storage");
+    }
   });
 
-  // Trigger local interno
-  window.addEventListener("CFC_forceReset", () => performReset("localTrigger"));
-
-  // Detección periódica de trigger localStorage
-  setInterval(() => {
-    if (localStorage.getItem("CFC_triggerReset") === "true") {
-      localStorage.removeItem("CFC_triggerReset");
-      performReset("triggerFlag");
-    }
-  }, 500);
+  // Trigger local interno (desde botón QA o debug)
+  window.addEventListener("CFC_forceReset", () => performReset("manual"));
 
   console.log(
-    `✅ CFC_ACTIVITY_V10.9_REAL_FIX_LOCALTRIGGER — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays}`
+    `✅ CFC_ACTIVITY_V11.1_FIX_TIMELOGIC — Día:${todayStr} | Consecutivos:${consecutiveDays} | Totales:${totalDays}`
   );
 })();
 
 /* ==========================================================
-🔒 CFC_LOCK: V10.9-REAL_FIX_LOCALTRIGGER-activity_totaltrack-20251106
+🔒 CFC_LOCK: V11.1-FIX_TIMELOGIC-activity_tracker-20251106
 ========================================================== */
