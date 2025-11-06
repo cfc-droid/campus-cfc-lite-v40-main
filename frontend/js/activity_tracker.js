@@ -1,10 +1,9 @@
 /* ==========================================================
-   ✅ CFC_ACTIVITY_V10.9_REAL_FIX_FINAL — 2025-11-06
+   ✅ CFC_ACTIVITY_V10.9_REAL_FIX_LOCALTRIGGER — 2025-11-06
    ----------------------------------------------------------
    • Reinicio total garantizado (RAM + localStorage)
-   • Acumulación continua: lectura + examen + perfil
-   • Sincronizado con progress_v2.js y stats_v1.js
-   • Prevención de doble suma post-reinicio
+   • Compatible con trigger local desde progress_v2.js
+   • Previene persistencia fantasma de tiempo
    ========================================================== */
 
 (function () {
@@ -81,8 +80,7 @@
      BLOQUE 2 — Guardar al cerrar pestaña
      ===================================================== */
   window.addEventListener("beforeunload", () => {
-    if (isResetting) return;
-    sync();
+    if (!isResetting) sync();
   });
 
   /* =====================================================
@@ -99,42 +97,52 @@
   });
 
   /* =====================================================
-     BLOQUE 4 — Reinicio global (progreso + tiempo)
+     BLOQUE 4 — Reinicio global (trigger remoto o local)
      ===================================================== */
-  window.addEventListener("storage", (e) => {
-    if (e.key === "progressData" || e.key === null) {
-      console.warn("🧹 CFC_ACTIVITY → Reinicio global detectado");
+  const performReset = (origin = "auto") => {
+    console.warn(`🧹 CFC_ACTIVITY → Reinicio total detectado (${origin})`);
+    isResetting = true;
+    clearInterval(syncInterval);
 
-      // 🚫 Pausar sincronizador y bloqueo RAM
-      isResetting = true;
-      clearInterval(syncInterval);
+    totalSeconds = 0;
+    startTime = Date.now();
+    localStorage.setItem("CFC_time_total", 0);
+    localStorage.setItem("CFC_time", 0);
+    localStorage.setItem(
+      "studyStats",
+      JSON.stringify({ minutesActive: 0, sessions: 0 })
+    );
+    indicator.textContent = "🕒 Sesión activa: 0 min 00 s";
 
-      // 🧹 Limpieza total inmediata
-      totalSeconds = 0;
+    setTimeout(() => {
+      isResetting = false;
       startTime = Date.now();
-      localStorage.setItem("CFC_time_total", 0);
-      localStorage.setItem("CFC_time", 0);
-      localStorage.setItem(
-        "studyStats",
-        JSON.stringify({ minutesActive: 0, sessions: 0 })
-      );
-      indicator.textContent = "🕒 Sesión activa: 0 min 00 s";
+      setInterval(sync, 10000);
+      console.log("✅ CFC_ACTIVITY reinicio confirmado y tracking reanudado limpio.");
+    }, 2000);
+  };
 
-      // ⏳ Esperar 2 s y recargar visualmente estable
-      setTimeout(() => {
-        isResetting = false;
-        console.log("✅ CFC_ACTIVITY reinicio confirmado — tracking reanudado limpio.");
-        startTime = Date.now();
-        setInterval(sync, 10000);
-      }, 2000);
-    }
+  // Trigger desde otras pestañas
+  window.addEventListener("storage", (e) => {
+    if (e.key === "progressData" || e.key === null) performReset("storage");
   });
 
+  // Trigger local interno
+  window.addEventListener("CFC_forceReset", () => performReset("localTrigger"));
+
+  // Detección periódica de trigger localStorage
+  setInterval(() => {
+    if (localStorage.getItem("CFC_triggerReset") === "true") {
+      localStorage.removeItem("CFC_triggerReset");
+      performReset("triggerFlag");
+    }
+  }, 500);
+
   console.log(
-    `✅ CFC_ACTIVITY_V10.9_REAL_FIX_FINAL — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays}`
+    `✅ CFC_ACTIVITY_V10.9_REAL_FIX_LOCALTRIGGER — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays}`
   );
 })();
 
 /* ==========================================================
-🔒 CFC_LOCK: V10.9-REAL_FIX_FINAL-activity_totaltrack-20251106
+🔒 CFC_LOCK: V10.9-REAL_FIX_LOCALTRIGGER-activity_totaltrack-20251106
 ========================================================== */
