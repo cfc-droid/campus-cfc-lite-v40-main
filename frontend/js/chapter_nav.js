@@ -1,104 +1,103 @@
 /* ==========================================================
-✅ CFC_FUNC_9_7_FIX_FINAL_V41.16_RETRYASYNC_SAFE
+✅ CFC_FUNC_9_8_FINAL_V41.18_DOMSAFE — Inserción garantizada del botón “Continuar al capítulo siguiente”
 📄 Archivo: /frontend/js/chapter_nav.js
-🔒 QA-SYNC V10.7 — Cristian F. Choqui — 2025-11-06
+🔒 QA-SYNC V10.8 | CFC-SYNC V8.1 — Cristian F. Choqui — 2025-11-06
 ----------------------------------------------------------
-✔ Inserción garantizada aunque otros scripts bloqueen el DOM.
-✔ Reintenta 30 veces cada 300 ms hasta encontrar <main>.
-✔ Compatible con audio bell-gold.wav y diseño dorado.
+✔️ Detecta automáticamente <main>, <section> o <div.container-chapter>
+✔️ Inserta antes del footer “Volver al módulo”
+✔️ Reintenta hasta 10 s si el DOM carga diferido
+✔️ Compatible con audio bell-gold.wav + animación dorada
 ========================================================== */
 
 (function () {
-  const insertNextChapterButton = () => {
+  const insertNextButton = () => {
     try {
-      const path = window.location.pathname;
-      const match = path.match(/modules\/(\d+)\/cap(\d+)\.html$/);
+      // Detectar módulo y capítulo
+      const match = window.location.pathname.match(/modules\/(\d+)\/cap(\d+)\.html$/);
       if (!match) return false;
 
       const module = parseInt(match[1]);
       const chapter = parseInt(match[2]);
-      const nextChapter = chapter + 1;
-      const maxChapters = 4;
+      const next = chapter + 1;
+      const max = 4;
 
-      const main = document.querySelector("main");
-      if (!main) return false; // DOM no disponible todavía
+      // Buscar contenedor válido
+      const container =
+        document.querySelector("main") ||
+        document.querySelector("section") ||
+        document.querySelector(".container-chapter") ||
+        document.body;
+      if (!container) return false;
 
-      // Evita duplicados
-      if (main.querySelector(".next-chapter-btn")) return true;
+      // Evitar duplicado
+      if (document.querySelector(".next-chapter-btn")) return true;
 
-      const footer = main.querySelector("footer.firma-cfc");
-
+      // Crear botón
       const btn = document.createElement("button");
       btn.className = "next-chapter-btn";
-      btn.innerHTML =
-        chapter < maxChapters
-          ? `Continuar al Capítulo ${nextChapter} ▶`
-          : "Ir al Examen Final 🏁";
+      btn.textContent =
+        chapter < max ? `Continuar al Capítulo ${next} ▶` : "Ir al Examen Final 🏁";
 
-      // 🎨 Estilo visual
+      // Estilo
       Object.assign(btn.style, {
         display: "block",
-        margin: "40px auto 30px",
-        padding: "14px 36px",
-        fontSize: "1rem",
+        margin: "45px auto 35px",
+        padding: "14px 34px",
         fontWeight: "700",
-        background: "linear-gradient(90deg,#ffd700,#f0c03d)",
+        fontSize: "1rem",
         color: "#000",
+        background: "linear-gradient(90deg,#d4af37,#ffd700)",
         border: "none",
         borderRadius: "12px",
-        boxShadow: "0 0 16px rgba(255,215,0,0.45)",
+        boxShadow: "0 0 18px rgba(212,175,55,0.5)",
         cursor: "pointer",
-        transition: "all 0.3s ease-in-out",
-        zIndex: "9999",
+        transition: "all 0.25s ease",
       });
 
-      btn.addEventListener("mouseover", () => {
+      btn.addEventListener("mouseenter", () => {
         btn.style.transform = "scale(1.05)";
-        btn.style.boxShadow = "0 0 24px rgba(255,215,0,0.6)";
+        btn.style.boxShadow = "0 0 25px rgba(212,175,55,0.75)";
       });
-      btn.addEventListener("mouseout", () => {
+      btn.addEventListener("mouseleave", () => {
         btn.style.transform = "scale(1)";
-        btn.style.boxShadow = "0 0 16px rgba(255,215,0,0.45)";
+        btn.style.boxShadow = "0 0 18px rgba(212,175,55,0.5)";
       });
 
-      // 🔊 Acción al hacer clic
+      // Acción click
       btn.addEventListener("click", () => {
-        const sound = new Audio("../../media/audio/bell-gold.wav");
-        sound.play().catch(() => {});
+        const audio = new Audio("../../media/audio/bell-gold.wav");
+        audio.volume = 0.7;
+        audio.play().catch(() => {});
         btn.disabled = true;
-        btn.textContent = "Cargando...";
-
-        const nextUrl =
-          chapter < maxChapters
-            ? `cap${nextChapter}.html`
+        btn.innerText = "Cargando... ⚡";
+        const dest =
+          chapter < max
+            ? `cap${next}.html`
             : "../../examen/examen.html";
-
-        setTimeout(() => (window.location.href = nextUrl), 900);
+        setTimeout(() => (window.location.href = dest), 900);
       });
 
-      // 🧩 Inserta antes del footer si existe
-      if (footer && footer.parentNode === main) main.insertBefore(btn, footer);
-      else main.appendChild(btn);
+      // Insertar antes del footer si existe
+      const footer = document.querySelector("footer.firma-cfc");
+      footer
+        ? footer.parentNode.insertBefore(btn, footer)
+        : container.appendChild(btn);
 
       console.log(
-        `🧩 CFC_SYNC checkpoint: NEXTCHAPTER insertado correctamente — módulo ${module} cap ${chapter}`
+        `🧩 CFC_SYNC checkpoint: botón “Continuar al Capítulo” insertado — módulo ${module}, cap ${chapter}`
       );
       return true;
     } catch (err) {
-      console.warn("⚠️ Error en insertNextChapterButton:", err);
+      console.warn("⚠️ chapter_nav.js — error:", err);
       return false;
     }
   };
 
-  // 🔁 Reintento cada 300 ms hasta 30 veces (≈9 segundos)
-  let attempts = 0;
-  const maxAttempts = 30;
-  const retry = setInterval(() => {
-    const done = insertNextChapterButton();
-    if (done || attempts > maxAttempts) clearInterval(retry);
-    attempts++;
-  }, 300);
+  // 🔁 Reintento hasta 10 s
+  let tries = 0;
+  const timer = setInterval(() => {
+    if (insertNextButton() || tries++ > 40) clearInterval(timer);
+  }, 250);
 
-  // 🔒 Fallback final: segundo intento al DOMContentLoaded
-  document.addEventListener("DOMContentLoaded", insertNextChapterButton);
+  document.addEventListener("DOMContentLoaded", insertNextButton);
 })();
