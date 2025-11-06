@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil — Campus CFC LITE</title>
   <link rel="stylesheet" href="../css/premium.css?v=20251105" />
+
   <style>
-    /* ✅ CFC_FUNC_8_2D_20251105 — Botón flotante modo oscuro/claro sincronizado */
+    /* =========================================================
+       ✅ CFC_FUNC_8_2D_20251105 — Botón flotante modo oscuro/claro sincronizado
+       ========================================================= */
     #themeToggle {
       position: fixed;
       top: 18px;
@@ -84,8 +87,11 @@
   <script src="../js/activity_tracker.js?v=20251106" defer></script>
   <script src="../js/theme_chapter.js?v=20251105" defer></script>
 
-  <!-- ✅ Estado emocional -->
+  <!-- =========================================================
+       ✅ CFC_FUNC_10_4_V41.16 — Estado emocional + último examen
+       ========================================================= -->
   <script>
+    // ✅ Estado emocional
     const scoreRaw = localStorage.getItem("emotionScore");
     const box = document.getElementById("emotionScore");
     const msg = document.getElementById("emotionMessage");
@@ -96,15 +102,14 @@
       else if (val<=6){emoji="😐";mensaje="Estás estable, pero podés mejorar tu enfoque.";}
       else if (val<=8){emoji="😊";mensaje="Excelente disciplina emocional.";}
       else if (val<=10){emoji="🔥";mensaje="Máxima claridad mental, seguí así.";}
-      box.textContent=`${emoji} ${val}/10`; msg.textContent=mensaje;
+      box.textContent=`${emoji} ${val}/10`;
+      msg.textContent=mensaje;
     } else {
       box.textContent="⚠️ Aún no registraste tu emoción de hoy.";
       msg.textContent="Registrá tu autoevaluación al cargar el Campus.";
     }
-  </script>
 
-  <!-- ✅ Bloque de examen adaptativo al tema -->
-  <script>
+    // ✅ Último examen completado
     function mostrarUltimoExamen() {
       try {
         const examResults = JSON.parse(localStorage.getItem("examResults")) || [];
@@ -145,74 +150,73 @@
     observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
   </script>
 
-  <!-- 🔒 CFC_LOCK: V41.16-profile_examThemeReactive-20251105 -->
+  <!-- =========================================================
+       ✅ CFC_FUNC_11_2_V41.32 — Panel “Mi progreso” unificado
+       📄 Archivo: /frontend/pages/profile.html
+       🔒 CFC-SYNC V11.2 | QA-SYNC V41.32
+       ========================================================= -->
+  <script>
+  document.getElementById("btnStats").addEventListener("click", () => {
+    const prev = document.querySelector("#miProgresoOverlay");
+    if (prev) prev.remove();
 
-<!-- =========================================================
-✅ CFC_FUNC_11_2_V41.32 — Panel “Mi progreso” unificado (versión extendida)
-📄 Archivo: /frontend/pages/profile.html
-🔒 CFC-SYNC V11.2 | QA-SYNC V41.32
-========================================================= -->
-<script>
-document.getElementById("btnStats").addEventListener("click", () => {
-  const prev = document.querySelector("#miProgresoOverlay");
-  if (prev) prev.remove();
+    const totalSeconds = parseFloat(localStorage.getItem("CFC_time_total") || 0);
+    const minutes = Math.floor(totalSeconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const remMin = minutes % 60;
 
-  const totalSeconds = parseFloat(localStorage.getItem("CFC_time_total") || 0);
-  const minutes = Math.floor(totalSeconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const remMin = minutes % 60;
+    const data = JSON.parse(localStorage.getItem("progressData") || "{}");
+    const completed = (data.completed || []).length;
+    const percent = Math.floor((completed / 20) * 100);
+    const lastDate = localStorage.getItem("CFC_lastDate") || "—";
+    const consecutive = localStorage.getItem("CFC_days") || 0;
+    const totalDays = localStorage.getItem("CFC_totalDays") || 0;
 
-  const data = JSON.parse(localStorage.getItem("progressData") || "{}");
-  const completed = (data.completed || []).length;
-  const percent = Math.floor((completed / 20) * 100);
-  const lastDate = localStorage.getItem("CFC_lastDate") || "—";
-  const consecutive = localStorage.getItem("CFC_days") || 0;
-  const totalDays = localStorage.getItem("CFC_totalDays") || 0;
+    const overlay = document.createElement("div");
+    overlay.id = "miProgresoOverlay";
+    overlay.style = `
+      position:fixed;inset:0;z-index:99999;
+      background:rgba(0,0,0,0.85);color:#FFD700;
+      font-family:'Poppins',sans-serif;display:flex;
+      justify-content:center;align-items:center;flex-direction:column;
+      text-align:center;line-height:1.6;opacity:0;
+      transition:opacity .6s ease-in-out;
+    `;
 
-  const overlay = document.createElement("div");
-  overlay.id = "miProgresoOverlay";
-  overlay.style = `
-    position:fixed;inset:0;z-index:99999;
-    background:rgba(0,0,0,0.85);color:#FFD700;
-    font-family:'Poppins',sans-serif;display:flex;
-    justify-content:center;align-items:center;flex-direction:column;
-    text-align:center;line-height:1.6;opacity:0;
-    transition:opacity .6s ease-in-out;
-  `;
-
-  overlay.innerHTML = `
-    <div style="max-width:480px;padding:30px;background:rgba(255,255,255,0.05);
-      border:1px solid #FFD700;border-radius:14px;box-shadow:0 0 25px rgba(255,215,0,0.4);
-      text-align:left;">
-      <h2 style="text-align:center;">📊 Tu progreso</h2>
-      <ul style="list-style:none;padding-left:0;font-size:0.95rem;line-height:1.8;">
-        <li>📘 <b>Módulos completados:</b> ${completed}/20 (${percent}%)</li>
-        <li>⏱️ <b>Horas activas:</b> ${hours} h ${remMin} min</li>
-        <li>📅 <b>Última sesión:</b> ${lastDate}</li>
-        <li>🔁 <b>Días consecutivos de estudio:</b> ${consecutive}</li>
-        <li>🗓️ <b>Días totales de estudio:</b> ${totalDays}</li>
-      </ul>
-      <div style="text-align:center;margin-top:20px;">
-        <button id="cerrarProgreso" class="btn-main">Cerrar</button>
+    overlay.innerHTML = `
+      <div style="max-width:480px;padding:30px;background:rgba(255,255,255,0.05);
+        border:1px solid #FFD700;border-radius:14px;box-shadow:0 0 25px rgba(255,215,0,0.4);
+        text-align:left;">
+        <h2 style="text-align:center;">📊 Tu progreso</h2>
+        <ul style="list-style:none;padding-left:0;font-size:0.95rem;line-height:1.8;">
+          <li>📘 <b>Módulos completados:</b> ${completed}/20 (${percent}%)</li>
+          <li>⏱️ <b>Horas activas:</b> ${hours} h ${remMin} min</li>
+          <li>📅 <b>Última sesión:</b> ${lastDate}</li>
+          <li>🔁 <b>Días consecutivos de estudio:</b> ${consecutive}</li>
+          <li>🗓️ <b>Días totales de estudio:</b> ${totalDays}</li>
+        </ul>
+        <div style="text-align:center;margin-top:20px;">
+          <button id="cerrarProgreso" class="btn-main">Cerrar</button>
+        </div>
       </div>
-    </div>
-  `;
+    `;
+    document.body.appendChild(overlay);
+    setTimeout(() => (overlay.style.opacity = 1), 50);
 
-  document.body.appendChild(overlay);
-  setTimeout(() => (overlay.style.opacity = 1), 50);
+    document.getElementById("cerrarProgreso").addEventListener("click", () => {
+      overlay.style.opacity = 0;
+      setTimeout(() => overlay.remove(), 300);
+    });
 
-  document.getElementById("cerrarProgreso").addEventListener("click", () => {
-    overlay.style.opacity = 0;
-    setTimeout(() => overlay.remove(), 300);
+    console.log(
+      "🧩 CFC_SYNC checkpoint:",
+      "Panel único de progreso desplegado →",
+      `${hours}h ${remMin}min — ${percent}% completado`,
+      new Date().toLocaleString()
+    );
   });
+  </script>
 
-  console.log(
-    "🧩 CFC_SYNC checkpoint:",
-    "Panel único de progreso desplegado →",
-    `${hours}h ${remMin}min — ${percent}% completado`,
-    new Date().toLocaleString()
-  );
-});
-</script>
+  <!-- 🔒 CFC_LOCK: V41.32-profile_statsOverlayFinal-20251106 -->
 </body>
 </html>
