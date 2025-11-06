@@ -126,7 +126,6 @@
       }
     }
 
-    // 🔁 Reactivar color dinámico cuando cambia el tema
     function actualizarColoresExamen() {
       const body = document.body;
       const bloque = document.querySelector(".ultimo-examen p");
@@ -139,7 +138,6 @@
       actualizarColoresExamen();
     });
 
-    // Detectar cambios en el tema
     window.addEventListener("storage", (e) => {
       if (e.key === "CFC_THEME_STATE") actualizarColoresExamen();
     });
@@ -150,12 +148,15 @@
   <!-- 🔒 CFC_LOCK: V41.16-profile_examThemeReactive-20251105 -->
 
 <!-- =========================================================
-✅ CFC_FUNC_11_1_V41.31 — Panel “Mi progreso” con horas activas
+✅ CFC_FUNC_11_2_V41.32 — Panel “Mi progreso” unificado (versión extendida)
 📄 Archivo: /frontend/pages/profile.html
-🔒 CFC-SYNC V11.1 | QA-SYNC V41.31
+🔒 CFC-SYNC V11.2 | QA-SYNC V41.32
 ========================================================= -->
 <script>
 document.getElementById("btnStats").addEventListener("click", () => {
+  const prev = document.querySelector("#miProgresoOverlay");
+  if (prev) prev.remove();
+
   const totalSeconds = parseFloat(localStorage.getItem("CFC_time_total") || 0);
   const minutes = Math.floor(totalSeconds / 60);
   const hours = Math.floor(minutes / 60);
@@ -165,12 +166,8 @@ document.getElementById("btnStats").addEventListener("click", () => {
   const completed = (data.completed || []).length;
   const percent = Math.floor((completed / 20) * 100);
   const lastDate = localStorage.getItem("CFC_lastDate") || "—";
-
   const consecutive = localStorage.getItem("CFC_days") || 0;
   const totalDays = localStorage.getItem("CFC_totalDays") || 0;
-
-  const existing = document.querySelector("#miProgresoOverlay");
-  if (existing) existing.remove();
 
   const overlay = document.createElement("div");
   overlay.id = "miProgresoOverlay";
@@ -179,26 +176,42 @@ document.getElementById("btnStats").addEventListener("click", () => {
     background:rgba(0,0,0,0.85);color:#FFD700;
     font-family:'Poppins',sans-serif;display:flex;
     justify-content:center;align-items:center;flex-direction:column;
-    text-align:center;line-height:1.6;
+    text-align:center;line-height:1.6;opacity:0;
+    transition:opacity .6s ease-in-out;
   `;
 
   overlay.innerHTML = `
     <div style="max-width:480px;padding:30px;background:rgba(255,255,255,0.05);
-      border:1px solid #FFD700;border-radius:14px;box-shadow:0 0 25px rgba(255,215,0,0.4);">
-      <h2>📊 Tu progreso</h2>
-      <p>📘 Módulos completados: ${completed}/20 (${percent}%)</p>
-      <p>⏱️ Horas activas: ${hours} h ${remMin} min</p>
-      <p>📅 Última sesión: ${new Date().toLocaleDateString()} </p>
-      <p>🔁 Días consecutivos de estudio: ${consecutive}</p>
-      <p>🗓️ Días totales de estudio: ${totalDays}</p>
-      <button id="cerrarProgreso" class="btn-main" style="margin-top:15px;">Cerrar</button>
+      border:1px solid #FFD700;border-radius:14px;box-shadow:0 0 25px rgba(255,215,0,0.4);
+      text-align:left;">
+      <h2 style="text-align:center;">📊 Tu progreso</h2>
+      <ul style="list-style:none;padding-left:0;font-size:0.95rem;line-height:1.8;">
+        <li>📘 <b>Módulos completados:</b> ${completed}/20 (${percent}%)</li>
+        <li>⏱️ <b>Horas activas:</b> ${hours} h ${remMin} min</li>
+        <li>📅 <b>Última sesión:</b> ${lastDate}</li>
+        <li>🔁 <b>Días consecutivos de estudio:</b> ${consecutive}</li>
+        <li>🗓️ <b>Días totales de estudio:</b> ${totalDays}</li>
+      </ul>
+      <div style="text-align:center;margin-top:20px;">
+        <button id="cerrarProgreso" class="btn-main">Cerrar</button>
+      </div>
     </div>
   `;
+
   document.body.appendChild(overlay);
+  setTimeout(() => (overlay.style.opacity = 1), 50);
 
-  document.getElementById("cerrarProgreso").addEventListener("click", () => overlay.remove());
+  document.getElementById("cerrarProgreso").addEventListener("click", () => {
+    overlay.style.opacity = 0;
+    setTimeout(() => overlay.remove(), 300);
+  });
 
-  console.log("🧩 CFC_SYNC checkpoint:", "Horas activas actualizadas → " + hours + "h " + remMin + "min", new Date().toLocaleString());
+  console.log(
+    "🧩 CFC_SYNC checkpoint:",
+    "Panel único de progreso desplegado →",
+    `${hours}h ${remMin}min — ${percent}% completado`,
+    new Date().toLocaleString()
+  );
 });
 </script>
 </body>
