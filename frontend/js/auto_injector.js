@@ -1,76 +1,48 @@
 /* =========================================================
-✅ CFC_FUNC_5_1_AUTOLOAD_V20251106_SAFEFIX — Inyección global LITE + CFC-PLUS (con manejo seguro)
+✅ CFC_FUNC_5_2_AUTOLOAD_V20251106_SAFEFIX_PLUS — Inyección global silenciosa optimizada
 📄 Archivo: /frontend/js/auto_injector.js
-🔒 CFC-SYNC V8.0 | QA-SYNC V10.6 — Cristian F. Choqui — 2025-11-06
+🔒 CFC-SYNC V8.1 | QA-SYNC V10.9 — Cristian F. Choqui — 2025-11-06
 ---------------------------------------------------------
-✔️ Corrige errores 404 de scripts inexistentes (daily-review.js / backup.js)
-✔️ Mantiene ejecución completa (no bloquea chapter_nav.js)
-✔️ Compatible con entorno local y Cloudflare Pages
+✔️ Elimina mensajes “Error de script ignorado (archivo HTML en lugar de JS)”
+✔️ Valida existencia real del archivo antes de inyectar
+✔️ 100% compatible con Cloudflare Pages (LITE V41+)
 ========================================================= */
 
 (function () {
-  // =========================================================
-  // 🧩 1️⃣ Base dinámica (local o Cloudflare)
-  // =========================================================
+  // 🧩 Base dinámica
   const base = window.location.hostname.includes("pages.dev")
     ? "/frontend/js/"
     : "../js/";
 
-  // =========================================================
-  // 🧩 2️⃣ Función de inyección segura
-  // =========================================================
-  const injectScript = (file, description = "") => {
-    const s = document.createElement("script");
-    s.src = base + file;
-    s.defer = true;
-    s.onerror = () => {
-      console.warn(
-        `⚠️ [CFC_FUNC_5_1_SAFEFIX] Script omitido (${file}) — no afecta flujo principal.`,
-        description
-      );
-    };
-    document.head.appendChild(s);
+  // 🧩 Inyección segura con validación previa
+  const injectScript = async (file, description = "") => {
+    const src = base + file;
+    try {
+      const res = await fetch(src, { method: "HEAD" });
+      if (!res.ok) {
+        console.warn(`⚠️ [SAFEFIX_PLUS] Omitido ${file} — No encontrado (${res.status})`);
+        return;
+      }
+      const s = document.createElement("script");
+      s.src = src;
+      s.defer = true;
+      document.head.appendChild(s);
+    } catch (err) {
+      console.warn(`⚠️ [SAFEFIX_PLUS] Falla al cargar ${file}:`, err);
+    }
   };
 
-  // =========================================================
-  // 🧩 3️⃣ Núcleo base
-  // =========================================================
-  injectScript("theme.js?v=20251102", "Tema global");
+  // 🧩 Núcleo base
+  injectScript("theme.js?v=20251102", "Tema global base");
   injectScript("theme_chapter.js?v=20251102", "Modo claro/oscuro modular");
-
-  // =========================================================
-  // 🧩 4️⃣ CFC-PLUS Extras (overlay, badge, backup)
-  // =========================================================
-  // Estos archivos pueden no existir en builds LITE; se manejan con fallback automático
   injectScript("badge.js?v=20251102", "Badge motivacional persistente");
+  // Opcionales
+  // injectScript("daily-review.js?v=20251102");
+  // injectScript("backup.js?v=20251102");
 
-  // 💤 Desactivados temporalmente para evitar errores 404
-  // injectScript("daily-review.js?v=20251102", "Overlay motivacional diario");
-  // injectScript("backup.js?v=20251102", "Sistema de backup/restore local");
-
-  // =========================================================
-  // 🧩 5️⃣ Protección global ante scripts dañados o HTML 404
-  // =========================================================
-  window.addEventListener(
-    "error",
-    (e) => {
-      if (e.message && e.message.includes("Unexpected token '<'")) {
-        console.warn(
-          "⚠️ [CFC-SYNC V10.6] Error de script ignorado (archivo HTML en lugar de JS):",
-          e.filename
-        );
-        e.preventDefault(); // Evita frenar otros scripts (como chapter_nav.js)
-        return false;
-      }
-    },
-    true
-  );
-
-  // =========================================================
-  // 🧩 6️⃣ Log de control QA-SYNC
-  // =========================================================
+  // 🧩 Log control QA-SYNC
   console.log(
-    "🧩 CFC_SYNC checkpoint: auto_injector.js | SAFEFIX activo (LITE build) — QA-SYNC V10.6",
+    "🧩 CFC_SYNC checkpoint: auto_injector.js | SAFEFIX_PLUS activo — QA-SYNC V10.9",
     new Date().toLocaleString()
   );
 })();
