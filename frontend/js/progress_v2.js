@@ -111,6 +111,17 @@ window.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("progressPercent", 0);
           localStorage.setItem("CFC_triggerReset", "true");
 
+  // =====================================================
+  // ✅ CFC_FUNC_11_5_FIX_RESET_BITACORA_20251106
+  // Limpieza adicional para Bitácora Mental del Trader
+  // =====================================================
+  localStorage.removeItem("bitacora");
+  localStorage.removeItem("CFC_bitacora_entries");
+  localStorage.removeItem("CFC_bitacora_filters");
+  localStorage.removeItem("CFC_bitacora_theme");
+  localStorage.removeItem("CFC_bitacora_state");
+  console.log("🧹 CFC_SYNC → Bitácora Mental completamente reiniciada."); 
+
           console.log("🧹 CFC_SYNC → Reinicio global total ejecutado (progreso + tiempo + horas activas).");
 
           // 🔁 Reinicio sincronizado con activity_tracker.js
