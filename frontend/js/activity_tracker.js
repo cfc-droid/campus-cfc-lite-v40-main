@@ -24,21 +24,31 @@
   const last = normalizeDate(storedDate);
   const curr = normalizeDate(todayStr);
 
-  if (curr !== last) {
-    const diffDays = Math.floor(
-      (today - new Date(storedDate)) / (1000 * 60 * 60 * 24)
+// 🧠 Revisión de días reales con control de horas activas
+if (curr !== last) {
+  const diffMs = today - new Date(storedDate);
+  const diffHours = diffMs / (1000 * 60 * 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  // Solo contar un nuevo "día total" si pasaron >= 24h de actividad total real
+  const totalHoursActive = totalSeconds / 3600;
+  if (diffDays >= 1 && totalHoursActive >= 24) {
+    consecutiveDays = diffDays === 1 ? consecutiveDays + 1 : 1;
+    totalDays += 1;
+    localStorage.setItem("CFC_lastDate", todayStr);
+    localStorage.setItem("CFC_days", consecutiveDays);
+    localStorage.setItem("CFC_totalDays", totalDays);
+    console.log(
+      `📅 CFC_ACTIVITY → Día completo detectado (≥24h de estudio) | Totales:${totalDays}`
     );
-    if (diffDays >= 1) {
-      consecutiveDays = diffDays === 1 ? consecutiveDays + 1 : 1;
-      totalDays += 1;
-      localStorage.setItem("CFC_lastDate", todayStr);
-      localStorage.setItem("CFC_days", consecutiveDays);
-      localStorage.setItem("CFC_totalDays", totalDays);
-      console.log(
-        `📅 CFC_ACTIVITY → Nuevo día detectado (${todayStr}) | Totales:${totalDays}`
-      );
-    }
+  } else {
+    // Si aún no pasaron 24h, solo actualizar la fecha sin sumar día total
+    localStorage.setItem("CFC_lastDate", todayStr);
+    console.log(
+      `⏳ CFC_ACTIVITY → Fecha nueva detectada pero <24h activas, día total no sumado`
+    );
   }
+}
 
   /* 🎯 Indicador visual */
   const indicator = document.createElement("div");
