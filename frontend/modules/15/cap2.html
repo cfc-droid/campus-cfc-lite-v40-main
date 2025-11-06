@@ -36,11 +36,11 @@
   <!-- ✅ CFC_SYNC QA-SYNC V9.8C — progress global -->
   <script src="../../js/progress_v2.js?v=9.8C" defer></script>
   <!-- ✅ QA-SYNC V41.10 — Auto-Injector Global -->
-  <script src="../../js/auto_injector.js?v=20251102" defer></script>
+  <script src="../../js/auto_injector.js?v=20251106" defer></script>
   <!-- ✅ CFC_FUNC_5_1C_V41_REAL — Modo claro/oscuro -->
-  <script src="../../js/theme_chapter.js?v=20251102" defer></script>
+  <script src="../../js/theme_chapter_v2.js?v=20251107" defer></script>
   <!-- ✅ Badge Motivacional -->
-  <script src="../../js/badge.js?v=20251102" defer></script>
+  <script src="../../js/badge.js?v=20251106" defer></script>
 
   <script>
     console.log(
@@ -65,6 +65,67 @@
   # ✅ CFC_FUNC_10_1_20251105 — CFC-VOICE READER V1 añadido (modo estático)
   echo "🧩 CFC_SYNC checkpoint: Narrador IA activo en este módulo — P9 completado"
   ========================================================== -->
-</body>
-</html>
+  
+ <!-- ✅ CFC_FUNC_9_9_INLINE_FIX_V41.31_VISUAL — Botón “Continuar” optimizado -->
+<style>
+  .btn-next-chapter {
+    position: fixed;
+    bottom: 90px; /* ⬆️ Elevado para no tapar el botón “Volver al módulo” */
+    right: 30px;
+    background: linear-gradient(90deg, #d4af37, #ffd700);
+    color: #000;
+    font-weight: 700;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    z-index: 5000;
+    transition: transform 0.2s, box-shadow 0.3s, opacity 0.3s;
+    opacity: 0.92;
+  }
+  .btn-next-chapter:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+    opacity: 1;
+  }
+</style>
 
+<script>
+  /* =========================================================
+     ✅ CFC_FUNC_9_9_INLINE_FIX_V41.31_VISUAL
+     🧩 Mejora visual y posición sobre botón “Volver al módulo”
+     ========================================================= */
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.createElement("button");
+    btn.className = "btn-next-chapter";
+    btn.innerHTML = "Continuar al Capítulo 3 ▶";
+    btn.onclick = () => {
+      window.location.href = "../15/cap3.html";
+    };
+    document.body.appendChild(btn);
+    console.log("🧩 CFC_SYNC checkpoint:", "Botón ‘Continuar’ inline insertado (posición ajustada)");
+  });
+</script>
+
+  <style>
+  /* ✅ CFC_FIX_20251106 — Mejorar contraste del botón “Volver al módulo” */
+  a.btn-main,
+  a.btn-back,
+  button.btn-main,
+  .btn-volver,
+  .btn-back {
+    color: #000 !important;          /* letras negras */
+    font-weight: 700 !important;     /* más legible */
+    text-shadow: 0 0 4px rgba(255,255,255,0.4);
+  }
+
+  /* Hover: invertir para mantener el efecto premium */
+  a.btn-main:hover,
+  .btn-volver:hover,
+  .btn-back:hover {
+    background: #000 !important;
+    color: #ffd700 !important;
+    box-shadow: 0 0 25px rgba(255,215,0,0.8);
+  }
+</style>
