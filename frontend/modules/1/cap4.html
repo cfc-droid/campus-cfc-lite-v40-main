@@ -66,27 +66,28 @@
   echo "🧩 CFC_SYNC checkpoint: Narrador IA activo en este módulo — P9 completado"
   ========================================================== -->
   
-<!-- ✅ CFC_FUNC_9_9_INLINE_FIX_V41.31_VISUAL — Botón “Ir al Examen” -->
+<!-- ✅ CFC_FUNC_9_9_INLINE_FIX_V41.31_VISUAL — Botón “Ir al Examen Final” -->
 <style>
   .btn-next-chapter {
     position: fixed;
-    bottom: 90px;
-    right: 30px;
+    bottom: 32px;
+    right: 32px;
     background: linear-gradient(90deg, #d4af37, #ffd700);
     color: #000;
     font-weight: 700;
-    padding: 14px 24px;
+    font-size: 1rem;
+    padding: 14px 26px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     z-index: 5000;
-    transition: transform 0.2s, box-shadow 0.3s, opacity 0.3s;
     opacity: 0.92;
+    transition: transform 0.25s ease, box-shadow 0.3s ease, opacity 0.25s ease;
   }
   .btn-next-chapter:hover {
     transform: scale(1.06);
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.85);
     opacity: 1;
   }
 </style>
@@ -94,17 +95,18 @@
 <script>
   /* =========================================================
      ✅ CFC_FUNC_9_9_INLINE_FIX_V41.31_VISUAL
-     🧩 Capítulo 4 → Examen módulo 1
+     🔁 Capítulo 4 → Examen del módulo 1
+     🔒 100% Offline | Compatible Cloudflare Pages (sin rutas externas)
      ========================================================= */
   document.addEventListener("DOMContentLoaded", () => {
     const btn = document.createElement("button");
     btn.className = "btn-next-chapter";
-    btn.innerHTML = "Ir al Examen Final 🧠";
+    btn.innerHTML = "Ir al Examen Final 🎯";
     btn.onclick = () => {
-      // 👇 Cambia el destino al examen del módulo
-      window.location.href = "../examen/examen_mod1.html";
+      // 🔁 Ruta correcta relativa a cap4.html
+      window.location.href = "../1/exam.html";
     };
     document.body.appendChild(btn);
-    console.log("🧩 CFC_SYNC checkpoint:", "Botón ‘Ir al Examen’ inline insertado");
+    console.log("🧩 CFC_SYNC checkpoint:", "Botón ‘Ir al Examen Final’ inline insertado");
   });
 </script>
