@@ -1,7 +1,7 @@
 /* =========================================================
-   ✅ CFC_FUNC_5_2_FIX_V41.17 — Sistema unificado de tema global (dark/light)
+   ✅ CFC_FUNC_5_3_FIX_V41.18 — Sistema unificado de tema global (dark/light)
    📄 Archivo: /frontend/js/theme_chapter.js
-   🔒 CFC-SYNC V8.6 | QA-SYNC V41.17 (Cloudflare SAFE)
+   🔒 CFC-SYNC V8.8 | QA-SYNC V41.18 (Cloudflare SAFE)
    ========================================================= */
 
 (function () {
@@ -21,7 +21,7 @@
     transition: "all 0.3s ease",
     border: "2px solid var(--color-accent, #ffd700)",
     boxShadow: "0 0 10px rgba(255,215,0,0.4)",
-    backdropFilter: "blur(8px)",
+    backdropFilter: "blur(8px)"
   };
 
   /* ---------------------------------------------------------
@@ -31,11 +31,9 @@
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem(THEME_KEY, theme);
 
-    // Compatibilidad de clases globales
     document.body.classList.toggle("light-mode", theme === "light");
     document.body.classList.toggle("dark-mode", theme === "dark");
 
-    // Actualizar aspecto del botón
     if (toggle) {
       if (theme === "dark") {
         toggle.textContent = "🌙";
@@ -75,7 +73,7 @@
   }
 
   /* ---------------------------------------------------------
-     🕐 Inicialización segura (reintento + observer)
+     🕐 Inicialización segura
      --------------------------------------------------------- */
   function ensureBodyLoaded() {
     if (document.body) injectButton();
@@ -89,9 +87,8 @@
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });
 
-  // Aplicar el tema antes del render
   const preTheme = localStorage.getItem(THEME_KEY) || "dark";
   applyTheme(preTheme);
 
-  console.log("🧩 CFC_SYNC checkpoint: theme_chapter.js activo en", window.location.pathname);
+  console.log("🧩 CFC_SYNC checkpoint:", "theme_chapter.js activo en", window.location.pathname);
 })();
