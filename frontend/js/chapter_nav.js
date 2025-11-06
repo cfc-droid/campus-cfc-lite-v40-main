@@ -1,11 +1,11 @@
 /* ==========================================================
-   ✅ CFC_FUNC_9_4_FIX_V41.13_NEXTCHAPTER_ABOVE_BACKBUTTON
-   🧩 Inserción garantizada — Botón “Continuar al capítulo X / Ir al examen 🏁”
-   🔒 QA-SYNC V10.3 — Build V41.13 — Cristian F. Choqui
-   ========================================================== */
+✅ CFC_FUNC_9_5_FIX_FINAL_V41.14_NEXTCHAPTER_RETRYSAFE
+🧩 Inserción garantizada — incluso si otros scripts bloquean DOMContentLoaded
+🔒 QA-SYNC V10.5 — Cristian F. Choqui — 2025-11-06
+========================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
-  try {
+(function () {
+  const insertNextChapterButton = () => {
     const path = window.location.pathname;
     const match = path.match(/modules\/(\d+)\/cap(\d+)\.html$/);
     if (!match) return;
@@ -13,13 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const module = parseInt(match[1]);
     const chapter = parseInt(match[2]);
     const nextChapter = chapter + 1;
-    const maxChapters = 4; // 👈 ajustar si cambia la cantidad
+    const maxChapters = 4;
 
-    // Localizar contenedores
-    const main = document.querySelector("main") || document.body;
+    const main = document.querySelector("main");
+    if (!main) return false; // DOM no listo
+
+    // Evita duplicados
+    if (main.querySelector(".next-chapter-btn")) return true;
+
     const footer = main.querySelector("footer.firma-cfc");
-
-    // Crear botón
     const btn = document.createElement("button");
     btn.className = "next-chapter-btn";
     btn.innerHTML =
@@ -27,20 +29,21 @@ document.addEventListener("DOMContentLoaded", () => {
         ? `Continuar al Capítulo ${nextChapter} ▶`
         : "Ir al Examen Final 🏁";
 
-    // Estilo inline para asegurar visibilidad
-    btn.style.display = "block";
-    btn.style.margin = "30px auto 15px auto";
-    btn.style.padding = "14px 30px";
-    btn.style.fontSize = "1rem";
-    btn.style.fontWeight = "700";
-    btn.style.background =
-      "linear-gradient(90deg, #ffd700, #f0c03d)";
-    btn.style.color = "#000";
-    btn.style.border = "none";
-    btn.style.borderRadius = "12px";
-    btn.style.boxShadow = "0 0 16px rgba(255,215,0,0.45)";
-    btn.style.cursor = "pointer";
-    btn.style.transition = "all 0.3s ease-in-out";
+    Object.assign(btn.style, {
+      display: "block",
+      margin: "40px auto 20px",
+      padding: "14px 32px",
+      fontSize: "1rem",
+      fontWeight: "700",
+      background: "linear-gradient(90deg,#ffd700,#f0c03d)",
+      color: "#000",
+      border: "none",
+      borderRadius: "12px",
+      boxShadow: "0 0 16px rgba(255,215,0,0.45)",
+      cursor: "pointer",
+      transition: "all 0.3s ease-in-out",
+      zIndex: "999",
+    });
 
     btn.addEventListener("mouseover", () => {
       btn.style.transform = "scale(1.05)";
@@ -51,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.style.boxShadow = "0 0 16px rgba(255,215,0,0.45)";
     });
 
-    // Acción al hacer clic
     btn.addEventListener("click", () => {
       const sound = new Audio("../../media/audio/bell-gold.wav");
       sound.play().catch(() => {});
@@ -61,24 +63,27 @@ document.addEventListener("DOMContentLoaded", () => {
           : "../../examen/examen.html";
       btn.disabled = true;
       btn.textContent = "Cargando...";
-      btn.style.opacity = "0.8";
-      setTimeout(() => {
-        window.location.href = nextUrl;
-      }, 900);
+      setTimeout(() => (window.location.href = nextUrl), 900);
     });
 
-    // Inserción final (justo antes del footer)
-    if (footer && footer.parentNode === main) {
-      main.insertBefore(btn, footer);
-    } else {
-      main.appendChild(btn);
-    }
+    // Inserta antes del footer o al final de main
+    if (footer && footer.parentNode === main) main.insertBefore(btn, footer);
+    else main.appendChild(btn);
 
     console.log(
-      `🧩 CFC_SYNC checkpoint: NEXTCHAPTER visible arriba de footer — módulo ${module} cap ${chapter}`,
-      new Date().toLocaleString()
+      `🧩 CFC_SYNC checkpoint: NEXTCHAPTER insertado correctamente — módulo ${module} cap ${chapter}`
     );
-  } catch (err) {
-    console.error("❌ CFC_FUNC_9_4_FIX_V41.13_NEXTCHAPTER_ABOVE_BACKBUTTON:", err);
-  }
-});
+    return true;
+  };
+
+  // Ejecución inicial + reintentos si DOM no está listo
+  let tries = 0;
+  const tryInsert = () => {
+    if (insertNextChapterButton() || tries > 20) clearInterval(retry);
+    tries++;
+  };
+  const retry = setInterval(tryInsert, 300);
+
+  // Seguridad adicional si DOMContentLoaded se dispara correctamente
+  document.addEventListener("DOMContentLoaded", insertNextChapterButton);
+})();
