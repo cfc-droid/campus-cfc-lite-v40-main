@@ -108,6 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
           localStorage.removeItem("CFC_totalDays");
           localStorage.removeItem("CFC_lastDate");
           localStorage.setItem("progressPercent", 0);
+          localStorage.setItem("CFC_triggerReset", "true");
 
           console.log("🧹 CFC_SYNC → Reinicio global total ejecutado (progreso + tiempo).");
 
