@@ -1,7 +1,7 @@
 /* =========================================================
-   ✅ CFC_FUNC_5_2_V41_FINAL_20251105 — Sistema unificado de tema global (dark/light)
+   ✅ CFC_FUNC_5_2_FIX_V41.17 — Sistema unificado de tema global (dark/light)
    📄 Archivo: /frontend/js/theme_chapter.js
-   🔒 CFC-SYNC V8.5 | QA-SYNC V41.7
+   🔒 CFC-SYNC V8.6 | QA-SYNC V41.17 (Cloudflare SAFE)
    ========================================================= */
 
 (function () {
@@ -31,11 +31,11 @@
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem(THEME_KEY, theme);
 
-    // Clases globales para compatibilidad con botones locales
+    // Compatibilidad de clases globales
     document.body.classList.toggle("light-mode", theme === "light");
     document.body.classList.toggle("dark-mode", theme === "dark");
 
-    // Actualizar botón
+    // Actualizar aspecto del botón
     if (toggle) {
       if (theme === "dark") {
         toggle.textContent = "🌙";
@@ -83,6 +83,7 @@
   }
 
   ensureBodyLoaded();
+
   const observer = new MutationObserver(() => {
     if (!document.getElementById(CFC_ID) && document.body) injectButton();
   });
@@ -92,5 +93,5 @@
   const preTheme = localStorage.getItem(THEME_KEY) || "dark";
   applyTheme(preTheme);
 
-  console.log("🧩 CFC_SYNC checkpoint:", "theme_chapter.js activo en", window.location.pathname);
+  console.log("🧩 CFC_SYNC checkpoint: theme_chapter.js activo en", window.location.pathname);
 })();
