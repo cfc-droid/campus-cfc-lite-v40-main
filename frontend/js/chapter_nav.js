@@ -1,98 +1,59 @@
 /* ==========================================================
-   ✅ CFC_FUNC_9_1_FIX_V41.11 — Restauración del botón "Continuar al capítulo X"
-   📄 Archivo: /frontend/js/chapter_nav.js
-   🔒 CFC-SYNC V7.6 | QA-SYNC V10.1 REAL | Build V41.11
+   ✅ CFC_FUNC_9_3_FIX_FINAL_NEXTCHAPTER
+   🧩 Solución definitiva — Botón “Continuar al capítulo X / Ir al examen 🏁”
+   🔒 QA-SYNC V10.2 — Build V41.12 — Cristian F. Choqui
    ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
   try {
-    const html = document.documentElement;
-    const moduleNum = parseInt(html.getAttribute("data-module"));
-    const chapterMatch = window.location.pathname.match(/cap(\d+)\.html/);
-    if (!chapterMatch) return;
+    const path = window.location.pathname;
+    const match = path.match(/modules\/(\d+)\/cap(\d+)\.html$/);
+    if (!match) return;
 
-    const currentChapter = parseInt(chapterMatch[1]);
-    const main = document.querySelector("main");
-    if (!main) return;
+    const module = parseInt(match[1]);
+    const chapter = parseInt(match[2]);
+    const nextChapter = chapter + 1;
+    const maxChapters = 4; // 👈 ajustar si cambia la cantidad por módulo
 
-    // Crear contenedor
-    const container = document.createElement("div");
-    container.className = "next-chapter-container";
-    container.style.textAlign = "center";
-    container.style.marginTop = "50px";
-
-    // Calcular siguiente destino
-    const nextChapter = currentChapter + 1;
-    let nextUrl = `cap${nextChapter}.html`;
-    let nextLabel = `Continuar al Capítulo ${nextChapter} ▶`;
-
-    // Si es el último capítulo, redirigir al examen
-    const lastChapter = 4; // ⚙️ Ajustar según cantidad real
-    if (currentChapter === lastChapter) {
-      nextUrl = `../exam.html`;
-      nextLabel = "Ir al Examen Final 🏁";
+    // Localizar el contenedor de inserción
+    const main = document.querySelector("main") || document.body;
+    if (!main) {
+      console.warn("⚠️ No se encontró contenedor para el botón siguiente capítulo.");
+      return;
     }
 
     // Crear botón
     const btn = document.createElement("button");
-    btn.textContent = nextLabel;
-    btn.className = "continue-btn";
-    btn.style.padding = "14px 28px";
-    btn.style.borderRadius = "8px";
-    btn.style.fontWeight = "600";
-    btn.style.cursor = "pointer";
-    btn.style.border = "none";
-    btn.style.transition = "0.3s";
-    btn.style.background =
-      "linear-gradient(90deg, #d4af37 0%, #ffd700 100%)";
-    btn.style.color = "#000";
-    btn.style.boxShadow = "0 0 12px rgba(212,175,55,0.6)";
-    btn.addEventListener("mouseenter", () => {
-      btn.style.transform = "scale(1.05)";
-    });
-    btn.addEventListener("mouseleave", () => {
-      btn.style.transform = "scale(1)";
-    });
+    btn.className = "next-chapter-btn gold-btn";
+    btn.textContent = chapter < maxChapters
+      ? `Continuar al Capítulo ${nextChapter} ▶`
+      : "Ir al Examen Final 🏁";
 
-    // Acción click
+    // Acción al click
     btn.addEventListener("click", () => {
-      // Guardar progreso
-      localStorage.setItem("lastModule", moduleNum);
-      localStorage.setItem("lastChapter", currentChapter);
-      localStorage.setItem("progress", `${moduleNum}-${currentChapter}`);
-
-      // Audio dorado
-      const audio = new Audio("../../audio/bell-gold.wav");
-      audio.volume = 0.6;
-      setTimeout(() => audio.play().catch(() => {}), 200);
-
-      // Confeti dorado
-      for (let i = 0; i < 40; i++) {
-        const conf = document.createElement("div");
-        conf.classList.add("confetti");
-        conf.style.left = Math.random() * 100 + "vw";
-        conf.style.background = ["#d4af37", "#ffd700"][
-          Math.floor(Math.random() * 2)
-        ];
-        conf.style.animationDuration = 2.5 + Math.random() * 1.5 + "s";
-        document.body.appendChild(conf);
-        setTimeout(() => conf.remove(), 3500);
-      }
-
-      // Redirigir
+      const sound = new Audio("../../media/audio/bell-gold.wav");
+      sound.play().catch(() => {});
+      const nextUrl =
+        chapter < maxChapters
+          ? `cap${nextChapter}.html`
+          : "../../examen/examen.html";
+      btn.disabled = true;
+      btn.textContent = "Cargando...";
       setTimeout(() => {
         window.location.href = nextUrl;
       }, 800);
     });
 
-    container.appendChild(btn);
-    main.appendChild(container);
+    // Insertar en el DOM
+    const footer = main.querySelector("footer") || main;
+    footer.appendChild(btn);
 
+    // Confirmar visualmente
     console.log(
-      `🧩 CFC_SYNC checkpoint: Botón continuar insertado — Módulo ${moduleNum}, Capítulo ${currentChapter}`,
+      `🧩 CFC_SYNC checkpoint: Botón NEXTCHAPTER generado — módulo ${module} cap ${chapter}`,
       new Date().toLocaleString()
     );
   } catch (err) {
-    console.error("⚠️ chapter_nav.js error:", err);
+    console.error("❌ CFC_FUNC_9_3_FIX_FINAL_NEXTCHAPTER error:", err);
   }
 });
