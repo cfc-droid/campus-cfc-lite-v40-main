@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark" data-module="1">
+<html lang="es" data-theme="light" data-module="1">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Módulo 1 — Capítulo 1 | Campus CFC LITE V41</title>
 
-  <!-- ✅ Estilos globales (rutas relativas correctas para Cloudflare Pages) -->
+  <!-- ✅ Estilos globales -->
   <link rel="stylesheet" href="../../css/variables.css?v=20251102" />
   <link rel="stylesheet" href="../../css/premium.min.css?v=20251106" />
 </head>
-
 <body>
   <!-- 🌗 Fondo premium adaptativo -->
   <div class="reading-bg"></div>
@@ -34,14 +33,15 @@
 
   <!-- 🔙 Botón volver -->
   <script src="../../js/backButton.js"></script>
-
-  <!-- ✅ CFC_SYNC QA-SYNC V9.8C — Progreso global -->
+  <!-- ✅ CFC_SYNC QA-SYNC V9.8C — progress global -->
   <script src="../../js/progress_v2.js?v=9.8C" defer></script>
+  <!-- ✅ QA-SYNC V41.10 — Auto-Injector Global -->
+  <script src="../../js/auto_injector.js?v=20251102" defer></script>
+  <!-- ✅ CFC_FUNC_5_1C_V41_REAL — Modo claro/oscuro -->
+  <script src="../../js/theme_chapter.js?v=20251102" defer></script>
+  <!-- ✅ Badge Motivacional -->
+  <script src="../../js/badge.js?v=20251102" defer></script>
 
-  <!-- ✅ QA-SYNC V41.15 — Auto-Injector Global (SAFE) -->
-  <script src="../../js/auto_injector.js?v=20251106" defer></script>
-
-  <!-- 🧩 Log QA-SYNC -->
   <script>
     console.log(
       "🧩 CFC_SYNC checkpoint:",
@@ -56,16 +56,14 @@
 
   <!-- ✅ CFC_FUNC_10_1_20251105 — Narrador IA Integrado -->
   <button class="tts-btn-fixed" title="Escuchar este capítulo 🎧">🎧</button>
-  <link rel="stylesheet" href="../../css/voiceReader.css?v=20251105" />
+
+  <!-- Archivos del narrador -->
+  <link rel="stylesheet" href="../../css/voiceReader.css?v=20251105">
   <script src="../../js/core/voiceReader.js?v=20251105" defer></script>
 
-  <!-- ✅ CFC_FUNC_9_1_FIX_V41.11 — Botón “Continuar al capítulo X” -->
-  <script src="../../js/chapter_nav.js?v=20251106" defer></script>
-
   <!-- 🔒 CFC-SYNC
-  # QA-SYNC V41.15 (STABLE)
-  # Rutas relativas validadas en Cloudflare Pages (punto público /frontend)
-  # Auto-Injector = OK (badge + theme + overlay)
+  # ✅ CFC_FUNC_10_1_20251105 — CFC-VOICE READER V1 añadido (modo estático)
+  echo "🧩 CFC_SYNC checkpoint: Narrador IA activo en este módulo — P9 completado"
   ========================================================== -->
 </body>
 </html>
