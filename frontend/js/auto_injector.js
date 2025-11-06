@@ -46,3 +46,18 @@
     new Date().toLocaleString()
   );
 })();
+
+/* =========================================================
+✅ CFC_FUNC_9_9_FIX_FINAL_V41.25 — Inyección directa del botón “Continuar”
+📄 Archivo: /frontend/js/auto_injector.js
+🔒 QA-SYNC V41.25 — CFC-SYNC V9.0
+========================================================= */
+
+(function () {
+  const script = document.createElement("script");
+  script.src = "../../js/chapter_nav.js?v=20251107";
+  script.defer = true;
+  document.body.appendChild(script);
+
+  console.log("🧩 CFC_SYNC checkpoint:", "chapter_nav.js inyectado correctamente");
+})();
