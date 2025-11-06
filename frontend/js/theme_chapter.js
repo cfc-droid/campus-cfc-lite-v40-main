@@ -1,7 +1,7 @@
 /* =========================================================
-   ✅ CFC_FUNC_5_3_FIX_V41.19 — Sistema unificado de tema global (dark/light)
+   ✅ CFC_FUNC_5_3_FIX_V41.20 — Sistema unificado de tema global (dark/light)
    📄 Archivo: /frontend/js/theme_chapter.js
-   🔒 CFC-SYNC V8.8 | QA-SYNC V41.19 (CFC LITE SAFE)
+   🔒 CFC-SYNC V8.9 | QA-SYNC V41.20 (Cloudflare SAFE)
    ========================================================= */
 
 (function () {
@@ -25,9 +25,11 @@
     backdropFilter: "blur(8px)",
   };
 
+  // 🪶 Aplicar tema global
   function applyTheme(theme, toggle) {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem(THEME_KEY, theme);
+
     document.body.classList.toggle("light-mode", theme === "light");
     document.body.classList.toggle("dark-mode", theme === "dark");
 
@@ -42,9 +44,11 @@
         toggle.style.color = "#000";
       }
     }
+
     console.log(`🎨 CFC_THEME_APPLIED → ${theme}`);
   }
 
+  // 🔘 Crear botón si no existe
   function injectButton() {
     if (document.getElementById(CFC_ID)) return;
     const toggle = document.createElement("button");
@@ -52,15 +56,19 @@
     toggle.title = "Cambiar tema claro / oscuro";
     Object.assign(toggle.style, CFC_STYLE);
     document.body.appendChild(toggle);
+
     let currentTheme = localStorage.getItem(THEME_KEY) || "dark";
     applyTheme(currentTheme, toggle);
+
     toggle.addEventListener("click", () => {
       currentTheme = currentTheme === "dark" ? "light" : "dark";
       applyTheme(currentTheme, toggle);
     });
+
     console.log("✅ CFC_THEME_BUTTON activo:", currentTheme);
   }
 
+  // 🕐 Inicialización segura
   function ensureBodyLoaded() {
     if (document.body) injectButton();
     else setTimeout(ensureBodyLoaded, 120);
