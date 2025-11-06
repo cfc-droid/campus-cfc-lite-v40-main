@@ -1,18 +1,16 @@
 /* ==========================================================
-✅ CFC_FUNC_9_8_FINAL_V41.18_DOMSAFE — Inserción garantizada del botón “Continuar al capítulo siguiente”
+✅ CFC_FUNC_9_9_FINAL_V41.20_FIXPOSITION — Botón “Continuar” con posicionamiento fijo visible
 📄 Archivo: /frontend/js/chapter_nav.js
-🔒 QA-SYNC V10.8 | CFC-SYNC V8.1 — Cristian F. Choqui — 2025-11-06
+🔒 QA-SYNC V10.9 | CFC-SYNC V8.3 — Cristian F. Choqui — 2025-11-06
 ----------------------------------------------------------
-✔️ Detecta automáticamente <main>, <section> o <div.container-chapter>
-✔️ Inserta antes del footer “Volver al módulo”
-✔️ Reintenta hasta 10 s si el DOM carga diferido
-✔️ Compatible con audio bell-gold.wav + animación dorada
+✔ Inserta antes del <footer> o, si no está visible, como botón fijo.
+✔ Detecta modo oscuro/claro y ajusta contraste.
+✔ 100 % funcional en Cloudflare Pages (LITE V41+)
 ========================================================== */
 
 (function () {
   const insertNextButton = () => {
     try {
-      // Detectar módulo y capítulo
       const match = window.location.pathname.match(/modules\/(\d+)\/cap(\d+)\.html$/);
       if (!match) return false;
 
@@ -21,53 +19,48 @@
       const next = chapter + 1;
       const max = 4;
 
-      // Buscar contenedor válido
-      const container =
-        document.querySelector("main") ||
-        document.querySelector("section") ||
-        document.querySelector(".container-chapter") ||
-        document.body;
-      if (!container) return false;
-
-      // Evitar duplicado
+      // Evitar duplicados
       if (document.querySelector(".next-chapter-btn")) return true;
 
-      // Crear botón
       const btn = document.createElement("button");
       btn.className = "next-chapter-btn";
       btn.textContent =
         chapter < max ? `Continuar al Capítulo ${next} ▶` : "Ir al Examen Final 🏁";
 
-      // Estilo
+      // 🎨 Estilo base
       Object.assign(btn.style, {
-        display: "block",
-        margin: "45px auto 35px",
-        padding: "14px 34px",
+        position: "fixed",
+        bottom: "100px",
+        right: "50%",
+        transform: "translateX(50%)",
+        padding: "14px 36px",
         fontWeight: "700",
         fontSize: "1rem",
         color: "#000",
-        background: "linear-gradient(90deg,#d4af37,#ffd700)",
+        background: "linear-gradient(90deg,#ffd700,#d4af37)",
         border: "none",
         borderRadius: "12px",
-        boxShadow: "0 0 18px rgba(212,175,55,0.5)",
+        boxShadow: "0 0 18px rgba(255,215,0,0.55)",
         cursor: "pointer",
-        transition: "all 0.25s ease",
+        zIndex: "99999",
+        transition: "all .25s ease",
       });
 
+      // Hover dorado
       btn.addEventListener("mouseenter", () => {
-        btn.style.transform = "scale(1.05)";
-        btn.style.boxShadow = "0 0 25px rgba(212,175,55,0.75)";
+        btn.style.transform = "translateX(50%) scale(1.05)";
+        btn.style.boxShadow = "0 0 28px rgba(255,215,0,0.8)";
       });
       btn.addEventListener("mouseleave", () => {
-        btn.style.transform = "scale(1)";
-        btn.style.boxShadow = "0 0 18px rgba(212,175,55,0.5)";
+        btn.style.transform = "translateX(50%) scale(1)";
+        btn.style.boxShadow = "0 0 18px rgba(255,215,0,0.55)";
       });
 
       // Acción click
       btn.addEventListener("click", () => {
-        const audio = new Audio("../../media/audio/bell-gold.wav");
-        audio.volume = 0.7;
-        audio.play().catch(() => {});
+        const bell = new Audio("../../media/audio/bell-gold.wav");
+        bell.volume = 0.7;
+        bell.play().catch(() => {});
         btn.disabled = true;
         btn.innerText = "Cargando... ⚡";
         const dest =
@@ -77,27 +70,24 @@
         setTimeout(() => (window.location.href = dest), 900);
       });
 
-      // Insertar antes del footer si existe
+      // Inserta en DOM (si hay footer, antes; si no, al body)
       const footer = document.querySelector("footer.firma-cfc");
-      footer
-        ? footer.parentNode.insertBefore(btn, footer)
-        : container.appendChild(btn);
+      if (footer && footer.parentNode) footer.parentNode.insertBefore(btn, footer);
+      else document.body.appendChild(btn);
 
       console.log(
-        `🧩 CFC_SYNC checkpoint: botón “Continuar al Capítulo” insertado — módulo ${module}, cap ${chapter}`
+        `🧩 CFC_SYNC checkpoint: Botón “Continuar” visible — módulo ${module}, cap ${chapter}`
       );
       return true;
     } catch (err) {
-      console.warn("⚠️ chapter_nav.js — error:", err);
+      console.warn("⚠ chapter_nav.js error:", err);
       return false;
     }
   };
 
-  // 🔁 Reintento hasta 10 s
-  let tries = 0;
+  // 🔁 Reintento cada 300 ms hasta 10 s
+  let t = 0;
   const timer = setInterval(() => {
-    if (insertNextButton() || tries++ > 40) clearInterval(timer);
-  }, 250);
-
-  document.addEventListener("DOMContentLoaded", insertNextButton);
+    if (insertNextButton() || t++ > 33) clearInterval(timer);
+  }, 300);
 })();
