@@ -108,5 +108,27 @@
   });
 </script>
 
+  <style>
+  /* ✅ CFC_FIX_20251106 — Mejorar contraste del botón “Volver al módulo” */
+  a.btn-main,
+  a.btn-back,
+  button.btn-main,
+  .btn-volver,
+  .btn-back {
+    color: #000 !important;          /* letras negras */
+    font-weight: 700 !important;     /* más legible */
+    text-shadow: 0 0 4px rgba(255,255,255,0.4);
+  }
+
+  /* Hover: invertir para mantener el efecto premium */
+  a.btn-main:hover,
+  .btn-volver:hover,
+  .btn-back:hover {
+    background: #000 !important;
+    color: #ffd700 !important;
+    box-shadow: 0 0 25px rgba(255,215,0,0.8);
+  }
+</style>
+
 
 
