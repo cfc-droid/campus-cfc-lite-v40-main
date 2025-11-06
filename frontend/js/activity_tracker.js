@@ -1,34 +1,22 @@
 /* ==========================================================
-   ✅ CFC_ACTIVITY_V10.8_REAL_FIX — 2025-11-06
+   ✅ CFC_ACTIVITY_V10.9_REAL_TOTALTRACK — 2025-11-06
    ----------------------------------------------------------
-   • Reinicio duro de tiempo (RAM + localStorage)
-   • Evita reescrituras fantasma tras reinicio
-   • Sincronizado con progress_v2.js V10.7 REAL
-   • Resetea contador visual al instante (sin recargar)
+   • Acumulación total de tiempo: lectura + exámenes + perfil
+   • Sincronización con progress_v2.js y stats_v1.js
+   • Persistencia automática en CFC_time_total
    ========================================================== */
 
 (function () {
   const today = new Date().toISOString().split("T")[0];
   let startTime = Date.now();
-  let totalSeconds = 0;
+  let totalSeconds = parseFloat(localStorage.getItem("CFC_time_total") || 0);
 
-  /* 🧩 Reinicio duro si localStorage está vacío */
-  if (!localStorage.getItem("progressData")) {
-    console.log("🧹 CFC_ACTIVITY → Reinicio duro detectado, reseteando variables internas...");
-    localStorage.setItem("CFC_time", 0);
-    localStorage.setItem("studyStats", JSON.stringify({ minutesActive: 0, sessions: 0 }));
-    totalSeconds = 0;
-  } else {
-    totalSeconds = parseFloat(localStorage.getItem("CFC_time") || 0);
-  }
-
-  /* 🗓️ Control de cambio de día */
+  // 🗓️ Control de días
   let lastDate = localStorage.getItem("CFC_lastDate") || today;
   let consecutiveDays = parseInt(localStorage.getItem("CFC_days") || 1);
   let totalDays = parseInt(localStorage.getItem("CFC_totalDays") || 1);
-
   if (today !== lastDate) {
-    const diff = (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
+    const diff = (new Date(today) - new Date(lastDate)) / 86400000;
     consecutiveDays = diff === 1 ? consecutiveDays + 1 : 1;
     totalDays += 1;
     localStorage.setItem("CFC_lastDate", today);
@@ -36,9 +24,7 @@
   localStorage.setItem("CFC_days", consecutiveDays);
   localStorage.setItem("CFC_totalDays", totalDays);
 
-  /* =====================================================
-     BLOQUE 1 — Indicador visual
-     ===================================================== */
+  // 🎯 Indicador visual inferior
   const indicator = document.createElement("div");
   Object.assign(indicator.style, {
     position: "fixed",
@@ -56,90 +42,58 @@
   });
   document.body.appendChild(indicator);
 
-  const updateVisualTime = () => {
+  const updateIndicator = () => {
     const elapsed = (Date.now() - startTime) / 1000;
-    const minutes = Math.floor(elapsed / 60);
-    const seconds = Math.floor(elapsed % 60);
-    indicator.textContent = `🕒 Sesión activa: ${minutes} min ${seconds
-      .toString()
-      .padStart(2, "0")} s`;
+    const min = Math.floor(elapsed / 60);
+    const sec = Math.floor(elapsed % 60);
+    indicator.textContent = `🕒 Sesión activa: ${min} min ${sec.toString().padStart(2, "0")} s`;
   };
-  setInterval(updateVisualTime, 1000);
+  setInterval(updateIndicator, 1000);
 
-  /* =====================================================
-     BLOQUE 2 — Sincronización cada 10 s
-     ===================================================== */
-  const syncInterval = setInterval(() => {
+  // 🔄 Sync cada 10 s
+  const sync = () => {
     const elapsed = (Date.now() - startTime) / 1000;
     startTime = Date.now();
     totalSeconds += elapsed;
-    localStorage.setItem("CFC_time", totalSeconds);
+    localStorage.setItem("CFC_time_total", totalSeconds);
+    localStorage.setItem("CFC_time", totalSeconds); // compatibilidad vieja
 
     const study = JSON.parse(localStorage.getItem("studyStats") || "{}");
-    const prev = parseInt(study.minutesActive || 0);
-    study.minutesActive = prev + Math.floor(elapsed / 60);
+    study.minutesActive = Math.floor(totalSeconds / 60);
     study.sessions = totalDays;
     localStorage.setItem("studyStats", JSON.stringify(study));
 
-    console.log(
-      `🧩 CFC_SYNC → +${(elapsed / 60).toFixed(1)} min | Total ${(totalSeconds / 60).toFixed(1)} min`
-    );
-  }, 10000);
+    console.log(`🧩 CFC_SYNC → +${(elapsed / 60).toFixed(1)} min | Total ${(totalSeconds / 60).toFixed(1)} min`);
+  };
+  const syncInterval = setInterval(sync, 10000);
 
-  /* =====================================================
-     BLOQUE 3 — Guardar al cerrar pestaña
-     ===================================================== */
-  window.addEventListener("beforeunload", () => {
-    const elapsed = (Date.now() - startTime) / 1000;
-    totalSeconds += elapsed;
-    localStorage.setItem("CFC_time", totalSeconds);
+  // 💾 Guardar al cerrar pestaña
+  window.addEventListener("beforeunload", sync);
 
-    const study = JSON.parse(localStorage.getItem("studyStats") || "{}");
-    const prev = parseInt(study.minutesActive || 0);
-    study.minutesActive = prev + Math.floor(elapsed / 60);
-    study.sessions = totalDays;
-    localStorage.setItem("studyStats", JSON.stringify(study));
-
-    console.log(
-      `🕒 CFC-ACTIVITY → Guardado final ${(elapsed / 60).toFixed(1)} min | Total ${(totalSeconds / 3600).toFixed(2)} h`
-    );
+  // 📘 Incluir duración de examen automáticamente
+  window.addEventListener("examCompleted", (e) => {
+    const data = e.detail;
+    if (!data || !data.duracionSegundos) return;
+    totalSeconds += data.duracionSegundos;
+    localStorage.setItem("CFC_time_total", totalSeconds);
+    console.log(`📘 CFC_SYNC exam → +${(data.duracionSegundos / 60).toFixed(1)} min`);
   });
 
-  /* =====================================================
-     BLOQUE 4 — Escucha de reinicio explícito (RAM + UI)
-     ===================================================== */
+  // ⚙️ Reinicio global (desde progress_v2.js)
   window.addEventListener("storage", (e) => {
     if (e.key === "progressData" || e.key === null) {
-      console.log("🧹 CFC_ACTIVITY → Reinicio detectado vía storage, limpiando RAM + UI...");
+      console.warn("🧹 Reinicio global detectado — limpiando tiempo total");
       totalSeconds = 0;
       startTime = Date.now();
-      clearInterval(syncInterval);
-
-      localStorage.setItem("CFC_time", 0);
+      localStorage.setItem("CFC_time_total", 0);
       localStorage.setItem("studyStats", JSON.stringify({ minutesActive: 0, sessions: 0 }));
-
-      // 🧭 Reiniciar visual al instante
       indicator.textContent = "🕒 Sesión activa: 0 min 00 s";
-
-      // 🧱 Reiniciar temporizador de sync
-      setTimeout(() => {
-        console.log("♻️ CFC_ACTIVITY → Sincronización reactivada tras reinicio global.");
-        startTime = Date.now();
-        setInterval(() => {
-          const elapsed = (Date.now() - startTime) / 1000;
-          startTime = Date.now();
-          totalSeconds += elapsed;
-          localStorage.setItem("CFC_time", totalSeconds);
-        }, 10000);
-      }, 1500);
     }
   });
 
-  console.log(
-    `✅ CFC_ACTIVITY_V10.8_REAL_FIX — Día:${today} | Consecutivos:${consecutiveDays} | Totales:${totalDays} | Tiempo ${(totalSeconds / 3600).toFixed(2)} h`
-  );
+  console.log(`✅ CFC_ACTIVITY_V10.9_REAL_TOTALTRACK — Día:${today} | Total ${(totalSeconds / 3600).toFixed(2)} h`);
 })();
 
 /* ==========================================================
-🔒 CFC_LOCK: V10.8-REAL_FIX-activity_persistente-20251106
+🔒 CFC_LOCK: V10.9-REAL_TOTALTRACK-20251106
 ========================================================== */
