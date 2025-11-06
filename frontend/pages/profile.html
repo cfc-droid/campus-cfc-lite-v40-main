@@ -148,5 +148,58 @@
   </script>
 
   <!-- 🔒 CFC_LOCK: V41.16-profile_examThemeReactive-20251105 -->
+
+<!-- =========================================================
+✅ CFC_FUNC_11_1_V41.31 — Panel “Mi progreso” con horas activas
+📄 Archivo: /frontend/pages/profile.html
+🔒 CFC-SYNC V11.1 | QA-SYNC V41.31
+========================================================= -->
+<script>
+document.getElementById("btnStats").addEventListener("click", () => {
+  const totalSeconds = parseFloat(localStorage.getItem("CFC_time_total") || 0);
+  const minutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const remMin = minutes % 60;
+
+  const data = JSON.parse(localStorage.getItem("progressData") || "{}");
+  const completed = (data.completed || []).length;
+  const percent = Math.floor((completed / 20) * 100);
+  const lastDate = localStorage.getItem("CFC_lastDate") || "—";
+
+  const consecutive = localStorage.getItem("CFC_days") || 0;
+  const totalDays = localStorage.getItem("CFC_totalDays") || 0;
+
+  const existing = document.querySelector("#miProgresoOverlay");
+  if (existing) existing.remove();
+
+  const overlay = document.createElement("div");
+  overlay.id = "miProgresoOverlay";
+  overlay.style = `
+    position:fixed;inset:0;z-index:99999;
+    background:rgba(0,0,0,0.85);color:#FFD700;
+    font-family:'Poppins',sans-serif;display:flex;
+    justify-content:center;align-items:center;flex-direction:column;
+    text-align:center;line-height:1.6;
+  `;
+
+  overlay.innerHTML = `
+    <div style="max-width:480px;padding:30px;background:rgba(255,255,255,0.05);
+      border:1px solid #FFD700;border-radius:14px;box-shadow:0 0 25px rgba(255,215,0,0.4);">
+      <h2>📊 Tu progreso</h2>
+      <p>📘 Módulos completados: ${completed}/20 (${percent}%)</p>
+      <p>⏱️ Horas activas: ${hours} h ${remMin} min</p>
+      <p>📅 Última sesión: ${new Date().toLocaleDateString()} </p>
+      <p>🔁 Días consecutivos de estudio: ${consecutive}</p>
+      <p>🗓️ Días totales de estudio: ${totalDays}</p>
+      <button id="cerrarProgreso" class="btn-main" style="margin-top:15px;">Cerrar</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById("cerrarProgreso").addEventListener("click", () => overlay.remove());
+
+  console.log("🧩 CFC_SYNC checkpoint:", "Horas activas actualizadas → " + hours + "h " + remMin + "min", new Date().toLocaleString());
+});
+</script>
 </body>
 </html>
