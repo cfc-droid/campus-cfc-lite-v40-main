@@ -104,13 +104,17 @@ window.addEventListener("DOMContentLoaded", () => {
           localStorage.removeItem("examResults_backup");
           localStorage.removeItem("CFC_time");
           localStorage.removeItem("CFC_time_temp");
+          localStorage.removeItem("CFC_time_total");  // ✅ Nuevo
           localStorage.removeItem("CFC_days");
           localStorage.removeItem("CFC_totalDays");
           localStorage.removeItem("CFC_lastDate");
           localStorage.setItem("progressPercent", 0);
           localStorage.setItem("CFC_triggerReset", "true");
 
-          console.log("🧹 CFC_SYNC → Reinicio global total ejecutado (progreso + tiempo).");
+          console.log("🧹 CFC_SYNC → Reinicio global total ejecutado (progreso + tiempo + horas activas).");
+
+          // 🔁 Reinicio sincronizado con activity_tracker.js
+          window.dispatchEvent(new Event("CFC_forceReset"));
 
           launchConfettiGold();
           setTimeout(() => location.reload(), 2200);
